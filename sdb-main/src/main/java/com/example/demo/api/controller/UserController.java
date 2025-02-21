@@ -27,6 +27,7 @@ public class UserController {
   ) {
     logger.info("Creating user %s".formatted(user));
     UserJson createdUser = userService.create(user);
+    logger.info("Created user " + createdUser);
     return ResponseEntity.ok(createdUser);
   }
 
@@ -61,6 +62,7 @@ public class UserController {
     }
 
     userService.delete(id);
+    logger.info("User %s deleted".formatted(userJson.get()));
     return ResponseEntity.noContent().build();
   }
 
@@ -72,9 +74,16 @@ public class UserController {
     logger.info("Update user id = %s, %s".formatted(id, updateUser));
     Optional<UserJson> user = userService.get(id);
 
-    if (user.isEmpty()) return ResponseEntity.notFound().build();
+    if (user.isEmpty()) {
+      logger.info("Not found user with id = " + id);
+      return ResponseEntity.notFound().build();
+    }
 
     userService.update(id, updateUser);
-    return ResponseEntity.ok(userService.get(id).get());
+
+    UserJson updatedUser = userService.get(id).get();
+    logger.info("Updated user %s to %s".formatted(user.get(), updatedUser));
+
+    return ResponseEntity.ok(updatedUser);
   }
 }
