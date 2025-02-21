@@ -1,8 +1,19 @@
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '3.4.2'
-	id 'io.spring.dependency-management' version '1.1.7'
-	id "io.freefair.lombok" version "6.6.1"
+}
+
+allprojects {
+	apply plugin: 'java'
+
+	repositories {
+		mavenCentral()
+	}
+
+	java {
+		toolchain {
+			languageVersion = JavaLanguageVersion.of(17)
+		}
+	}
 }
 
 group = 'com.example'
@@ -12,25 +23,4 @@ java {
 	toolchain {
 		languageVersion = JavaLanguageVersion.of(17)
 	}
-}
-
-repositories {
-	mavenCentral()
-}
-
-dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	implementation 'org.hibernate.validator:hibernate-validator:8.0.1.Final'
-	implementation 'org.yaml:snakeyaml:2.2'
-	implementation 'org.postgresql:postgresql:42.6.0'
-	implementation 'com.fasterxml.jackson.core:jackson-databind:2.18.2'
-
-	// Rest
-	implementation 'com.squareup.retrofit2:converter-jackson:2.11.0'
-	implementation 'com.squareup.retrofit2:retrofit:2.11.0'
-}
-
-tasks.named('test') {
-	useJUnitPlatform()
 }
