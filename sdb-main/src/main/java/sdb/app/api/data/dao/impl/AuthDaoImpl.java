@@ -1,18 +1,13 @@
 package sdb.app.api.data.dao.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import sdb.app.api.data.Databases;
 import sdb.app.api.data.dao.AuthDao;
 import sdb.app.api.data.dao.UserDao;
 import sdb.app.api.data.entity.auth.RegisterEntity;
 import sdb.app.config.Config;
 import sdb.app.logging.Logger;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 //@Component
 public class AuthDaoImpl implements AuthDao {
@@ -29,7 +24,7 @@ public class AuthDaoImpl implements AuthDao {
   private UserDao userDao;
 
   @Override
-  public void register(RegisterEntity entity) {
+  public int register(RegisterEntity entity) {
     try (PreparedStatement ps = connection.prepareStatement(
         "INSERT INTO user_creds (username, pass) VALUES (?, ?)",
         Statement.RETURN_GENERATED_KEYS
@@ -38,6 +33,17 @@ public class AuthDaoImpl implements AuthDao {
       ps.setString(2, entity.getPassword());
 
       ps.executeUpdate();
+
+      final int userId;
+      try (ResultSet rs = ps.getGeneratedKeys()) {
+        if (rs.next()) {
+          userId = rs.getObject("id", Integer.class);
+        } else {
+          throw new SQLException("Can't find id in result set");
+        }
+      }
+
+      return userId;
     } catch (SQLException e) {
       throw new RuntimeException("Registration failed", e);
     }

@@ -15,12 +15,12 @@ import java.util.Optional;
 
 @RestController
 public class UserController {
-  private static final Logger logger = new Logger();
+/*  private static final Logger logger = new Logger();
 
   @Autowired
   private UserService userService;
 
-/*  @PostMapping("/user")
+  @PostMapping("/user")
   public UserJson createUser(
       @Validated(CreateValidationGroup.class) @RequestBody UserJson user
   ) {
@@ -28,7 +28,7 @@ public class UserController {
     UserJson createdUser = userService.create(user);
     logger.info("Created user " + createdUser);
     return createdUser;
-  }*/
+  }
 
   @GetMapping("/user")
   public List<UserJson> getAllUsers() {
@@ -84,5 +84,5 @@ public class UserController {
     logger.info("Updated user %s to %s".formatted(user.get(), updatedUser));
 
     return ResponseEntity.ok(updatedUser);
-  }
+  }*/
 }

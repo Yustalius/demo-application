@@ -4,7 +4,7 @@ import sdb.app.api.data.entity.auth.RegisterEntity;
 
 public interface AuthDao {
 
-  void register(RegisterEntity entity);
+  int register(RegisterEntity entity);
 
   void login();
 }

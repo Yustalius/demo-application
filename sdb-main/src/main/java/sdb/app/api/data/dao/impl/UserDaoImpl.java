@@ -11,25 +11,28 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@Component
+//@Component
 public class UserDaoImpl implements UserDao {
   private static final Config CFG = Config.getInstance();
+  private final Connection connection;
+
+  public UserDaoImpl(Connection connection) {
+    this.connection = connection;
+  }
 
   @Override
   public void create(UserEntity user) {
-    try (Connection connection = Databases.connection(CFG.postgresUrl())) {
-      try (PreparedStatement ps = connection.prepareStatement(
-          "INSERT INTO users (id, first_name, last_name, age) VALUES (?, ?, ?, ?)"
-      )) {
-        ps.setInt(1, user.getId());
-        ps.setString(2, user.getFirstName());
-        ps.setString(3, user.getLastName());
-        ps.setInt(4, user.getAge());
+    try (PreparedStatement ps = connection.prepareStatement(
+        "INSERT INTO users (id, first_name, last_name, age) VALUES (?, ?, ?, ?)"
+    )) {
+      ps.setInt(1, user.getId());
+      ps.setString(2, user.getFirstName());
+      ps.setString(3, user.getLastName());
+      ps.setInt(4, user.getAge());
 
-        ps.executeUpdate();
-      }
+      ps.executeUpdate();
     } catch (SQLException e) {
-      throw new RuntimeException("Couldn't create user");
+      throw new RuntimeException(e);
     }
   }
 

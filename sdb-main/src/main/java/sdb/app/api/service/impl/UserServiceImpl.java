@@ -12,9 +12,9 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl {
 
-  @Autowired
+/*  @Autowired
   private UserDao userDao;
 
   @Override
@@ -44,5 +44,5 @@ public class UserServiceImpl implements UserService {
   public void update(int userId, UserJson user) {
     UserEntity userEntity = UserEntity.fromJson(user);
     userDao.update(userId, userEntity);
-  }
+  }*/
 }
