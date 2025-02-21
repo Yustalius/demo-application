@@ -1,13 +1,12 @@
-package com.example.demo.model.user;
+package com.example.demo.api.model.user;
 
-import com.example.demo.data.entity.user.UserEntity;
-import com.example.demo.model.validation.CreateValidationGroup;
+import com.example.demo.api.data.entity.user.UserEntity;
+import com.example.demo.api.model.validation.CreateValidationGroup;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.SneakyThrows;
-import lombok.ToString;
 
 public record UserJson(
     @JsonProperty("id")

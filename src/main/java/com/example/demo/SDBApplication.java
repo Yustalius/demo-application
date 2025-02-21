@@ -6,18 +6,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 @SpringBootApplication
 @RestController
-public class DemoApplication {
+public class SDBApplication {
 
   public static void main(String[] args) {
-		SpringApplication.run(DemoApplication.class, args);
-
-/*    UserService userService = new UserService();
-
-    userService.createUser(new UserJson(
-        null,
-        "Anton",
-        "Gondon",
-        35
-    ));*/
+		SpringApplication.run(SDBApplication.class, args);
   }
 }

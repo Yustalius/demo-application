@@ -1,8 +1,8 @@
-package com.example.demo.service;
+package com.example.demo.api.service;
 
-import com.example.demo.data.dao.UserDao;
-import com.example.demo.data.entity.user.UserEntity;
-import com.example.demo.model.user.UserJson;
+import com.example.demo.api.data.dao.UserDao;
+import com.example.demo.api.data.entity.user.UserEntity;
+import com.example.demo.api.model.user.UserJson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

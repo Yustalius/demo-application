@@ -1,9 +1,9 @@
-package com.example.demo.data.dao.impl;
+package com.example.demo.api.data.dao.impl;
 
 import com.example.demo.config.Config;
-import com.example.demo.data.Databases;
-import com.example.demo.data.dao.UserDao;
-import com.example.demo.data.entity.user.UserEntity;
+import com.example.demo.api.data.Databases;
+import com.example.demo.api.data.dao.UserDao;
+import com.example.demo.api.data.entity.user.UserEntity;
 import org.springframework.stereotype.Component;
 
 import java.sql.*;

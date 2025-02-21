@@ -1,7 +1,6 @@
-package com.example.demo.data.entity.user;
+package com.example.demo.api.data.entity.user;
 
-import com.example.demo.model.user.UserJson;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.example.demo.api.model.user.UserJson;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;

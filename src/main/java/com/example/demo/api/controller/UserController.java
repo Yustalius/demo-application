@@ -1,9 +1,9 @@
-package com.example.demo.controller;
+package com.example.demo.api.controller;
 
-import com.example.demo.model.user.UserJson;
-import com.example.demo.model.validation.CreateValidationGroup;
-import com.example.demo.model.validation.UpdateValidationGroup;
-import com.example.demo.service.UserServiceImpl;
+import com.example.demo.api.model.user.UserJson;
+import com.example.demo.api.model.validation.CreateValidationGroup;
+import com.example.demo.api.model.validation.UpdateValidationGroup;
+import com.example.demo.api.service.UserServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,6 +1,6 @@
-package com.example.demo.service;
+package com.example.demo.api.service;
 
-import com.example.demo.model.user.UserJson;
+import com.example.demo.api.model.user.UserJson;
 
 import java.util.Optional;
 

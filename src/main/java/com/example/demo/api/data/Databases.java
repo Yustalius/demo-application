@@ -1,4 +1,4 @@
-package com.example.demo.data;
+package com.example.demo.api.data;
 
 import org.postgresql.ds.PGSimpleDataSource;
 

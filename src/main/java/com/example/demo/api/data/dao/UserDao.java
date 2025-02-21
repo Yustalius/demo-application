@@ -1,6 +1,6 @@
-package com.example.demo.data.dao;
+package com.example.demo.api.data.dao;
 
-import com.example.demo.data.entity.user.UserEntity;
+import com.example.demo.api.data.entity.user.UserEntity;
 
 import java.util.Optional;
 
