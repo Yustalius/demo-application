@@ -8,21 +8,14 @@ group = 'com.example'
 version = '0.0.1-SNAPSHOT'
 
 dependencies {
-    testImplementation platform('org.junit:junit-bom:5.10.0')
-    testImplementation 'org.junit.jupiter:junit-jupiter'
-
     implementation 'org.springframework.boot:spring-boot-starter-web'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     implementation 'org.hibernate.validator:hibernate-validator:8.0.1.Final'
     implementation 'org.yaml:snakeyaml:2.2'
     implementation 'org.postgresql:postgresql:42.6.0'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.18.2'
-
-    // Rest
-    implementation 'com.squareup.retrofit2:converter-jackson:2.11.0'
-    implementation 'com.squareup.retrofit2:retrofit:2.11.0'
 }
 
-test {
+tasks.named('test') {
     useJUnitPlatform()
 }

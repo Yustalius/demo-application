@@ -13,7 +13,7 @@ public class LogApiClient {
 
   public LogApiClient() {
     Retrofit retrofit = new Retrofit.Builder()
-        .baseUrl("http://127.0.0.1:8082/log")
+        .baseUrl("http://127.0.0.1:8082/")
         .addConverterFactory(JacksonConverterFactory.create())
         .build();
 

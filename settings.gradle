@@ -1,3 +1,5 @@
 rootProject.name = 'demo'
 include 'sdb-main'
+include 'sdb-loggint'
+include 'sdb-logging'
 
