@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import sdb.app.api.model.auth.RegisterJson;
 import sdb.app.api.service.AuthService;
+import sdb.app.api.service.impl.AuthServiceImpl;
 import sdb.app.logging.Logger;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -14,8 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
   private static final Logger logger = new Logger();
 
-  @Autowired
-  private AuthService authService;
+//  @Autowired
+  private AuthService authService = new AuthServiceImpl();
 
   @PostMapping("/register")
   public void register(@RequestBody RegisterJson json) {
