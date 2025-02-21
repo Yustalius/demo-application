@@ -3,6 +3,7 @@ package com.example.demo.api.controller;
 import com.example.demo.api.model.user.UserJson;
 import com.example.demo.api.model.validation.CreateValidationGroup;
 import com.example.demo.api.model.validation.UpdateValidationGroup;
+import com.example.demo.api.service.UserService;
 import com.example.demo.api.service.UserServiceImpl;
 import com.example.demo.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,15 +11,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
 public class UserController {
-
   private static final Logger logger = new Logger();
 
   @Autowired
-  UserServiceImpl userService;
+  private UserService userService;
 
   @PostMapping("/user")
   public ResponseEntity<UserJson> createUser(
@@ -27,6 +28,13 @@ public class UserController {
     logger.info("Creating user %s".formatted(user));
     UserJson createdUser = userService.create(user);
     return ResponseEntity.ok(createdUser);
+  }
+
+  @GetMapping("/user")
+  public ResponseEntity<List<UserJson>> getAllUsers() {
+    logger.info("Get all users");
+    List<UserJson> users = userService.getUsers();
+    return ResponseEntity.ok(users);
   }
 
   @GetMapping("/user/{id}")

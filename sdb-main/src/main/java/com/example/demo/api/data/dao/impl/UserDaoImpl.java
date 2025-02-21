@@ -7,6 +7,8 @@ import com.example.demo.api.data.entity.user.UserEntity;
 import org.springframework.stereotype.Component;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -67,7 +69,35 @@ public class UserDaoImpl implements UserDao {
         }
       }
     } catch (SQLException e) {
-      throw new RuntimeException("Couldn't create user");
+      throw new RuntimeException("Couldn't get user from database");
+    }
+  }
+
+  @Override
+  public List<UserEntity> getUsers() {
+    try (Connection connection = Databases.connection(CFG.postgresUrl())) {
+      try (PreparedStatement ps = connection.prepareStatement(
+          "SELECT * FROM users"
+      )) {
+        ps.execute();
+
+        try (ResultSet rs = ps.getResultSet()) {
+          List<UserEntity> users = new ArrayList<>();
+          while (rs.next()) {
+            UserEntity user = new UserEntity();
+            user.setId(rs.getInt("id"));
+            user.setFirstName(rs.getString("first_name"));
+            user.setLastName(rs.getString("last_name"));
+            user.setAge(rs.getInt("age"));
+
+            users.add(user);
+          }
+
+          return users;
+        }
+      }
+    } catch (SQLException e) {
+      throw new RuntimeException("Couldn't get user from database");
     }
   }
 

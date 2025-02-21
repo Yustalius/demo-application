@@ -2,6 +2,8 @@ package com.example.demo.utils.logging.api;
 
 import com.example.demo.utils.logging.model.Log;
 import com.example.demo.utils.logging.model.LogLevel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
@@ -10,6 +12,8 @@ import java.io.IOException;
 
 public class LogApiClient {
   private final LogApi logApi;
+
+  private static final Logger logger = LoggerFactory.getLogger(LogApiClient.class);
 
   public LogApiClient() {
     Retrofit retrofit = new Retrofit.Builder()
@@ -27,7 +31,7 @@ public class LogApiClient {
     try {
       call.execute();
     } catch (IOException e) {
-      System.err.println("Failed to send log: " + e.getMessage());
+      logger.error("Failed to send log: {}", e.getMessage());
     }
   }
 }
