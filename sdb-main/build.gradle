@@ -25,6 +25,9 @@ dependencies {
     implementation 'org.postgresql:postgresql:42.6.0'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.18.2'
 
+    // Utils
+    implementation 'org.apache.commons:commons-lang3:3.17.0'
+
     // Rest
     implementation "com.squareup.retrofit2:converter-jackson:${retrofitVersion}"
     implementation "com.squareup.retrofit2:retrofit:${retrofitVersion}"
