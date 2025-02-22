@@ -1,8 +1,10 @@
 package sdb.app.api.model.auth;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.NonNull;
+import lombok.SneakyThrows;
 import sdb.app.api.data.entity.auth.RegisterEntity;
 import sdb.app.api.model.validation.CreateValidationGroup;
 
@@ -26,5 +28,12 @@ public record RegisterJson(
     );
 
     return json;
+  }
+
+  @SneakyThrows
+  @Override
+  public String toString() {
+    ObjectMapper mapper = new ObjectMapper();
+    return mapper.writeValueAsString(this);
   }
 }

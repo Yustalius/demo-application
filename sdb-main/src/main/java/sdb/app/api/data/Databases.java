@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class Databases {
   private Databases() {
@@ -32,6 +33,27 @@ public class Databases {
         try {
           connection.rollback();
           connection.setAutoCommit(true);
+        } catch (SQLException ex) {
+          throw new RuntimeException(ex);
+        }
+      }
+
+      throw new RuntimeException(e);
+    }
+  }
+
+  public static <T> T transaction(Supplier<T> supplier, Connection conn) {
+    try {
+      conn.setAutoCommit(false);
+      T result = supplier.get();
+      conn.commit();
+      conn.setAutoCommit(true);
+      return result;
+    } catch (SQLException e) {
+      if (conn != null) {
+        try {
+          conn.rollback();
+          conn.setAutoCommit(true);
         } catch (SQLException ex) {
           throw new RuntimeException(ex);
         }

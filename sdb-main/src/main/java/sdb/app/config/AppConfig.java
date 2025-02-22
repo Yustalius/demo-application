@@ -10,7 +10,7 @@ import java.sql.Connection;
 public class AppConfig {
   private static final Config CFG = Config.getInstance();
 
-  @Bean
+  @Bean(name = "dbConnection")
   public Connection connection() {
     return Databases.connection(CFG.postgresUrl());
   }

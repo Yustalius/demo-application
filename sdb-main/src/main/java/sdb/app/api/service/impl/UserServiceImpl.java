@@ -19,7 +19,8 @@ import static sdb.app.api.data.Databases.connection;
 public class UserServiceImpl implements UserService{
   private static final Config CFG = Config.getInstance();
 
-  private UserDao userDao = new UserDaoImpl(connection(CFG.postgresUrl()));
+  @Autowired
+  private UserDao userDao;
 
   @Override
   public void create(UserJson json) {

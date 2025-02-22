@@ -1,10 +1,13 @@
 package sdb.app.api.data.dao.impl;
 
+import lombok.Getter;
+import org.springframework.beans.factory.annotation.Qualifier;
 import sdb.app.config.Config;
 import sdb.app.api.data.Databases;
 import sdb.app.api.data.dao.UserDao;
 import sdb.app.api.data.entity.user.UserEntity;
 import org.springframework.stereotype.Component;
+import sdb.app.logging.Logger;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -14,9 +17,11 @@ import java.util.Optional;
 @Component
 public class UserDaoImpl implements UserDao {
   private static final Config CFG = Config.getInstance();
+  private static final Logger logger = new Logger();
+
   private final Connection connection;
 
-  public UserDaoImpl(Connection connection) {
+  public UserDaoImpl(@Qualifier("dbConnection") Connection connection) {
     this.connection = connection;
   }
 
