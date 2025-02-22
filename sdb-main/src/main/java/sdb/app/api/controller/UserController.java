@@ -4,6 +4,7 @@ import sdb.app.api.model.user.UserJson;
 import sdb.app.api.model.validation.CreateValidationGroup;
 import sdb.app.api.model.validation.UpdateValidationGroup;
 import sdb.app.api.service.UserService;
+import sdb.app.api.service.impl.UserServiceImpl;
 import sdb.app.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,16 +20,6 @@ public class UserController {
 
   @Autowired
   private UserService userService;
-
-/*  @PostMapping("/user")
-  public UserJson createUser(
-      @Validated(CreateValidationGroup.class) @RequestBody UserJson user
-  ) {
-    logger.info("Creating user %s".formatted(user));
-    UserJson createdUser = userService.create(user);
-    logger.info("Created user " + createdUser);
-    return createdUser;
-  }*/
 
   @GetMapping("/user")
   public List<UserJson> getAllUsers() {

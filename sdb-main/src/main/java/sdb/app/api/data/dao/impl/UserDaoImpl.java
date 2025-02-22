@@ -1,10 +1,13 @@
 package sdb.app.api.data.dao.impl;
 
+import lombok.Getter;
+import org.springframework.beans.factory.annotation.Qualifier;
 import sdb.app.config.Config;
 import sdb.app.api.data.Databases;
 import sdb.app.api.data.dao.UserDao;
 import sdb.app.api.data.entity.user.UserEntity;
 import org.springframework.stereotype.Component;
+import sdb.app.logging.Logger;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -14,22 +17,27 @@ import java.util.Optional;
 @Component
 public class UserDaoImpl implements UserDao {
   private static final Config CFG = Config.getInstance();
+  private static final Logger logger = new Logger();
+
+  private final Connection connection;
+
+  public UserDaoImpl(@Qualifier("dbConnection") Connection connection) {
+    this.connection = connection;
+  }
 
   @Override
   public void create(UserEntity user) {
-    try (Connection connection = Databases.connection(CFG.postgresUrl())) {
-      try (PreparedStatement ps = connection.prepareStatement(
-          "INSERT INTO users (id, first_name, last_name, age) VALUES (?, ?, ?, ?)"
-      )) {
-        ps.setInt(1, user.getId());
-        ps.setString(2, user.getFirstName());
-        ps.setString(3, user.getLastName());
-        ps.setInt(4, user.getAge());
+    try (PreparedStatement ps = connection.prepareStatement(
+        "INSERT INTO users (id, first_name, last_name, age) VALUES (?, ?, ?, ?)"
+    )) {
+      ps.setInt(1, user.getId());
+      ps.setString(2, user.getFirstName());
+      ps.setString(3, user.getLastName());
+      ps.setInt(4, user.getAge());
 
-        ps.executeUpdate();
-      }
+      ps.executeUpdate();
     } catch (SQLException e) {
-      throw new RuntimeException("Couldn't create user");
+      throw new RuntimeException(e);
     }
   }
 
