@@ -1,21 +1,25 @@
 package sdb.app.api.service.impl;
 
 import sdb.app.api.data.dao.UserDao;
+import sdb.app.api.data.dao.impl.UserDaoImpl;
 import sdb.app.api.data.entity.user.UserEntity;
 import sdb.app.api.model.user.UserJson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import sdb.app.api.service.UserService;
+import sdb.app.config.Config;
 
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
-@Service
-public class UserServiceImpl {
+import static sdb.app.api.data.Databases.connection;
 
-/*  @Autowired
-  private UserDao userDao;
+@Service
+public class UserServiceImpl implements UserService{
+  private static final Config CFG = Config.getInstance();
+
+  private UserDao userDao = new UserDaoImpl(connection(CFG.postgresUrl()));
 
   @Override
   public void create(UserJson json) {
@@ -44,5 +48,5 @@ public class UserServiceImpl {
   public void update(int userId, UserJson user) {
     UserEntity userEntity = UserEntity.fromJson(user);
     userDao.update(userId, userEntity);
-  }*/
+  }
 }

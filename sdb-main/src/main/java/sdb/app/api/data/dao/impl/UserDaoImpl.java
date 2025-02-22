@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-//@Component
+@Component
 public class UserDaoImpl implements UserDao {
   private static final Config CFG = Config.getInstance();
   private final Connection connection;

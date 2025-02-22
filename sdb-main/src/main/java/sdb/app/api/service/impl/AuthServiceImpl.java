@@ -3,6 +3,7 @@ package sdb.app.api.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import sdb.app.api.data.dao.AuthDao;
+import sdb.app.api.data.dao.UserDao;
 import sdb.app.api.data.dao.impl.AuthDaoImpl;
 import sdb.app.api.data.dao.impl.UserDaoImpl;
 import sdb.app.api.data.entity.auth.RegisterEntity;
@@ -17,9 +18,15 @@ import static sdb.app.api.data.Databases.transaction;
 public class AuthServiceImpl implements AuthService {
   private static Config CFG = Config.getInstance();
 
+  @Autowired
+  private AuthDao authDao;
+
+  @Autowired
+  private UserDao userDao;
+
   @Override
-  public void register(RegisterJson json) {
-    transaction(connection -> {
+  public int register(RegisterJson json) {
+    return transaction(connection -> {
       AuthDaoImpl authDao = new AuthDaoImpl(connection);
       int id = authDao.register(RegisterEntity.fromJson(json));
 
@@ -31,6 +38,8 @@ public class AuthServiceImpl implements AuthService {
       UserDaoImpl userDao = new UserDaoImpl(connection);
       
       userDao.create(userEntity);
+
+      return id;
     }, CFG.postgresUrl());
   }
 

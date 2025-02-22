@@ -1,6 +1,7 @@
 package sdb.app.api.data.dao.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import sdb.app.api.data.dao.AuthDao;
 import sdb.app.api.data.dao.UserDao;
 import sdb.app.api.data.entity.auth.RegisterEntity;
@@ -9,7 +10,7 @@ import sdb.app.logging.Logger;
 
 import java.sql.*;
 
-//@Component
+@Component
 public class AuthDaoImpl implements AuthDao {
   private static final Config CFG = Config.getInstance();
   private static final Logger logger = new Logger();
@@ -19,9 +20,6 @@ public class AuthDaoImpl implements AuthDao {
   public AuthDaoImpl(Connection connection) {
     this.connection = connection;
   }
-
-  @Autowired
-  private UserDao userDao;
 
   @Override
   public int register(RegisterEntity entity) {

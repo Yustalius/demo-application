@@ -1,6 +1,8 @@
 package sdb.app.api.data;
 
+import lombok.SneakyThrows;
 import org.postgresql.ds.PGSimpleDataSource;
+import org.springframework.context.annotation.Bean;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -74,7 +76,8 @@ public class Databases {
     );
   }
 
-  public static Connection connection(String jdbcUrl) throws SQLException {
+  @SneakyThrows
+  public static Connection connection(String jdbcUrl) {
     return dataSource(jdbcUrl).getConnection();
   }
 }
