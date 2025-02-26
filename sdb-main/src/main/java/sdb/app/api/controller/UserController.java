@@ -28,11 +28,11 @@ public class UserController {
     return users;
   }
 
-  @GetMapping("/user/{id}")
+  @GetMapping("/user/{userId}")
   public ResponseEntity<UserJson> getUser(
       @PathVariable int id
   ) {
-    logger.info("Get user id = %s".formatted(id));
+    logger.info("Get user userId = %s".formatted(id));
     Optional<UserJson> userJson = userService.get(id);
 
     if (userJson.isEmpty()) {
@@ -41,11 +41,11 @@ public class UserController {
     return ResponseEntity.ok(userJson.get());
   }
 
-  @DeleteMapping("/user/{id}")
+  @DeleteMapping("/user/{userId}")
   public ResponseEntity<Void> deleteUser(
       @PathVariable int id
   ) {
-    logger.info("Delete user id = %s".formatted(id));
+    logger.info("Delete user userId = %s".formatted(id));
     Optional<UserJson> userJson = userService.get(id);
     if (userJson.isEmpty()) {
       return ResponseEntity.notFound().build();
@@ -61,11 +61,11 @@ public class UserController {
       @PathVariable int id,
       @Validated(UpdateValidationGroup.class) @RequestBody UserJson updateUser
   ) {
-    logger.info("Update user id = %s, %s".formatted(id, updateUser));
+    logger.info("Update user userId = %s, %s".formatted(id, updateUser));
     Optional<UserJson> user = userService.get(id);
 
     if (user.isEmpty()) {
-      logger.info("Not found user with id = " + id);
+      logger.info("Not found user with userId = " + id);
       return ResponseEntity.notFound().build();
     }
 

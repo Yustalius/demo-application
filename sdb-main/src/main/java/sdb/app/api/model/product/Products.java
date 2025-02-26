@@ -1,0 +1,8 @@
+package sdb.app.api.model.product;
+
+public enum Products {
+  NEGRONI,
+  APEROL,
+  LONG_ISLAND,
+  SUNRISE
+}

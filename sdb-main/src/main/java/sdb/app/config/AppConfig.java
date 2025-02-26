@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import sdb.app.api.data.Databases;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 
 @Configuration
@@ -13,5 +14,10 @@ public class AppConfig {
   @Bean(name = "dbConnection")
   public Connection connection() {
     return Databases.connection(CFG.postgresUrl());
+  }
+
+  @Bean(name = "dbDatasource")
+  public DataSource dataSource() {
+    return Databases.dataSource(CFG.postgresUrl());
   }
 }

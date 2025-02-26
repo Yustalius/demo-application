@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserDao {
-  void create(UserEntity user);
+  UserEntity create(UserEntity user);
 
   Optional<UserEntity> get(int id);
 

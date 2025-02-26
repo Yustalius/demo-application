@@ -34,8 +34,8 @@ public class AuthController {
     logger.info("Register user " + json);
     try {
       int id = authService.register(json);
+      logger.info("Successfully registered user id = ", id);
       Optional<UserJson> userJson = userService.get(id);
-      logger.info("Successfully registered user ", userJson.get());
       return ResponseEntity.ok(userJson.get());
     } catch (Exception e) {
       logger.error("Error registering user " + e.toString());

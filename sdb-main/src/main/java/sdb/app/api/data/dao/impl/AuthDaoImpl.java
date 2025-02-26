@@ -36,8 +36,8 @@ public class AuthDaoImpl implements AuthDao {
         if (rs.next()) {
           userId = rs.getObject("id", Integer.class);
         } else {
-          logger.error("Not found id in result set");
-          throw new SQLException("Can't find id in result set");
+          logger.error("Not found userId in result set");
+          throw new SQLException("Can't find userId in result set");
         }
       }
 

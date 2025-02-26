@@ -24,6 +24,15 @@ public class Logger {
     log(LogLevel.INFO, message + attachment.toString());
   }
 
+  public void warn(String message) {
+    log(LogLevel.WARN, message);
+  }
+
+  public <T> void warn(String message, T attachment) {
+    log(LogLevel.WARN, message + attachment.toString());
+  }
+
+
   public void error(String message) {
     log(LogLevel.ERROR, message);
   }

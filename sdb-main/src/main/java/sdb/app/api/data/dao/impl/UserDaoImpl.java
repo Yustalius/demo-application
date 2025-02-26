@@ -26,9 +26,10 @@ public class UserDaoImpl implements UserDao {
   }
 
   @Override
-  public void create(UserEntity user) {
+  public UserEntity create(UserEntity user) {
     try (PreparedStatement ps = connection.prepareStatement(
-        "INSERT INTO users (id, first_name, last_name, age) VALUES (?, ?, ?, ?)"
+        "INSERT INTO users (id, first_name, last_name, age) VALUES (?, ?, ?, ?)",
+        Statement.RETURN_GENERATED_KEYS
     )) {
       ps.setInt(1, user.getId());
       ps.setString(2, user.getFirstName());
@@ -36,6 +37,18 @@ public class UserDaoImpl implements UserDao {
       ps.setInt(4, user.getAge());
 
       ps.executeUpdate();
+
+      final int userId;
+      try (ResultSet rs = ps.getGeneratedKeys()) {
+        if (rs.next()) {
+          userId = rs.getObject("id", Integer.class);
+        } else {
+          throw new SQLException("Can't find id in result set");
+        }
+      }
+
+      user.setId(userId);
+      return user;
     } catch (SQLException e) {
       throw new RuntimeException(e);
     }
@@ -120,7 +133,7 @@ public class UserDaoImpl implements UserDao {
         ps.executeUpdate();
       }
     } catch (SQLException e) {
-      throw new RuntimeException("Couldn't create user");
+      throw new RuntimeException("Couldn't update user", e);
     }
   }
 

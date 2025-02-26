@@ -1,11 +1,10 @@
 package sdb.app.api.data.entity.user;
 
-import sdb.app.api.data.entity.auth.RegisterEntity;
-import sdb.app.api.model.user.UserJson;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
+import sdb.app.api.model.user.UserJson;
 
 @Getter
 @Setter
