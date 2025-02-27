@@ -6,11 +6,12 @@ import org.junit.platform.commons.support.AnnotationSupport;
 import sdb.config.Config;
 import sdb.data.entity.auth.RegisterEntity;
 import sdb.jupiter.annotation.User;
+import sdb.model.TestData;
 import sdb.model.user.UserDTO;
 import sdb.service.impl.AuthDbClient;
 
 import static sdb.data.Databases.dataSource;
-import static sdb.utils.RandomDataUtils.*;
+import static sdb.utils.RandomUtils.*;
 
 public class UserExtension implements BeforeEachCallback, ParameterResolver {
   private static final Config CFG = Config.getInstance();
@@ -32,7 +33,11 @@ public class UserExtension implements BeforeEachCallback, ParameterResolver {
 
           context.getStore(NAMESPACE).put(
               context.getUniqueId(),
-              user
+              user.addTestData(
+                  new TestData(
+                      entity.getUsername(),
+                      entity.getPassword()
+                  ))
           );
         });
   }

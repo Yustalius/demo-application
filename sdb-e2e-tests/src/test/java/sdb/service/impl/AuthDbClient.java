@@ -11,7 +11,7 @@ import sdb.data.dao.impl.AuthDaoSpringImpl;
 import sdb.data.dao.impl.UserDaoSpringImpl;
 import sdb.data.entity.auth.RegisterEntity;
 import sdb.data.entity.user.UserEntity;
-import sdb.model.auth.RegisterJson;
+import sdb.model.auth.RegisterDTO;
 import sdb.model.user.UserDTO;
 
 import javax.sql.DataSource;
@@ -42,7 +42,7 @@ public class AuthDbClient {
     return UserDTO.fromEntity(user);
   }
 
-  public UserDTO login(RegisterJson json) {
+  public UserDTO login(RegisterDTO json) {
     return null;
   }
 }

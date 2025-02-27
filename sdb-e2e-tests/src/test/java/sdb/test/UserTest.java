@@ -45,7 +45,8 @@ public class UserTest {
         null,
         faker.name().firstName(),
         faker.name().lastName(),
-        faker.number().numberBetween(18, 100)
+        faker.number().numberBetween(18, 100),
+        null
     );
 
     userClient.updateUser(user.id(), updateUserRequest);

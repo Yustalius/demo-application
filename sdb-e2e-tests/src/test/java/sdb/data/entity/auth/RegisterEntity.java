@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
-import sdb.model.auth.RegisterJson;
+import sdb.model.auth.RegisterDTO;
 
 @Getter
 @Setter
@@ -19,7 +19,7 @@ public class RegisterEntity {
   private String lastName;
   private Integer age;
 
-  public static @NonNull RegisterEntity fromJson(RegisterJson json) {
+  public static @NonNull RegisterEntity fromJson(RegisterDTO json) {
     RegisterEntity entity = new RegisterEntity();
     entity.setUsername(json.username());
     entity.setPassword(json.password());

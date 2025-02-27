@@ -1,17 +1,17 @@
 package sdb.service;
 
-import sdb.data.entity.auth.RegisterEntity;
-import sdb.model.auth.RegisterJson;
+import sdb.model.auth.RegisterDTO;
 import sdb.model.user.UserDTO;
+import sdb.service.impl.AuthApiClient;
 
 public interface AuthClient {
 
-/*  static AuthClient getInstance() {
+  static AuthClient getInstance() {
     return new AuthApiClient();
-  }*/
+  }
 
-  UserDTO createNewUser(RegisterEntity json);
+  UserDTO createNewUser(RegisterDTO json);
 
-  UserDTO login(RegisterJson json);
+  UserDTO login(RegisterDTO json);
 
 }

@@ -35,7 +35,7 @@ public class PurchaseExtension implements BeforeEachCallback, ParameterResolver 
             );
 
             final String username = user != null
-                ? usernameByUserId(user.id())
+                ? user.testData().username()
                 : userAnno.username();
 
             final List<PurchaseJson> createdPurchases = new ArrayList<>();
@@ -49,6 +49,7 @@ public class PurchaseExtension implements BeforeEachCallback, ParameterResolver 
 
               purchaseClient.createPurchase(purchase);
               createdPurchases.add(PurchaseJson.fromEntity(purchase));
+              user.testData().purchases().addAll(createdPurchases);
             }
 
           }
