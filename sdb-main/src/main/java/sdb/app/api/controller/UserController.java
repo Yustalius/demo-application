@@ -28,7 +28,7 @@ public class UserController {
     return users;
   }
 
-  @GetMapping("/user/{userId}")
+  @GetMapping("/user/{id}")
   public ResponseEntity<UserJson> getUser(
       @PathVariable int id
   ) {

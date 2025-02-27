@@ -1,6 +1,7 @@
 package sdb.app.api.data.dao.impl;
 
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -8,9 +9,11 @@ import org.springframework.stereotype.Component;
 import sdb.app.api.data.dao.UserDao;
 import sdb.app.api.data.entity.user.UserEntity;
 import sdb.app.api.data.mapper.UserEntityRowMapper;
+import sdb.app.ex.UserNotFoundException;
+import sdb.app.logging.Logger;
+
 import javax.sql.DataSource;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,9 +22,11 @@ import java.util.Optional;
 @Component
 public class UserDaoSpringImpl implements UserDao {
   private final JdbcTemplate jdbcTemplate;
+  private final Logger logger;
 
   public UserDaoSpringImpl(@Qualifier("dbDatasource") DataSource dataSource) {
     this.jdbcTemplate = new JdbcTemplate(dataSource);
+    this.logger = new Logger();
   }
 
   @Override
@@ -46,13 +51,18 @@ public class UserDaoSpringImpl implements UserDao {
 
   @Override
   public Optional<UserEntity> get(int id) {
-    return Optional.ofNullable(
-        jdbcTemplate.queryForObject(
-            "SELECT * FROM \"users\" WHERE id = ?",
-            UserEntityRowMapper.instance,
-            id
-        )
-    );
+    try {
+      return Optional.ofNullable(
+          jdbcTemplate.queryForObject(
+              "SELECT * FROM \"users\" WHERE id = ?",
+              UserEntityRowMapper.instance,
+              id
+          )
+      );
+    } catch (EmptyResultDataAccessException e) {
+      logger.warn("Not found user id = %s".formatted(id));
+      throw new UserNotFoundException("Not found user id = %s".formatted(id));
+    }
   }
 
   @Override

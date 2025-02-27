@@ -8,7 +8,7 @@ public interface Config {
 
   String postgresUrl();
 
-  String userApiUrl();
+  String coreUrl();
 
   String postgresUsername();
 

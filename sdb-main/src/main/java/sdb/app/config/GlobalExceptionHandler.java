@@ -1,12 +1,15 @@
 package sdb.app.config;
 
+import org.postgresql.util.PSQLException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.postgresql.util.PSQLException;
 import sdb.app.api.model.error.ErrorResponse;
+import sdb.app.ex.UserNotFoundException;
 import sdb.app.logging.Logger;
+
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -22,10 +25,20 @@ public class GlobalExceptionHandler {
               ex.getMessage()
           ));
     }
+
     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
         .body(new ErrorResponse(
             "UNKNOWN",
             ex.getMessage()
             ));
+  }
+
+  @ExceptionHandler(UserNotFoundException.class)
+  public ResponseEntity<ErrorResponse> handleUserNotFoundException(UserNotFoundException ex) {
+    return ResponseEntity.status(NOT_FOUND)
+        .body(new ErrorResponse(
+            "USER_NOT_FOUND",
+            ex.getMessage()
+        ));
   }
 }

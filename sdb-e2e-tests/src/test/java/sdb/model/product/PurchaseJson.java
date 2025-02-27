@@ -1,10 +1,12 @@
 package sdb.model.product;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import sdb.data.entity.product.PurchaseEntity;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public record PurchaseJson(
     Integer purchaseId,
     Integer userId,

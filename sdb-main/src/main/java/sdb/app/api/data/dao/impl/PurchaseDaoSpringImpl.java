@@ -23,6 +23,7 @@ public class PurchaseDaoSpringImpl implements PurchaseDao {
     this.dataSource = dataSource;
   }
 
+  // todo переписать на единственный метод, который возвращает готовую покупку и возвращать список добавленных
   @Override
   public void createPurchase(PurchaseEntity... purchases) {
     JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);

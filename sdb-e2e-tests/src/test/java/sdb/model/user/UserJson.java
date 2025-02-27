@@ -1,9 +1,11 @@
 package sdb.model.user;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public record UserJson(
     @JsonProperty("id")
     Integer id,

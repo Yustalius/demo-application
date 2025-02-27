@@ -29,7 +29,7 @@ enum LocalConfig implements Config {
   }
 
   @Override
-  public String userApiUrl() {
+  public String coreUrl() {
     return apiConfig.get("user-api-url");
   }
 
