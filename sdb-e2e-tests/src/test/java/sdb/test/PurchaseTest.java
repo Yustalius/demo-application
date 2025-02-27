@@ -1,9 +1,11 @@
 package sdb.test;
 
 import org.junit.jupiter.api.Test;
+import sdb.jupiter.annotation.Purchase;
+import sdb.jupiter.annotation.User;
 import sdb.model.product.Products;
 import sdb.model.product.PurchaseJson;
-import sdb.model.user.UserJson;
+import sdb.model.user.UserDTO;
 import sdb.service.PurchaseClient;
 import sdb.service.UserClient;
 
@@ -13,12 +15,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class PurchaseTest {
 
-  private final UserClient userClient = UserClient.getInstance();
   private final PurchaseClient purchaseClient = PurchaseClient.getInstance();
 
   @Test
-  void addPurchaseTest() {
+  @User
+  void addPurchaseTest(UserDTO user) {
+    purchaseClient.createPurchase(new PurchaseJson(null, user.id(), Products.LONG_ISLAND, 200));
 
+    PurchaseJson createdPurchase = purchaseClient.getUserPurchases(user.id()).get(0);
+    assertThat(createdPurchase.purchaseId()).isNotNull();
+    assertThat(createdPurchase.productName()).isEqualTo(Products.LONG_ISLAND);
   }
 
   @Test
@@ -27,8 +33,14 @@ public class PurchaseTest {
   }
 
   @Test
-  void getPurchaseTest() {
-    List<PurchaseJson> purchases = purchaseClient.getPurchases();
+  @User(
+      purchases = @Purchase(
+          product = Products.NEGRONI,
+          price = 200
+      )
+  )
+  void getPurchaseTest(UserDTO user) {
+    List<PurchaseJson> purchases = purchaseClient.getUserPurchases(user.id());
     PurchaseJson randomPurchase = purchases.stream()
         .findAny()
         .orElseThrow();
@@ -38,20 +50,15 @@ public class PurchaseTest {
   }
 
   @Test
-  void getUserPurchasesTest() {
-    List<UserJson> allUsers = userClient.getAllUsers();
-    UserJson randomUser = allUsers.stream()
-        .findAny()
-        .orElseThrow();
-    purchaseClient.createPurchase(
-        new PurchaseJson(
-            null,
-            randomUser.id(),
-            Products.LONG_ISLAND,
-            200
-        ));
+  @User(
+      purchases = @Purchase(
+          product = Products.APEROL,
+          price = 200
+      )
+  )
+  void getUserPurchasesTest(UserDTO user) {
+    List<PurchaseJson> userPurchases = purchaseClient.getUserPurchases(user.id());
 
-    List<PurchaseJson> userPurchases = purchaseClient.getUserPurchases(randomUser.id());
     assertThat(userPurchases).isNotEmpty();
   }
 }

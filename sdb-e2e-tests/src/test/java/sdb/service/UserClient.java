@@ -1,6 +1,6 @@
 package sdb.service;
 
-import sdb.model.user.UserJson;
+import sdb.model.user.UserDTO;
 import sdb.service.impl.UserApiClient;
 
 import java.util.List;
@@ -11,14 +11,14 @@ public interface UserClient {
     return new UserApiClient();
   }
 
-  List<UserJson> getAllUsers();
+  List<UserDTO> getAllUsers();
 
-  UserJson getUser(int id);
+  UserDTO getUser(int id);
 
   void deleteUser(int id);
 
-  UserJson updateUser(
+  UserDTO updateUser(
       int id,
-      UserJson user
+      UserDTO user
   );
 }

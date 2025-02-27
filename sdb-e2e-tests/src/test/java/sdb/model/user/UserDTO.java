@@ -3,10 +3,12 @@ package sdb.model.user;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.NonNull;
 import lombok.SneakyThrows;
+import sdb.data.entity.user.UserEntity;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public record UserJson(
+public record UserDTO(
     @JsonProperty("id")
     Integer id,
     @JsonProperty("firstName")
@@ -16,14 +18,14 @@ public record UserJson(
     @JsonProperty("age")
     Integer age
 ) {
-/*  public static UserJson fromEntity(UserEntity user) {
-    return new UserJson(
+  public static UserDTO fromEntity(@NonNull UserEntity user) {
+    return new UserDTO(
         user.getId(),
         user.getFirstName(),
         user.getLastName(),
         user.getAge()
     );
-  }*/
+  }
 
   @SneakyThrows
   @Override

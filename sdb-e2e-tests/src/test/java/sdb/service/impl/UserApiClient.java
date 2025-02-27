@@ -5,7 +5,7 @@ import lombok.NonNull;
 import retrofit2.Response;
 import sdb.api.UserApi;
 import sdb.api.core.RestClient;
-import sdb.model.user.UserJson;
+import sdb.model.user.UserDTO;
 import sdb.service.UserClient;
 
 import java.io.IOException;
@@ -23,8 +23,8 @@ public class UserApiClient extends RestClient implements UserClient {
   }
 
   @Override
-  public List<UserJson> getAllUsers() {
-    Response<List<UserJson>> response;
+  public List<UserDTO> getAllUsers() {
+    Response<List<UserDTO>> response;
     try {
       response = userApi.getAllUsers().execute();
     } catch (IOException e) {
@@ -36,8 +36,8 @@ public class UserApiClient extends RestClient implements UserClient {
 
   @Override
   @Nullable
-  public UserJson getUser(int id) {
-    Response<UserJson> response;
+  public UserDTO getUser(int id) {
+    Response<UserDTO> response;
     try {
       response = userApi.getUser(id).execute();
     } catch (IOException e) {
@@ -64,8 +64,8 @@ public class UserApiClient extends RestClient implements UserClient {
   }
 
   @Override
-  public UserJson updateUser(int id, @NonNull UserJson user) {
-    Response<UserJson> response;
+  public UserDTO updateUser(int id, @NonNull UserDTO user) {
+    Response<UserDTO> response;
     try {
       response = userApi.updateUser(id, user).execute();
     } catch (IOException e) {

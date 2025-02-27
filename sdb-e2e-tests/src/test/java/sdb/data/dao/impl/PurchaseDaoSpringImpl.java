@@ -1,25 +1,23 @@
-package sdb.app.api.data.dao.impl;
+package sdb.data.dao.impl;
 
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Component;
-import sdb.app.api.data.dao.PurchaseDao;
-import sdb.app.api.data.entity.product.PurchaseEntity;
-import sdb.app.api.data.mapper.PurchaseEntityRowMapper;
+import sdb.data.dao.PurchaseDao;
+import sdb.data.entity.product.PurchaseEntity;
+import sdb.data.mapper.PurchaseEntityRowMapper;
 
 import javax.sql.DataSource;
-import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
-@Component
 public class PurchaseDaoSpringImpl implements PurchaseDao {
 
   private final DataSource dataSource;
 
-  public PurchaseDaoSpringImpl(@Qualifier("dbDatasource") DataSource dataSource) {
+  public PurchaseDaoSpringImpl(DataSource dataSource) {
     this.dataSource = dataSource;
   }
 
@@ -27,7 +25,7 @@ public class PurchaseDaoSpringImpl implements PurchaseDao {
   @Override
   public void createPurchase(PurchaseEntity... purchases) {
     JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-    jdbcTemplate.batchUpdate(
+    int[] ints = jdbcTemplate.batchUpdate(
         "INSERT INTO purchases (user_id, product, price) VALUES (?, ?, ?)",
         new BatchPreparedStatementSetter() {
           @Override

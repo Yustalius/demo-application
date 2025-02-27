@@ -2,7 +2,8 @@ package sdb.test;
 
 import net.datafaker.Faker;
 import org.junit.jupiter.api.Test;
-import sdb.model.user.UserJson;
+import sdb.jupiter.annotation.User;
+import sdb.model.user.UserDTO;
 import sdb.service.UserClient;
 
 import java.util.List;
@@ -16,51 +17,40 @@ public class UserTest {
 
   @Test
   void getAllUsersTest() {
-    List<UserJson> allUsers = userClient.getAllUsers();
+    List<UserDTO> allUsers = userClient.getAllUsers();
 
     assertThat(allUsers).isNotEmpty();
   }
 
   @Test
-  void getUserInfoTest() {
-    List<UserJson> allUsers = userClient.getAllUsers();
-    UserJson randomUser = allUsers.stream()
-        .findAny()
-        .orElseThrow();
+  @User
+  void getUserInfoTest(UserDTO user) {
+    UserDTO userInfo = userClient.getUser(user.id());
 
-    UserJson user = userClient.getUser(randomUser.id());
-
-    assertThat(user.id()).isEqualTo(randomUser.id());
+    assertThat(userInfo.id()).isEqualTo(user.id());
   }
 
   @Test
-  void deleteUserTest() {
-    List<UserJson> allUsers = userClient.getAllUsers();
-    UserJson randomUser = allUsers.stream()
-        .findAny()
-        .orElseThrow();
+  @User
+  void deleteUserTest(UserDTO user) {
+    userClient.deleteUser(user.id());
 
-    userClient.deleteUser(randomUser.id());
-
-    assertThat(userClient.getUser(randomUser.id())).isNull();
+    assertThat(userClient.getUser(user.id())).isNull();
   }
 
   @Test
-  void updateUserTest() {
-    List<UserJson> allUsers = userClient.getAllUsers();
-    UserJson randomUser = allUsers.stream()
-        .findAny()
-        .orElseThrow();
-    UserJson updateUserRequest = new UserJson(
+  @User
+  void updateUserTest(UserDTO user) {
+    UserDTO updateUserRequest = new UserDTO(
         null,
         faker.name().firstName(),
         faker.name().lastName(),
-        30
+        faker.number().numberBetween(18, 100)
     );
 
-    userClient.updateUser(randomUser.id(), updateUserRequest);
+    userClient.updateUser(user.id(), updateUserRequest);
 
-    UserJson updatedUser = userClient.getUser(randomUser.id());
+    UserDTO updatedUser = userClient.getUser(user.id());
     assertThat(updatedUser.firstName()).isEqualTo(updateUserRequest.firstName());
     assertThat(updatedUser.lastName()).isEqualTo(updateUserRequest.lastName());
     assertThat((updatedUser.age())).isEqualTo(updateUserRequest.age());

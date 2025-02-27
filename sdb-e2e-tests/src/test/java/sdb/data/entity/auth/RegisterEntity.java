@@ -1,5 +1,6 @@
 package sdb.data.entity.auth;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -9,7 +10,9 @@ import sdb.model.auth.RegisterJson;
 @Getter
 @Setter
 @ToString
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class RegisterEntity {
+  private Integer id;
   private String username;
   private String password;
   private String firstName;

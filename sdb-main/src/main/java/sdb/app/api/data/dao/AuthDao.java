@@ -1,10 +1,11 @@
 package sdb.app.api.data.dao;
 
 import sdb.app.api.data.entity.auth.RegisterEntity;
+import sdb.app.api.data.entity.user.UserEntity;
 
 public interface AuthDao {
 
-  int register(RegisterEntity entity);
+  UserEntity register(RegisterEntity entity);
 
-  void login();
+  UserEntity login(RegisterEntity entity);
 }

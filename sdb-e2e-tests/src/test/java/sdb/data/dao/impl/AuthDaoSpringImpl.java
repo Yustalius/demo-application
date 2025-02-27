@@ -1,32 +1,24 @@
-package sdb.app.api.data.dao.impl;
+package sdb.data.dao.impl;
 
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Component;
-import sdb.app.api.data.dao.AuthDao;
-import sdb.app.api.data.entity.auth.RegisterEntity;
-import sdb.app.api.data.entity.user.UserEntity;
-import sdb.app.api.data.mapper.UserEntityRowMapper;
-import sdb.app.ex.UserNotFoundException;
-import sdb.app.logging.Logger;
+import sdb.data.dao.AuthDao;
+import sdb.data.entity.auth.RegisterEntity;
+import sdb.data.entity.user.UserEntity;
+import sdb.data.mapper.UserEntityRowMapper;
 
 import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
-import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
 
-@Component
 public class AuthDaoSpringImpl implements AuthDao {
-  private final Logger logger = new Logger();
-
   private final JdbcTemplate jdbcTemplate;
 
-  public AuthDaoSpringImpl(@Qualifier("dbDatasource") DataSource dataSource) {
+  public AuthDaoSpringImpl(DataSource dataSource) {
     this.jdbcTemplate = new JdbcTemplate(dataSource);
   }
 
@@ -54,21 +46,16 @@ public class AuthDaoSpringImpl implements AuthDao {
 
   @Override
   public UserEntity login(RegisterEntity entity) {
-    try {
-      return jdbcTemplate.queryForObject(
-          """
-              SELECT users.id, users.first_name, users.last_name, users.age 
-              FROM users 
-              JOIN user_creds uc ON users.id = uc.id 
-              WHERE uc.username = ? AND uc.pass = ?
-              """,
-          UserEntityRowMapper.instance,
-          entity.getUsername(),
-          entity.getPassword()
-      );
-    } catch (EmptyResultDataAccessException e) {
-      logger.warn("Not found user ", entity);
-      throw new UserNotFoundException("Not found user %s".formatted(entity));
-    }
+    return jdbcTemplate.queryForObject(
+        """
+            SELECT users.id, users.first_name, users.last_name, users.age 
+            FROM users 
+            JOIN user_creds uc ON users.id = uc.id 
+            WHERE uc.username = ? AND uc.pass = ?
+            """,
+        UserEntityRowMapper.instance,
+        entity.getUsername(),
+        entity.getPassword()
+    );
   }
 }

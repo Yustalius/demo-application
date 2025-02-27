@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
-import sdb.model.user.UserJson;
+import sdb.model.user.UserDTO;
 
 @Getter
 @Setter
@@ -15,7 +15,7 @@ public class UserEntity {
   private String lastName;
   private Integer age;
 
-  public static @NonNull UserEntity fromJson(UserJson json) {
+  public static @NonNull UserEntity fromJson(UserDTO json) {
     UserEntity user = new UserEntity();
     user.setId(json.id());
     user.setFirstName(json.firstName());
