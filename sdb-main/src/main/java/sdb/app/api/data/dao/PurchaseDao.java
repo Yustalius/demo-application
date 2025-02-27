@@ -3,14 +3,15 @@ package sdb.app.api.data.dao;
 import sdb.app.api.data.entity.product.PurchaseEntity;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface PurchaseDao {
 
   void createPurchase(PurchaseEntity... purchases);
 
-  List<PurchaseEntity> getPurchases();
+  Optional<List<PurchaseEntity>> getPurchases();
 
-  PurchaseEntity getPurchase(int purchaseId);
+  Optional<PurchaseEntity> getPurchase(int purchaseId);
 
-  PurchaseEntity getUserPurchases(int userId);
+  Optional<List<PurchaseEntity>> getUserPurchases(int userId);
 }

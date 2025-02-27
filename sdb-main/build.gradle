@@ -38,6 +38,10 @@ dependencies {
     implementation "com.atomikos:transactions-jta:${atomicosVersion}:jakarta"
     implementation "com.atomikos:transactions-hibernate4:${atomicosVersion}:jakarta"
     implementation "com.atomikos:transactions-jdbc:${atomicosVersion}"
+
+    // TEST
+    testImplementation 'net.datafaker:datafaker:1.7.0'
+    testImplementation 'org.assertj:assertj-core:3.16.1'
 }
 
 test {

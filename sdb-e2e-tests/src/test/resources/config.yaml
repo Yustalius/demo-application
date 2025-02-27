@@ -1,0 +1,7 @@
+sql:
+  postgres-url: "jdbc:postgresql://127.0.0.1:5432/postgres"
+  postgres-username: "postgres"
+  postgres-password: 1234
+
+api:
+  user-api-url: "http://127.0.0.1:8080"

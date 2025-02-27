@@ -8,7 +8,9 @@ import sdb.app.api.model.product.PurchaseJson;
 import sdb.app.api.service.PurchaseService;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class PurchaseServiceImpl implements PurchaseService {
@@ -26,17 +28,34 @@ public class PurchaseServiceImpl implements PurchaseService {
   }
 
   @Override
-  public List<PurchaseEntity> getPurchases() {
-    return purchaseDao.getPurchases();
+  public List<PurchaseJson> getPurchases() {
+    Optional<List<PurchaseEntity>> purchases = purchaseDao.getPurchases();
+
+    if (purchases.isEmpty()) {
+      return Collections.emptyList();
+    }
+
+    return purchases.get().stream()
+        .map(PurchaseJson::fromEntity)
+        .toList();
   }
 
   @Override
-  public PurchaseEntity getPurchase(int purchaseId) {
-    return purchaseDao.getPurchase(purchaseId);
+  public Optional<PurchaseJson> getPurchase(int purchaseId) {
+    Optional<PurchaseEntity> purchase = purchaseDao.getPurchase(purchaseId);
+
+    return purchase.map(PurchaseJson::fromEntity);
   }
 
   @Override
-  public PurchaseEntity getUserPurchases(int userId) {
-    return purchaseDao.getUserPurchases(userId);
-  }
+  public List<PurchaseJson> getUserPurchases(int userId) {
+    Optional<List<PurchaseEntity>> userPurchases = purchaseDao.getUserPurchases(userId);
+
+    if (userPurchases.isEmpty()) {
+      return Collections.emptyList();
+    }
+
+    return userPurchases.get().stream()
+        .map(PurchaseJson::fromEntity)
+        .toList();  }
 }

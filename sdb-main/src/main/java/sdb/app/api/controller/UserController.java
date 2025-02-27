@@ -41,7 +41,7 @@ public class UserController {
     return ResponseEntity.ok(userJson.get());
   }
 
-  @DeleteMapping("/user/{userId}")
+  @DeleteMapping("/user/{id}")
   public ResponseEntity<Void> deleteUser(
       @PathVariable int id
   ) {

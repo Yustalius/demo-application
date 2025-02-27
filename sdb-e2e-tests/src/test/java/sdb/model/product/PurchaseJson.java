@@ -1,9 +1,9 @@
-package sdb.app.api.model.product;
+package sdb.model.product;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
-import sdb.app.api.data.entity.product.PurchaseEntity;
+import sdb.data.entity.product.PurchaseEntity;
 
 public record PurchaseJson(
     Integer purchaseId,
