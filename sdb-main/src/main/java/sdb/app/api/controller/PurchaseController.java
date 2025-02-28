@@ -31,9 +31,9 @@ public class PurchaseController {
   private PurchaseService purchaseService;
 
   @PostMapping("/add")
-  public void purchase(@RequestBody PurchaseJson... purchaseJsons) throws JsonProcessingException {
+  public List<PurchaseEntity> purchase(@RequestBody PurchaseJson... purchaseJsons) throws JsonProcessingException {
       logger.info("Creating purchases: {}", mapper.writeValueAsString(purchaseJsons));
-      purchaseService.createPurchase(purchaseJsons);
+      return purchaseService.createPurchase(purchaseJsons);
   }
 
   @GetMapping("/user/{id}")

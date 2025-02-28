@@ -7,10 +7,7 @@ import sdb.app.api.data.entity.product.PurchaseEntity;
 import sdb.app.api.model.product.PurchaseJson;
 import sdb.app.api.service.PurchaseService;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Component
 public class PurchaseServiceImpl implements PurchaseService {
@@ -19,12 +16,17 @@ public class PurchaseServiceImpl implements PurchaseService {
   PurchaseDao purchaseDao;
 
   @Override
-  public void createPurchase(PurchaseJson... purchases) {
+  public List<PurchaseEntity> createPurchase(PurchaseJson... purchases) {
     PurchaseEntity[] purchaseEntities = Arrays.stream(purchases)
         .map(PurchaseEntity::fromJson)
         .toArray(PurchaseEntity[]::new);
 
-    purchaseDao.createPurchase(purchaseEntities);
+    final List<PurchaseEntity> createdPurchases = new ArrayList<>();
+    for (PurchaseEntity purchaseEntity : purchaseEntities) {
+      createdPurchases.add(purchaseDao.createPurchase(purchaseEntity));
+    }
+
+    return createdPurchases;
   }
 
   @Override

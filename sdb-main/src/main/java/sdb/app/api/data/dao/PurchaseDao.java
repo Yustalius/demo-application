@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface PurchaseDao {
 
-  void createPurchase(PurchaseEntity... purchases);
+  PurchaseEntity createPurchase(PurchaseEntity purchase);
 
   Optional<List<PurchaseEntity>> getPurchases();
 

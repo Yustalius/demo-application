@@ -1,9 +1,9 @@
 package sdb.app.api.data.dao.impl;
 
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 import sdb.app.api.data.dao.PurchaseDao;
 import sdb.app.api.data.entity.product.PurchaseEntity;
@@ -17,6 +17,7 @@ import java.util.Optional;
 @Component
 public class PurchaseDaoSpringImpl implements PurchaseDao {
 
+  //todo вынести JdbcTemplate в переменную
   private final DataSource dataSource;
 
   public PurchaseDaoSpringImpl(@Qualifier("dbDatasource") DataSource dataSource) {
@@ -25,25 +26,25 @@ public class PurchaseDaoSpringImpl implements PurchaseDao {
 
   // todo переписать на единственный метод, который возвращает готовую покупку и возвращать список добавленных
   @Override
-  public void createPurchase(PurchaseEntity... purchases) {
+  public PurchaseEntity createPurchase(PurchaseEntity purchase) {
     JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-    jdbcTemplate.batchUpdate(
-        "INSERT INTO purchases (user_id, product, price, \"timestamp\") VALUES (?, ?, ?, ?)",
-        new BatchPreparedStatementSetter() {
-          @Override
-          public void setValues(PreparedStatement ps, int i) throws SQLException {
-            ps.setObject(1, purchases[i].getUserId());
-            ps.setString(2, purchases[i].getProduct());
-            ps.setInt(3, purchases[i].getPrice());
-            ps.setLong(4, System.currentTimeMillis());
-          }
+    KeyHolder keyHolder = new GeneratedKeyHolder();
+    jdbcTemplate.update(connection -> {
+      PreparedStatement ps = connection.prepareStatement(
+          "INSERT INTO purchases (user_id, product, price, \"timestamp\") VALUES (?, ?, ?, ?)",
+          Statement.RETURN_GENERATED_KEYS
+      );
+      ps.setObject(1, purchase.getUserId());
+      ps.setString(2, purchase.getProduct());
+      ps.setInt(3, purchase.getPrice());
+      ps.setLong(4, System.currentTimeMillis());
+      return ps;
+    }, keyHolder);
 
-          @Override
-          public int getBatchSize() {
-            return purchases.length;
-          }
-        }
-    );
+    purchase.setPurchaseId((Integer) keyHolder.getKeys().get("purchase_id"));
+    purchase.setTimestamp((Long) keyHolder.getKeys().get("timestamp"));
+
+    return purchase;
   }
 
   @Override
