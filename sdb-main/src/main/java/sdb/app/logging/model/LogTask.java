@@ -1,6 +1,6 @@
 package sdb.app.logging.model;
 
-public record Log(
+public record LogTask(
     String timestamp,
     LogLevel logLevel,
     String path,

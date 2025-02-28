@@ -1,6 +1,6 @@
 package sdb.app.logging.api;
 
-import sdb.app.logging.model.Log;
+import sdb.app.logging.model.LogTask;
 import sdb.app.logging.model.LogLevel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,12 +24,9 @@ public class LogApiClient {
     logApi = retrofit.create(LogApi.class);
   }
 
-  public void sendLog(String timestamp, LogLevel logLevel, String path, String message) {
-    Log logRequest = new Log(timestamp, logLevel, path, message);
-
-    Call<Void> call = logApi.sendLog(logRequest);
+  public void sendLog(LogTask logRequest) {
     try {
-      call.execute();
+      logApi.sendLog(logRequest).execute();
     } catch (IOException e) {
       logger.error("Failed to send log: {}", e.getMessage());
     }

@@ -2,18 +2,22 @@ package sdb.app.logging;
 
 import sdb.app.logging.api.LogApiClient;
 import sdb.app.logging.model.LogLevel;
+import sdb.app.logging.model.LogTask;
+import sdb.app.logging.utils.LogWorker;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import static sdb.app.logging.utils.LoggerUtils.getCurrentTimestamp;
 import static sdb.app.logging.utils.LoggerUtils.getPath;
 
 public class Logger {
-  LogApiClient logClient;
+  private final LogWorker logWorker;
 
   public Logger() {
-    this.logClient = new LogApiClient();
+    this.logWorker = new LogWorker();
   }
 
   public void info(String message) {
@@ -32,7 +36,6 @@ public class Logger {
     log(LogLevel.WARN, message + attachment.toString());
   }
 
-
   public void error(String message) {
     log(LogLevel.ERROR, message);
   }
@@ -42,10 +45,11 @@ public class Logger {
   }
 
   private void log(LogLevel level, String message) {
-    logClient.sendLog(
+    logWorker.enqueueLog(new LogTask(
         getCurrentTimestamp(),
         level,
         getPath(),
-        message);
+        message
+    ));
   }
 }
