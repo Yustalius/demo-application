@@ -4,4 +4,5 @@ sql:
   postgres-password: 1234
 
 api:
-  user-api-url: "http://127.0.0.1:8080/"
+  core-url: "http://127.0.0.1:8080/"
+  logging-url: "http://127.0.0.1:8082/"

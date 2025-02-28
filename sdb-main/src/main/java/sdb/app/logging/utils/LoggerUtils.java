@@ -25,11 +25,11 @@ public class LoggerUtils {
     if (parts.length <= 1) return stackTrace;
 
     StringBuilder result = new StringBuilder();
-    for (int i = 0; i < parts.length - 2; i++) {
+    for (int i = 0; i < parts.length - 1; i++) {
       result.append(parts[i].charAt(0)).append(".");
     }
 
-    for (int i = parts.length - 2;  i < parts.length; i++) {
+    for (int i = parts.length - 1;  i < parts.length; i++) {
       result.append(parts[i]).append(".");
     }
 

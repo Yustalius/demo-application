@@ -1,28 +1,24 @@
-package sdb.app.logging.api;
+package sdb.service.impl;
 
-import sdb.app.logging.model.LogTask;
-import sdb.app.logging.model.LogLevel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
+import sdb.api.AuthApi;
+import sdb.api.LogApi;
+import sdb.api.core.RestClient;
+import sdb.model.log.LogTask;
 
 import java.io.IOException;
 import java.util.List;
 
-public class LogApiClient {
+public class LogApiClient extends RestClient {
   private final LogApi logApi;
-
   private static final Logger logger = LoggerFactory.getLogger(LogApiClient.class);
 
   public LogApiClient() {
-    Retrofit retrofit = new Retrofit.Builder()
-        .baseUrl("http://127.0.0.1:8082/")
-        .addConverterFactory(JacksonConverterFactory.create())
-        .build();
-
-    logApi = retrofit.create(LogApi.class);
+    super(CFG.loggingUrl());
+    this.logApi = create(LogApi.class);
   }
 
   public void sendLog(List<LogTask> logRequests) {

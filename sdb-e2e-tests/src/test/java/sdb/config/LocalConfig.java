@@ -30,7 +30,12 @@ enum LocalConfig implements Config {
 
   @Override
   public String coreUrl() {
-    return apiConfig.get("user-api-url");
+    return apiConfig.get("core-url");
+  }
+
+  @Override
+  public String loggingUrl() {
+    return apiConfig.get("logging-url");
   }
 
   @Override

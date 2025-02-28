@@ -1,9 +1,9 @@
-package sdb.app.logging.api;
+package sdb.api;
 
-import sdb.app.logging.model.LogTask;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
+import sdb.model.log.LogTask;
 
 import java.util.List;
 

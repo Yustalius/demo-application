@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 public class LogController {
 
@@ -15,7 +17,7 @@ public class LogController {
 
   @PostMapping("/log")
   public void makeLog(
-      @RequestBody Log logEvent) {
+      @RequestBody List<Log> logEvent) {
     logger.log(logEvent);
   }
 }

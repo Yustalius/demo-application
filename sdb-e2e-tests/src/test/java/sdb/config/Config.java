@@ -10,6 +10,8 @@ public interface Config {
 
   String coreUrl();
 
+  String loggingUrl();
+
   String postgresUsername();
 
   String postgresPassword();
