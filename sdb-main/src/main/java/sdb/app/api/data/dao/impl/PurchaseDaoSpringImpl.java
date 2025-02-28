@@ -1,5 +1,6 @@
 package sdb.app.api.data.dao.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -17,17 +18,11 @@ import java.util.Optional;
 @Component
 public class PurchaseDaoSpringImpl implements PurchaseDao {
 
-  //todo вынести JdbcTemplate в переменную
-  private final DataSource dataSource;
+  @Autowired
+  private JdbcTemplate jdbcTemplate;
 
-  public PurchaseDaoSpringImpl(@Qualifier("dbDatasource") DataSource dataSource) {
-    this.dataSource = dataSource;
-  }
-
-  // todo переписать на единственный метод, который возвращает готовую покупку и возвращать список добавленных
   @Override
   public PurchaseEntity createPurchase(PurchaseEntity purchase) {
-    JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
     KeyHolder keyHolder = new GeneratedKeyHolder();
     jdbcTemplate.update(connection -> {
       PreparedStatement ps = connection.prepareStatement(
@@ -49,7 +44,6 @@ public class PurchaseDaoSpringImpl implements PurchaseDao {
 
   @Override
   public Optional<List<PurchaseEntity>> getPurchases() {
-    JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
     return Optional.of(
         jdbcTemplate.query(
             "SELECT * FROM \"purchases\"",
@@ -59,7 +53,6 @@ public class PurchaseDaoSpringImpl implements PurchaseDao {
 
   @Override
   public Optional<PurchaseEntity> getPurchase(int purchaseId) {
-    JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
     return Optional.ofNullable(
         jdbcTemplate.queryForObject(
             "SELECT * FROM \"purchases\" WHERE purchase_id = ?",
@@ -70,7 +63,6 @@ public class PurchaseDaoSpringImpl implements PurchaseDao {
 
   @Override
   public Optional<List<PurchaseEntity>> getUserPurchases(int userId) {
-    JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
     return Optional.of(jdbcTemplate.query(
         "SELECT * FROM \"purchases\" WHERE user_id = ?",
         PurchaseEntityRowMapper.instance,
