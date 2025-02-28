@@ -25,7 +25,7 @@ public class PurchaseExtension implements BeforeEachCallback, ParameterResolver 
   public static final Namespace NAMESPACE = Namespace.create(PurchaseExtension.class);
 
   @Override
-  public void beforeEach(ExtensionContext context) throws Exception {
+  public void beforeEach(ExtensionContext context) {
     AnnotationSupport.findAnnotation(context.getRequiredTestMethod(), User.class)
         .ifPresent(userAnno -> {
           if (ArrayUtils.isNotEmpty(userAnno.purchases())) {
@@ -51,7 +51,6 @@ public class PurchaseExtension implements BeforeEachCallback, ParameterResolver 
               createdPurchases.add(PurchaseJson.fromEntity(purchase));
               user.testData().purchases().addAll(createdPurchases);
             }
-
           }
         });
   }

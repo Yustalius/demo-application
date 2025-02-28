@@ -2,7 +2,9 @@ package sdb.service.impl;
 
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.JdbcTransactionManager;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.transaction.support.TransactionTemplate;
 import retrofit2.Response;
 import sdb.api.PurchaseApi;
@@ -20,6 +22,7 @@ import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -33,23 +36,24 @@ public class PurchaseDbClient {
     this.jdbcTemplate = new JdbcTemplate(dataSource);
   }
 
-  public void createPurchase(PurchaseEntity... purchases) {
-    jdbcTemplate.batchUpdate(
-        "INSERT INTO purchases (user_id, product, price) VALUES (?, ?, ?)",
-        new BatchPreparedStatementSetter() {
-          @Override
-          public void setValues(PreparedStatement ps, int i) throws SQLException {
-            ps.setObject(1, purchases[i].getUserId());
-            ps.setString(2, purchases[i].getProduct());
-            ps.setInt(3, purchases[i].getPrice());
-          }
+  public PurchaseEntity createPurchase(PurchaseEntity purchase) {
+    KeyHolder keyHolder = new GeneratedKeyHolder();
+    jdbcTemplate.update(connection -> {
+      PreparedStatement ps = connection.prepareStatement(
+          "INSERT INTO purchases (user_id, product, price, \"timestamp\") VALUES (?, ?, ?, ?)",
+          Statement.RETURN_GENERATED_KEYS
+      );
+      ps.setObject(1, purchase.getUserId());
+      ps.setString(2, purchase.getProduct());
+      ps.setInt(3, purchase.getPrice());
+      ps.setLong(4, System.currentTimeMillis());
+      return ps;
+    }, keyHolder);
 
-          @Override
-          public int getBatchSize() {
-            return purchases.length;
-          }
-        }
-    );
+    purchase.setPurchaseId((Integer) keyHolder.getKeys().get("purchase_id"));
+    purchase.setTimestamp((Long) keyHolder.getKeys().get("timestamp"));
+
+    return purchase;
   }
 
 /*  List<PurchaseJson> getPurchases() {
