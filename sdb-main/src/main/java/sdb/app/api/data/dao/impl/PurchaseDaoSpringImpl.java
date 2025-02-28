@@ -28,13 +28,14 @@ public class PurchaseDaoSpringImpl implements PurchaseDao {
   public void createPurchase(PurchaseEntity... purchases) {
     JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
     jdbcTemplate.batchUpdate(
-        "INSERT INTO purchases (user_id, product, price) VALUES (?, ?, ?)",
+        "INSERT INTO purchases (user_id, product, price, \"timestamp\") VALUES (?, ?, ?, ?)",
         new BatchPreparedStatementSetter() {
           @Override
           public void setValues(PreparedStatement ps, int i) throws SQLException {
             ps.setObject(1, purchases[i].getUserId());
             ps.setString(2, purchases[i].getProduct());
             ps.setInt(3, purchases[i].getPrice());
+            ps.setLong(4, System.currentTimeMillis());
           }
 
           @Override

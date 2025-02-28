@@ -11,14 +11,16 @@ public record PurchaseJson(
     @JsonProperty("product")
     Products productName,
     @JsonProperty("price")
-    Integer price
+    Integer price,
+    Long timestamp
 ) {
   public static PurchaseJson fromEntity(PurchaseEntity entity) {
     return new PurchaseJson(
         entity.getPurchaseId(),
         entity.getUserId(),
         Products.valueOf(entity.getProduct()),
-        entity.getPrice()
+        entity.getPrice(),
+        entity.getTimestamp()
     );
   }
 

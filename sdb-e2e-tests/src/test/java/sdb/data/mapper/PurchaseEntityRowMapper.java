@@ -20,6 +20,7 @@ public class PurchaseEntityRowMapper implements RowMapper<PurchaseEntity> {
     result.setUserId(rs.getInt("user_id"));
     result.setProduct(rs.getString("product"));
     result.setPrice(rs.getInt("price"));
+    result.setTimestamp(rs.getLong("timestamp"));
 
     return result;
   }

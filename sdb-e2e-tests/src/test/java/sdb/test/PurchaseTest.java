@@ -1,5 +1,7 @@
 package sdb.test;
 
+import org.apache.commons.lang3.time.DateUtils;
+import org.assertj.core.util.DateUtil;
 import org.junit.jupiter.api.Test;
 import sdb.jupiter.annotation.Purchase;
 import sdb.jupiter.annotation.User;
@@ -20,7 +22,7 @@ public class PurchaseTest {
   @Test
   @User
   void addPurchaseTest(UserDTO user) {
-    purchaseClient.createPurchase(new PurchaseJson(null, user.id(), Products.LONG_ISLAND, 200));
+    purchaseClient.createPurchase(new PurchaseJson(null, user.id(), Products.LONG_ISLAND, 200, null));
 
     PurchaseJson createdPurchase = purchaseClient.getUserPurchases(user.id()).get(0);
     assertThat(createdPurchase.purchaseId()).isNotNull();
