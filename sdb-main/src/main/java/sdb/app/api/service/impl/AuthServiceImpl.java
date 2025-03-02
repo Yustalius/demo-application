@@ -1,5 +1,6 @@
 package sdb.app.api.service.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.support.JdbcTransactionManager;
 import org.springframework.stereotype.Service;
@@ -20,7 +21,9 @@ import static sdb.app.api.data.Databases.transaction;
 
 @Service
 public class AuthServiceImpl implements AuthService {
-  private static final Logger logger = new Logger();
+  @Autowired
+  private Logger logger;
+
   private final AuthDao authDao;
   private final UserDao userDao;
   private final TransactionTemplate transactionTemplate;

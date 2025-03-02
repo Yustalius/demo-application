@@ -17,8 +17,6 @@ import static sdb.app.api.data.Databases.connection;
 
 @Service
 public class UserServiceImpl implements UserService{
-  private static final Config CFG = Config.getInstance();
-
   @Autowired
   private UserDao userDao;
 

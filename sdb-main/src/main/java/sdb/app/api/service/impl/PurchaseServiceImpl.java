@@ -19,7 +19,8 @@ import java.util.*;
 
 @Component
 public class PurchaseServiceImpl implements PurchaseService {
-  private static final Logger logger = new Logger();
+  @Autowired
+  private Logger logger;
 
   private final PurchaseDao purchaseDao;
   private final TransactionTemplate transactionTemplate;

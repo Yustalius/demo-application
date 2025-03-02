@@ -11,4 +11,6 @@ public interface Config {
   String postgresUsername();
 
   String postgresPassword();
+
+  String loggerUrl();
 }

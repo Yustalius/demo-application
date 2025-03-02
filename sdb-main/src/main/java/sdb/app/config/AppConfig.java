@@ -1,5 +1,6 @@
 package sdb.app.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import sdb.app.api.data.Databases;
@@ -11,13 +12,16 @@ import java.sql.Connection;
 public class AppConfig {
   private static final Config CFG = Config.getInstance();
 
+  @Value("${app.database.url}")
+  private String dbUrl;
+
   @Bean(name = "dbConnection")
   public Connection connection() {
-    return Databases.connection(CFG.postgresUrl());
+    return Databases.connection(dbUrl);
   }
 
   @Bean(name = "dbDatasource")
   public DataSource dataSource() {
-    return Databases.dataSource(CFG.postgresUrl());
+    return Databases.dataSource(dbUrl);
   }
 }

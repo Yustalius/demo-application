@@ -16,7 +16,8 @@ import java.util.Optional;
 
 @RestController
 public class UserController {
-  private static final Logger logger = new Logger();
+  @Autowired
+  private Logger logger;
 
   @Autowired
   private UserService userService;

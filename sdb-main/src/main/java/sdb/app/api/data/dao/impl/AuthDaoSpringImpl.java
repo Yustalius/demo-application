@@ -1,5 +1,6 @@
 package sdb.app.api.data.dao.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -22,7 +23,8 @@ import static java.util.Objects.requireNonNull;
 
 @Component
 public class AuthDaoSpringImpl implements AuthDao {
-  private final Logger logger = new Logger();
+  @Autowired
+  private Logger logger;
 
   private final JdbcTemplate jdbcTemplate;
 

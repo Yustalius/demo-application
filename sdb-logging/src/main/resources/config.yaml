@@ -2,3 +2,6 @@ sql:
   postgres-url: "jdbc:postgresql://127.0.0.1:5432/postgres"
   postgres-username: "postgres"
   postgres-password: 1234
+
+logging:
+  log-file-path: "sdb-logging/log/sdb.log"

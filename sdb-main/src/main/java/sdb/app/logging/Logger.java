@@ -1,24 +1,18 @@
 package sdb.app.logging;
 
-import sdb.app.logging.api.LogApiClient;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import sdb.app.logging.model.LogLevel;
 import sdb.app.logging.model.LogTask;
 import sdb.app.logging.utils.LogWorker;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.LinkedBlockingQueue;
-
 import static sdb.app.logging.utils.LoggerUtils.getCurrentTimestamp;
 import static sdb.app.logging.utils.LoggerUtils.getPath;
 
+@Component
 public class Logger {
-  private final LogWorker logWorker;
-
-  public Logger() {
-    this.logWorker = new LogWorker();
-  }
+  @Autowired
+  private LogWorker logWorker;
 
   public void info(String message) {
     log(LogLevel.INFO, message);

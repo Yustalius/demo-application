@@ -10,6 +10,7 @@ enum LocalConfig implements Config {
 
     Map<String, Object> data;
     Map<String, String> sqlConfig;
+    Map<String, String> logConfig;
 
     LocalConfig() {
         Yaml yaml = new Yaml();
@@ -19,6 +20,7 @@ enum LocalConfig implements Config {
 
         data = yaml.load(inputStream);
         sqlConfig = (Map<String, String>) data.get("sql");
+        logConfig = (Map<String, String>) data.get("logging");
     }
 
     @Override
@@ -34,5 +36,10 @@ enum LocalConfig implements Config {
     @Override
     public String postgresPassword() {
         return sqlConfig.get("postgres-password");
+    }
+
+    @Override
+    public String logFilePath() {
+        return logConfig.get("log-file-path");
     }
 }

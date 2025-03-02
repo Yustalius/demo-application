@@ -1,24 +1,26 @@
 package sdb.app.logging.api;
 
-import sdb.app.logging.model.LogTask;
-import sdb.app.logging.model.LogLevel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import retrofit2.Call;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
+import sdb.app.config.Config;
+import sdb.app.logging.model.LogTask;
 
 import java.io.IOException;
 import java.util.List;
 
+@Component
 public class LogApiClient {
-  private final LogApi logApi;
 
+  private final LogApi logApi;
   private static final Logger logger = LoggerFactory.getLogger(LogApiClient.class);
 
-  public LogApiClient() {
+  public LogApiClient(@Value("${app.logging.url}") String loggerUrl) {
     Retrofit retrofit = new Retrofit.Builder()
-        .baseUrl("http://127.0.0.1:8082/")
+        .baseUrl(loggerUrl)
         .addConverterFactory(JacksonConverterFactory.create())
         .build();
 

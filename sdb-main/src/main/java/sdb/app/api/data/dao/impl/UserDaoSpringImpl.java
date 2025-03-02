@@ -1,5 +1,6 @@
 package sdb.app.api.data.dao.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -21,12 +22,13 @@ import java.util.Optional;
 
 @Component
 public class UserDaoSpringImpl implements UserDao {
+  @Autowired
+  private Logger logger;
+
   private final JdbcTemplate jdbcTemplate;
-  private final Logger logger;
 
   public UserDaoSpringImpl(@Qualifier("dbDatasource") DataSource dataSource) {
     this.jdbcTemplate = new JdbcTemplate(dataSource);
-    this.logger = new Logger();
   }
 
   @Override

@@ -1,5 +1,7 @@
 package sdb.app.logging.utils;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import sdb.app.logging.api.LogApiClient;
 import sdb.app.logging.model.LogTask;
 
@@ -7,16 +9,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
 
+@Component
 public class LogWorker {
-  private final LogApiClient logClient = new LogApiClient();
+  @Autowired
+  private final LogApiClient logClient;
 
   private static final int BATCH_SIZE = 10;
   private static final int FLUSH_INTERVAL = 1;
+
   private final List<LogTask> buffer = new ArrayList<>();
+  private final ScheduledExecutorService scheduler;
 
-  private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+  @Autowired
+  public LogWorker(LogApiClient logClient) {
+    this.logClient = logClient;
+    this.scheduler = Executors.newScheduledThreadPool(1);
 
-  public LogWorker() {
     scheduler.scheduleAtFixedRate(this::flush, 0, FLUSH_INTERVAL, TimeUnit.SECONDS);
   }
 

@@ -16,8 +16,7 @@ public class LogController {
   LogService logger;
 
   @PostMapping("/log")
-  public void makeLog(
-      @RequestBody List<Log> logEvent) {
+  public void makeLog(@RequestBody List<Log> logEvent) {
     logger.log(logEvent);
   }
 }

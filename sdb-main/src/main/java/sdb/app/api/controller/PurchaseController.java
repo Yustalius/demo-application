@@ -24,8 +24,10 @@ import static sdb.app.api.data.Databases.dataSource;
 @RestController
 @RequestMapping("/purchase")
 public class PurchaseController {
-  private static final Logger logger = new Logger();
   private static final ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);;
+
+  @Autowired
+  private Logger logger;
 
   @Autowired
   private PurchaseService purchaseService;
