@@ -1,4 +1,4 @@
-package sdb.data.entity.product;
+package sdb.data.entity.purchases;
 
 import lombok.Getter;
 import lombok.Setter;

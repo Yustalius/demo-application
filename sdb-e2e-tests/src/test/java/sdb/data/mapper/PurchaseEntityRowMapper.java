@@ -1,7 +1,7 @@
 package sdb.data.mapper;
 
 import org.springframework.jdbc.core.RowMapper;
-import sdb.data.entity.product.PurchaseEntity;
+import sdb.data.entity.purchases.PurchaseEntity;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

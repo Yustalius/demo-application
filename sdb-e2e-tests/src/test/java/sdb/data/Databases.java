@@ -5,6 +5,8 @@ import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 import org.postgresql.ds.PGSimpleDataSource;
 
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -97,11 +99,24 @@ public class Databases {
     return datasources.computeIfAbsent(
         jdbcUrl,
         key -> {
-          PGSimpleDataSource ds = new PGSimpleDataSource();
-          ds.setUser("postgres");
-          ds.setPassword("1234");
-          ds.setUrl(key);
-          return ds;
+          AtomikosDataSourceBean dsBean = new AtomikosDataSourceBean();
+          String uniqueId = StringUtils.substringAfter(jdbcUrl, "5432/");
+          dsBean.setUniqueResourceName(uniqueId);
+          dsBean.setXaDataSourceClassName("org.postgresql.xa.PGXADataSource");
+          Properties props = new Properties();
+          props.put("URL", jdbcUrl);
+          props.put("user", "postgres");
+          props.put("password", "1234");
+          dsBean.setXaProperties(props);
+          dsBean.setMaxPoolSize(10);
+          try {
+            InitialContext context = new InitialContext();
+            context.bind("java:comp/env/jdbc/" + uniqueId, dsBean);
+          } catch (NamingException e) {
+            throw new RuntimeException(e);
+          }
+
+          return dsBean;
         }
     );
   }
@@ -111,7 +126,8 @@ public class Databases {
         jdbcUrl,
         key -> {
           AtomikosDataSourceBean dsBean = new AtomikosDataSourceBean();
-          dsBean.setUniqueResourceName(StringUtils.substringAfter(jdbcUrl, "5432"));
+          String uniqueId = StringUtils.substringAfter(jdbcUrl, "5432/");
+          dsBean.setUniqueResourceName(uniqueId);
           dsBean.setXaDataSourceClassName("org.postgresql.xa.PGXADataSource");
           Properties props = new Properties();
           props.put("URL", jdbcUrl);
@@ -119,6 +135,13 @@ public class Databases {
           props.put("password", "1234");
           dsBean.setXaProperties(props);
           dsBean.setMaxPoolSize(15);
+          try {
+            InitialContext context = new InitialContext();
+            context.bind("java:comp/env/jdbc/" + uniqueId, dsBean);
+          } catch (NamingException e) {
+            throw new RuntimeException(e);
+          }
+
           return dsBean;
         }
     );

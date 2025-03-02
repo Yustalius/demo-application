@@ -1,29 +1,14 @@
 package sdb.service.impl;
 
-import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.JdbcTransactionManager;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.transaction.support.TransactionTemplate;
-import retrofit2.Response;
-import sdb.api.PurchaseApi;
-import sdb.api.core.RestClient;
 import sdb.config.Config;
-import sdb.data.dao.AuthDao;
-import sdb.data.dao.UserDao;
-import sdb.data.dao.impl.AuthDaoSpringImpl;
-import sdb.data.dao.impl.UserDaoSpringImpl;
-import sdb.data.entity.product.PurchaseEntity;
-import sdb.model.product.PurchaseJson;
-import sdb.service.PurchaseClient;
+import sdb.data.entity.purchases.PurchaseEntity;
 
 import javax.sql.DataSource;
-import java.io.IOException;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

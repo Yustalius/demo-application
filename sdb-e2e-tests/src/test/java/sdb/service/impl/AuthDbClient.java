@@ -31,8 +31,8 @@ public class AuthDbClient {
     this.userDao = new UserDaoSpringImpl(dataSource);
   }
 
-  @NonNull
-  public UserDTO createNewUser(RegisterEntity entity) {
+  public @NonNull
+  UserDTO createNewUser(RegisterEntity entity) {
     UserEntity user = transactionTemplate.execute(status -> {
       UserEntity registeredUser = authDao.register(entity);
 

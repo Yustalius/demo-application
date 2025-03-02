@@ -1,7 +1,7 @@
 package sdb.data.dao;
 
 
-import sdb.data.entity.product.PurchaseEntity;
+import sdb.data.entity.purchases.PurchaseEntity;
 
 import java.util.List;
 import java.util.Optional;

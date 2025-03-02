@@ -5,7 +5,7 @@ import org.junit.jupiter.api.extension.*;
 import org.junit.jupiter.api.extension.ExtensionContext.Namespace;
 import org.junit.platform.commons.support.AnnotationSupport;
 import sdb.config.Config;
-import sdb.data.entity.product.PurchaseEntity;
+import sdb.data.entity.purchases.PurchaseEntity;
 import sdb.jupiter.annotation.Purchase;
 import sdb.jupiter.annotation.User;
 import sdb.model.product.PurchaseJson;
@@ -16,8 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static sdb.data.Databases.dataSource;
-import static sdb.utils.Helpers.userIdByUsername;
-import static sdb.utils.Helpers.usernameByUserId;
 
 public class PurchaseExtension implements BeforeEachCallback, ParameterResolver {
   private static final Config CFG = Config.getInstance();

@@ -1,10 +1,9 @@
 package sdb.data.dao.impl;
 
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import sdb.data.dao.PurchaseDao;
-import sdb.data.entity.product.PurchaseEntity;
+import sdb.data.entity.purchases.PurchaseEntity;
 import sdb.data.mapper.PurchaseEntityRowMapper;
 
 import javax.sql.DataSource;
