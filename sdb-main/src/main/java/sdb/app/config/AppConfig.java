@@ -3,7 +3,7 @@ package sdb.app.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import sdb.app.api.data.Databases;
+import sdb.app.data.Databases;
 
 import javax.sql.DataSource;
 import java.sql.Connection;

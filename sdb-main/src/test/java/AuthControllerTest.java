@@ -6,14 +6,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import sdb.app.api.controller.AuthController;
-import sdb.app.api.model.auth.RegisterJson;
-import sdb.app.api.model.user.UserJson;
-import sdb.app.api.service.AuthService;
-import sdb.app.api.service.UserService;
-import sdb.app.ex.UserNotFoundException;
-
-import java.util.Optional;
+import sdb.app.controller.AuthController;
+import sdb.app.model.auth.RegisterJson;
+import sdb.app.model.user.UserJson;
+import sdb.app.service.AuthService;
+import sdb.app.service.UserService;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;

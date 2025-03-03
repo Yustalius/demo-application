@@ -27,7 +27,7 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter'
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.hibernate.validator:hibernate-validator:8.0.1.Final'
 
     // Utils
@@ -47,6 +47,7 @@ dependencies {
     implementation "com.atomikos:transactions-jdbc:${atomicosVersion}"
 
     // TEST
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'net.datafaker:datafaker:1.7.0'
     testImplementation 'org.assertj:assertj-core:3.16.1'
 }

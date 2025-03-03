@@ -3,14 +3,32 @@ server:
   address: localhost
 
 spring:
+  application:
+    name: sdb-core
   profiles:
     active: default
+  hikari:
+    connection-timeout: 20000
+    minimum-idle: 10
+    maximum-pool-size: 30
+    idle-timeout: 10000
+    max-lifetime: 1000
+    auto-commit: true
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
 
 ---
 spring:
   config:
     activate:
       on-profile: default
+  datasource:
+    url: "jdbc:postgresql://127.0.0.1:5432/postgres"
+    username: postgres
+    password: 1234
+    driver-class-name: org.postgresql.Driver
 
 server:
   port: 8080
@@ -29,6 +47,11 @@ spring:
   config:
     activate:
       on-profile: docker
+  datasource:
+    url: "jdbc:postgresql://host.docker.internal:5432/postgres"
+    username: postgres
+    password: 1234
+    driver-class-name: org.postgresql.Driver
 
 server:
   port: 8080

@@ -6,7 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import sdb.app.api.model.error.ErrorResponse;
+import sdb.app.ex.ProductNotFoundException;
+import sdb.app.model.error.ErrorResponse;
 import sdb.app.ex.UserNotFoundException;
 import sdb.app.logging.Logger;
 
@@ -50,6 +51,15 @@ public class GlobalExceptionHandler {
         ));
   }
 
+  @ExceptionHandler(ProductNotFoundException.class)
+  public ResponseEntity<ErrorResponse> handleProductNotFoundException(ProductNotFoundException ex) {
+    return ResponseEntity.status(NOT_FOUND)
+        .body(new ErrorResponse(
+            "PRODUCT_NOT_FOUND",
+            ex.getMessage()
+        ));
+  }
+
   @ExceptionHandler(MethodArgumentNotValidException.class)
   public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
     return ResponseEntity.status(BAD_REQUEST)
@@ -72,7 +82,7 @@ public class GlobalExceptionHandler {
 
     return ResponseEntity.status(INTERNAL_SERVER_ERROR)
         .body(new ErrorResponse(
-            "BAD_REQUEST",
+            "UNKNOWN",
             ex.getMessage()
         ));
   }

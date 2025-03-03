@@ -4,9 +4,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import sdb.app.api.controller.UserController;
-import sdb.app.api.model.user.UserJson;
-import sdb.app.api.service.UserService;
+import sdb.app.controller.UserController;
+import sdb.app.model.user.UserJson;
+import sdb.app.service.UserService;
 
 import java.util.List;
 import java.util.Optional;
