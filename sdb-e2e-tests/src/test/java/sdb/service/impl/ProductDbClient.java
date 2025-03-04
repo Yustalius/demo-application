@@ -1,40 +1,44 @@
 package sdb.service.impl;
 
-public class ProductDbClient {
+import sdb.data.dao.ProductDao;
+import sdb.data.dao.impl.ProductDaoImpl;
+import sdb.data.entity.products.ProductEntity;
+import sdb.model.product.ProductDTO;
+import sdb.service.ProductClient;
 
-/*  private final ProductRepository productRepository;
+import java.util.List;
 
-  // CREATE
-  public ProductEntity createProduct(ProductEntity product) {
-    return productRepository.save(product);
+public class ProductDbClient implements ProductClient {
+  private final ProductDao productDao = new ProductDaoImpl();
+
+  @Override
+  public ProductDTO addProduct(ProductDTO product) {
+    return ProductDTO.fromEntity(
+        productDao.create(ProductEntity.fromDTO(product)));
   }
 
-  // READ
-  public List<ProductEntity> getAllProducts() {
-    return productRepository.findAll();
+  @Override
+  public ProductDTO updateProduct(int id, ProductDTO update) {
+    productDao.update(id, ProductEntity.fromDTO(update));
+    return productDao.get(id).map(ProductDTO::fromEntity).
+        orElseThrow(() -> new RuntimeException());
   }
 
-  public Optional<ProductEntity> getProductById(Integer id) {
-    return productRepository.findById(id);
+  @Override
+  public ProductDTO getProductById(int id) {
+    return productDao.get(id).map(ProductDTO::fromEntity)
+            .orElseThrow(() -> new RuntimeException());
   }
 
-  public Optional<ProductEntity> getProductByName(String name) {
-    return productRepository.findByProductName(name);
+  @Override
+  public List<ProductDTO> getAllProducts() {
+    return productDao.getAll().orElseThrow()
+        .stream()
+        .map(ProductDTO::fromEntity).toList();
   }
 
-  // UPDATE
-  public ProductEntity updateProduct(Integer id, ProductEntity updatedProduct) {
-    return productRepository.findById(id)
-        .map(product -> {
-          product.setProductName(updatedProduct.getProductName());
-          product.setDescription(updatedProduct.getDescription());
-          return productRepository.save(product);
-        })
-        .orElseThrow(() -> new RuntimeException("Product not found"));
+  @Override
+  public void deleteProduct(int productId) {
+    productDao.delete(productId);
   }
-
-  // DELETE
-  public void deleteProduct(Integer id) {
-    productRepository.deleteById(id);
-  }*/
 }

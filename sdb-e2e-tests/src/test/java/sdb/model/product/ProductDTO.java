@@ -1,8 +1,10 @@
-package sdb.app.model.product;
+package sdb.model.product;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.annotation.Nonnull;
-import sdb.app.data.entity.product.ProductEntity;
+import sdb.data.entity.products.ProductEntity;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public record ProductDTO(
     Integer id,
     String productName,

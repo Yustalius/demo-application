@@ -21,11 +21,15 @@ public class ProductEntity {
   @Column
   private String description;
 
-  public static @Nonnull ProductEntity fromDTO(@Nonnull ProductDTO dto) {
+  @Column(nullable = false)
+  private Integer price;
+
+  public static @Nonnull ProductEntity fromDTO(@Nonnull ProductDTO product) {
     ProductEntity productEntity = new ProductEntity();
-    productEntity.setId(dto.id());
-    productEntity.setProductName(dto.productName());
-    productEntity.setDescription(dto.description());
+    productEntity.setId(product.id());
+    productEntity.setProductName(product.productName());
+    productEntity.setDescription(product.description());
+    productEntity.setPrice(product.price());
     return productEntity;
   }
 }

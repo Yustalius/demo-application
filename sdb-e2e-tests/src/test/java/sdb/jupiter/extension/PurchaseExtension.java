@@ -42,7 +42,7 @@ public class PurchaseExtension implements BeforeEachCallback, ParameterResolver 
             for (Purchase purchaseAnno : userAnno.purchases()) {
               PurchaseEntity purchase = new PurchaseEntity();
               purchase.setUserId(user.id());
-              purchase.setProduct(purchaseAnno.product().toString());
+              purchase.setProductId(purchaseAnno.productId());
               purchase.setPrice(purchaseAnno.price());
 
               purchaseClient.createPurchase(purchase);

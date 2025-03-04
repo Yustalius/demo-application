@@ -25,11 +25,11 @@ public class PurchaseDbClient {
     KeyHolder keyHolder = new GeneratedKeyHolder();
     jdbcTemplate.update(connection -> {
       PreparedStatement ps = connection.prepareStatement(
-          "INSERT INTO purchases (user_id, product, price, \"timestamp\") VALUES (?, ?, ?, ?)",
+          "INSERT INTO purchases (user_id, product_id, price, \"timestamp\") VALUES (?, ?, ?, ?)",
           Statement.RETURN_GENERATED_KEYS
       );
       ps.setObject(1, purchase.getUserId());
-      ps.setString(2, purchase.getProduct());
+      ps.setInt(2, purchase.getProductId());
       ps.setInt(3, purchase.getPrice());
       ps.setLong(4, System.currentTimeMillis());
       return ps;

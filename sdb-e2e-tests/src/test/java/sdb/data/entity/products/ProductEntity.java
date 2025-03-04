@@ -1,22 +1,22 @@
 package sdb.data.entity.products;
 
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.annotation.Nonnull;
+import lombok.Data;
+import sdb.model.product.ProductDTO;
 
-@Setter
-@Getter
-@Entity
-@Table(name = "\"products\"")
+@Data
 public class ProductEntity {
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "id", nullable = false)
   private Integer id;
-
-  @Column(name = "product_name", nullable = false, unique = true)
   private String productName;
-
-  @Column(name = "description")
   private String description;
+  private Integer price;
+
+  public static @Nonnull ProductEntity fromDTO(@Nonnull ProductDTO product) {
+    ProductEntity productEntity = new ProductEntity();
+    productEntity.setId(product.id());
+    productEntity.setProductName(product.productName());
+    productEntity.setDescription(product.description());
+    productEntity.setPrice(product.price());
+    return productEntity;
+  }
 }

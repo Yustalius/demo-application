@@ -8,8 +8,8 @@ import sdb.app.data.entity.purchase.PurchaseEntity;
 public record PurchaseJson(
     Integer purchaseId,
     Integer userId,
-    @JsonProperty("product")
-    Products productName,
+    @JsonProperty("productId")
+    Integer productId,
     @JsonProperty("price")
     Integer price,
     Long timestamp
@@ -18,7 +18,7 @@ public record PurchaseJson(
     return new PurchaseJson(
         entity.getPurchaseId(),
         entity.getUserId(),
-        Products.valueOf(entity.getProduct()),
+        entity.getProductId(),
         entity.getPrice(),
         entity.getTimestamp()
     );

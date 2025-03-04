@@ -9,6 +9,7 @@ import sdb.app.ex.ProductNotFoundException;
 import sdb.app.model.product.ProductDTO;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProductService {
@@ -24,18 +25,20 @@ public class ProductService {
 
   @Transactional
   public ProductDTO update(int id, ProductDTO updatedProduct) {
-    productRepository.findById(id).ifPresent(product -> {
-      if (updatedProduct.productName() != null) {
-        product.setProductName(updatedProduct.productName());
-      }
-      if (updatedProduct.description() != null) {
-        product.setDescription(updatedProduct.description());
-      }
+    return productRepository.findById(id).map(product -> {
+          if (updatedProduct.productName() != null) {
+            product.setProductName(updatedProduct.productName());
+          }
+          if (updatedProduct.description() != null) {
+            product.setDescription(updatedProduct.description());
+          }
+          if (updatedProduct.price() != null) {
+            product.setPrice(updatedProduct.price());
+          }
 
-      productRepository.save(product);
-    });
-
-    return ProductDTO.fromEntity(productRepository.findById(id).get());
+          return ProductDTO.fromEntity(productRepository.save(product));
+        }
+    ).orElseThrow(() -> new ProductNotFoundException(id));
   }
 
   @Transactional(readOnly = true)
@@ -49,7 +52,9 @@ public class ProductService {
   }
 
   @Transactional
-  public void delete(int id) {
-    productRepository.deleteById(id);
+  public void delete(int productId) {
+    productRepository.findById(productId).ifPresent(product -> {
+      productRepository.deleteById(productId);
+    });
   }
 }

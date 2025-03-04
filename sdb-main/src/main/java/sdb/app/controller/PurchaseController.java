@@ -26,7 +26,7 @@ public class PurchaseController {
   private PurchaseService purchaseService;
 
   @PostMapping("/add")
-  public List<PurchaseEntity> purchase(@RequestBody PurchaseJson... purchaseJsons) throws JsonProcessingException {
+  public List<PurchaseEntity> addPurchase(@RequestBody PurchaseJson... purchaseJsons) throws JsonProcessingException {
       logger.info("Creating purchases: ", mapper.writeValueAsString(purchaseJsons));
       return purchaseService.createPurchase(purchaseJsons);
   }
