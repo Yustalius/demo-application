@@ -1,8 +1,10 @@
 package sdb.app.service.impl;
 
+import io.jsonwebtoken.Jwts;
 import jakarta.annotation.Nonnull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sdb.app.data.entity.user.UserCredsEntity;
@@ -15,6 +17,10 @@ import sdb.app.model.user.UserDTO;
 import sdb.app.service.AuthService;
 import sdb.app.logging.Logger;
 
+import javax.crypto.SecretKey;
+import java.time.Instant;
+import java.util.Date;
+
 import static sdb.app.data.Databases.transaction;
 
 @Service
@@ -22,6 +28,8 @@ import static sdb.app.data.Databases.transaction;
 public class AuthServiceImpl implements AuthService {
   private final Logger logger;
   private final UserCredsRepository userCredsRepository;
+  private final SecretKey secretKey;
+  private final PasswordEncoder passwordEncoder;
 
   @Override
   @Transactional
@@ -29,7 +37,7 @@ public class AuthServiceImpl implements AuthService {
     logger.info("Starting register process for user " + json);
     UserCredsEntity creds = new UserCredsEntity();
     creds.setUsername(json.username());
-    creds.setPassword(json.password());
+    creds.setPassword(passwordEncoder.encode(json.password()));
 
     UsersEntity user = new UsersEntity();
     user.setFirstName(json.firstName());
@@ -53,14 +61,19 @@ public class AuthServiceImpl implements AuthService {
         .orElseThrow(() ->
             new UserNotFoundException("Not found user with username = " + json.username()));
 
-    if (!creds.getPassword().equals(json.password())) {
-      throw new RuntimeException("bad creds");
+    if (!passwordEncoder.matches(json.password(), creds.getPassword())) {
+      throw new RuntimeException("Invalid credentials");
     }
 
-    return generateToken();
+    return generateToken(creds.getUsername());
   }
 
-  private String generateToken() {
-    return "token";
+  private String generateToken(String username) {
+    return Jwts.builder()
+        .setSubject(username)
+        .setIssuedAt(Date.from(Instant.now()))
+        .setExpiration(Date.from(Instant.now().plusSeconds(86400)))
+        .signWith(secretKey)
+        .compact();
   }
 }
