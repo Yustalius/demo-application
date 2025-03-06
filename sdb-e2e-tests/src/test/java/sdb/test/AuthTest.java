@@ -2,7 +2,9 @@ package sdb.test;
 
 import org.junit.jupiter.api.Test;
 import sdb.jupiter.annotation.User;
+import sdb.model.auth.LoginRequest;
 import sdb.model.auth.RegisterDTO;
+import sdb.model.auth.Token;
 import sdb.model.user.UserDTO;
 import sdb.service.AuthClient;
 import sdb.service.UserClient;
@@ -23,12 +25,12 @@ public class AuthTest {
 
   @Test
   @User
-  void loginTest(UserDTO user) {
-    UserDTO login = authClient.login(new RegisterDTO(
-        user.testData().username(),
-        user.testData().password()
+  void loginTest(LoginRequest login) {
+    Token token = authClient.login(new LoginRequest(
+        login.username(),
+        login.password()
     ));
 
-    assertThat(login.id()).isEqualTo(user.id());
+    assertThat(token).isNotNull();
   }
 }

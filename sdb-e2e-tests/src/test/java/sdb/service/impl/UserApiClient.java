@@ -4,6 +4,7 @@ import jakarta.annotation.Nullable;
 import lombok.NonNull;
 import retrofit2.Response;
 import sdb.api.UserApi;
+import sdb.api.core.AuthInterceptor;
 import sdb.api.core.RestClient;
 import sdb.model.user.UserDTO;
 import sdb.service.UserClient;
@@ -18,7 +19,7 @@ public class UserApiClient extends RestClient implements UserClient {
   private final UserApi userApi;
 
   public UserApiClient() {
-    super(CFG.coreUrl());
+    super(CFG.coreUrl(), new AuthInterceptor());
     this.userApi = create(UserApi.class);
   }
 

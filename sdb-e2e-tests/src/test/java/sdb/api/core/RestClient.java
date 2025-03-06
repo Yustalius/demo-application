@@ -2,6 +2,7 @@ package sdb.api.core;
 
 import jakarta.annotation.Nonnull;
 import lombok.extern.slf4j.Slf4j;
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import org.slf4j.LoggerFactory;
@@ -18,16 +19,20 @@ public abstract class RestClient {
   private final OkHttpClient okHttpClient;
   private final Retrofit retrofit;
 
-  public RestClient(String baseUrl) {
-    HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor(message -> {
-      LoggerFactory.getLogger("Retrofit").info(message);
-    });
-    loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+  public RestClient(String baseUrl, Interceptor... interceptors) {
+    HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor(
+        message -> LoggerFactory.getLogger("ApiClient").info(message)
+    );
+    loggingInterceptor.setLevel(BODY);
 
-    OkHttpClient okHttpClient = new OkHttpClient.Builder()
-        .addNetworkInterceptor(new HttpLoggingInterceptor().setLevel(BODY))
-        .build();
-    this.okHttpClient = okHttpClient;
+    OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder()
+        .addInterceptor(loggingInterceptor);
+
+    for (Interceptor interceptor : interceptors) {
+      clientBuilder.addInterceptor(interceptor);
+    }
+
+    this.okHttpClient = clientBuilder.build();
     this.retrofit = new Retrofit.Builder()
         .baseUrl(baseUrl)
         .client(okHttpClient)

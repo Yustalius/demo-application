@@ -1,9 +1,13 @@
 package sdb.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import retrofit2.Response;
 import sdb.api.AuthApi;
+import sdb.api.core.AuthInterceptor;
 import sdb.api.core.RestClient;
+import sdb.model.auth.LoginRequest;
 import sdb.model.auth.RegisterDTO;
+import sdb.model.auth.Token;
 import sdb.model.user.UserDTO;
 import sdb.service.AuthClient;
 
@@ -16,7 +20,7 @@ public class AuthApiClient extends RestClient implements AuthClient {
   private final AuthApi authApi;
 
   public AuthApiClient() {
-    super(CFG.coreUrl());
+    super(CFG.coreUrl(), new AuthInterceptor());
     this.authApi = create(AuthApi.class);
   }
 
@@ -33,8 +37,8 @@ public class AuthApiClient extends RestClient implements AuthClient {
   }
 
   @Override
-  public UserDTO login(RegisterDTO json) {
-    Response<UserDTO> response;
+  public Token login(LoginRequest json) {
+    Response<Token> response;
     try {
       response = authApi.login(json).execute();
     } catch (IOException e) {

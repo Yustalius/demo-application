@@ -1,6 +1,8 @@
 package sdb.service;
 
+import sdb.model.auth.LoginRequest;
 import sdb.model.auth.RegisterDTO;
+import sdb.model.auth.Token;
 import sdb.model.user.UserDTO;
 import sdb.service.impl.AuthApiClient;
 
@@ -12,6 +14,5 @@ public interface AuthClient {
 
   UserDTO createNewUser(RegisterDTO json);
 
-  UserDTO login(RegisterDTO json);
-
+  Token login(LoginRequest json);
 }
