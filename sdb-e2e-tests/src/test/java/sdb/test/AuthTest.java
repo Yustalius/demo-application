@@ -25,10 +25,10 @@ public class AuthTest {
 
   @Test
   @User
-  void loginTest(LoginRequest login) {
+  void loginTest(UserDTO user) {
     Token token = authClient.login(new LoginRequest(
-        login.username(),
-        login.password()
+        user.testData().username(),
+        user.testData().password()
     ));
 
     assertThat(token).isNotNull();

@@ -20,7 +20,7 @@ public class AuthApiClient extends RestClient implements AuthClient {
   private final AuthApi authApi;
 
   public AuthApiClient() {
-    super(CFG.coreUrl(), new AuthInterceptor());
+    super(CFG.coreUrl());
     this.authApi = create(AuthApi.class);
   }
 

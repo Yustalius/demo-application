@@ -3,6 +3,7 @@ package sdb.service.impl;
 import org.opentest4j.AssertionFailedError;
 import retrofit2.Response;
 import sdb.api.ProductApi;
+import sdb.api.core.AuthInterceptor;
 import sdb.api.core.RestClient;
 import sdb.model.product.ProductDTO;
 import sdb.service.ProductClient;
@@ -17,7 +18,7 @@ public class ProductApiClient extends RestClient implements ProductClient {
   private final ProductApi productApi;
 
   public ProductApiClient() {
-    super(CFG.coreUrl());
+    super(CFG.coreUrl(), new AuthInterceptor());
     this.productApi = create(ProductApi.class);
   }
 

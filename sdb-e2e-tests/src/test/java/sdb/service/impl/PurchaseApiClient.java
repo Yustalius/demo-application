@@ -2,6 +2,7 @@ package sdb.service.impl;
 
 import retrofit2.Response;
 import sdb.api.PurchaseApi;
+import sdb.api.core.AuthInterceptor;
 import sdb.api.core.RestClient;
 import sdb.model.product.PurchaseJson;
 import sdb.service.PurchaseClient;
@@ -17,7 +18,7 @@ public class PurchaseApiClient extends RestClient implements PurchaseClient {
   PurchaseApi purchaseApi;
 
   public PurchaseApiClient() {
-    super(CFG.coreUrl());
+    super(CFG.coreUrl(), new AuthInterceptor());
     this.purchaseApi = create(PurchaseApi.class);
   }
 

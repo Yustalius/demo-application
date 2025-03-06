@@ -26,7 +26,7 @@ public abstract class RestClient {
     loggingInterceptor.setLevel(BODY);
 
     OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder()
-        .addInterceptor(loggingInterceptor);
+        .addNetworkInterceptor(new HttpLoggingInterceptor().setLevel(BODY));
 
     for (Interceptor interceptor : interceptors) {
       clientBuilder.addInterceptor(interceptor);

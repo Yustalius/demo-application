@@ -1,0 +1,56 @@
+buildscript {
+    ext {
+        springJdbcVersion = '6.1.12'
+        atomicosVersion = '6.0.0'
+        retrofitVersion = '2.11.0'
+        okhttp3Version = '4.11.0'
+    }
+}
+
+plugins {
+    id "io.freefair.lombok" version "8.12.2"
+}
+
+dependencies {
+    annotationProcessor 'org.projectlombok:lombok:1.18.3'
+    compileOnly 'org.projectlombok:lombok:1.18.3'
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+
+    // Utils
+    implementation 'org.apache.commons:commons-lang3:3.17.0'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.18.2'
+    implementation 'jakarta.annotation:jakarta.annotation-api:2.1.1'
+    testImplementation 'com.github.vertical-blank:sql-formatter:2.0.5'
+    testImplementation 'com.github.h-thurow:simple-jndi:0.24.0'
+    testImplementation 'org.springframework.security:spring-security-crypto:6.4.3'
+
+    // Rest
+    implementation "com.squareup.retrofit2:converter-jackson:${retrofitVersion}"
+    implementation "com.squareup.retrofit2:retrofit:${retrofitVersion}"
+    testImplementation "com.squareup.okhttp3:logging-interceptor:${okhttp3Version}"
+    testImplementation 'io.rest-assured:rest-assured:5.3.1'
+
+    // WireMock
+    testImplementation 'com.github.tomakehurst:wiremock-jre8:2.35.0'
+
+    // DB
+    implementation "org.springframework:spring-jdbc:${springJdbcVersion}"
+    implementation 'org.postgresql:postgresql:42.7.3'
+    implementation "com.atomikos:transactions-jta:${atomicosVersion}:jakarta"
+    implementation "com.atomikos:transactions-hibernate4:${atomicosVersion}:jakarta"
+    implementation "com.atomikos:transactions-jdbc:${atomicosVersion}"
+    implementation "org.hibernate:hibernate-core:6.6.0.Final"
+    implementation 'org.springframework.data:spring-data-jpa:3.3.3'
+
+    // TEST
+    testImplementation 'net.datafaker:datafaker:1.7.0'
+    testImplementation 'org.assertj:assertj-core:3.16.1'
+
+    // LOG
+    testImplementation('ch.qos.logback:logback-classic:1.2.6')
+}
+
+test {
+    useJUnitPlatform()
+}

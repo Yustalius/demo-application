@@ -1,6 +1,5 @@
 package sdb.api.core;
 
-import lombok.extern.slf4j.Slf4j;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -16,21 +15,21 @@ import sdb.model.auth.Token;
 
 import java.io.IOException;
 
+import static okhttp3.logging.HttpLoggingInterceptor.Level.BODY;
+
 public class AuthInterceptor implements Interceptor {
   @NotNull
   @Override
   public Response intercept(Chain chain) throws IOException {
     OkHttpClient authClient = new OkHttpClient.Builder()
-        .addInterceptor(new HttpLoggingInterceptor(
-            message -> LoggerFactory.getLogger("AuthClient").info(message))
-            .setLevel(HttpLoggingInterceptor.Level.BODY))
+        .addNetworkInterceptor(new HttpLoggingInterceptor().setLevel(BODY))
         .build();
 
     Retrofit authRetrofit = new Retrofit.Builder()
         .baseUrl(chain.request().url().scheme() + "://" +
             chain.request().url().host() + ":" +
             chain.request().url().port())
-        .client(authClient) // Используем клиент с логгированием
+        .client(authClient)
         .addConverterFactory(JacksonConverterFactory.create())
         .build();
 
