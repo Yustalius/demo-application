@@ -25,12 +25,12 @@ public class AuthController {
   private AuthService authService;
 
   @PostMapping("/register")
-  public ResponseEntity<UserDTO> register(
+  public UserDTO register(
       @Validated(RegistrationValidationGroup.class) @RequestBody RegisterJson json) {
     UserDTO user = authService.register(json);
 
     logger.info("Successfully registered user id = ", user.id());
-    return ResponseEntity.ok(user);
+    return user;
   }
 
   @PostMapping("/login")
