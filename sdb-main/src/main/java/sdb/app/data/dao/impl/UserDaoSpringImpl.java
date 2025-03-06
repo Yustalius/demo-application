@@ -8,7 +8,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 import sdb.app.data.dao.UserDao;
-import sdb.app.data.entity.user.UserEntity;
+import sdb.app.data.entity.user.UserEntityOld;
 import sdb.app.data.mapper.UserEntityRowMapper;
 import sdb.app.ex.UserNotFoundException;
 import sdb.app.logging.Logger;
@@ -32,7 +32,7 @@ public class UserDaoSpringImpl implements UserDao {
   }
 
   @Override
-  public UserEntity create(UserEntity user) {
+  public UserEntityOld create(UserEntityOld user) {
     KeyHolder keyHolder = new GeneratedKeyHolder();
 
     jdbcTemplate.update(connection -> {
@@ -52,7 +52,7 @@ public class UserDaoSpringImpl implements UserDao {
   }
 
   @Override
-  public Optional<UserEntity> get(int id) {
+  public Optional<UserEntityOld> get(int id) {
     try {
       return Optional.ofNullable(
           jdbcTemplate.queryForObject(
@@ -68,7 +68,7 @@ public class UserDaoSpringImpl implements UserDao {
   }
 
   @Override
-  public List<UserEntity> getUsers() {
+  public List<UserEntityOld> getUsers() {
     return jdbcTemplate.query("SELECT * FROM users", UserEntityRowMapper.instance);
   }
 
@@ -78,7 +78,7 @@ public class UserDaoSpringImpl implements UserDao {
   }
 
   @Override
-  public void update(int userId, UserEntity user) {
+  public void update(int userId, UserEntityOld user) {
     StringBuilder sql = new StringBuilder("UPDATE users SET ");
     List<Object> params = new ArrayList<>();
 

@@ -1,6 +1,6 @@
 package sdb.app.controller;
 
-import sdb.app.model.user.UserJson;
+import sdb.app.model.user.UserDTO;
 import sdb.app.model.validation.UpdateValidationGroup;
 import sdb.app.service.UserService;
 import sdb.app.logging.Logger;
@@ -21,18 +21,18 @@ public class UserController {
   private UserService userService;
 
   @GetMapping("/user")
-  public List<UserJson> getAllUsers() {
+  public List<UserDTO> getAllUsers() {
     logger.info("Get all users");
-    List<UserJson> users = userService.getUsers();
+    List<UserDTO> users = userService.getUsers();
     return users;
   }
 
   @GetMapping("/user/{id}")
-  public ResponseEntity<UserJson> getUser(
+  public ResponseEntity<UserDTO> getUser(
       @PathVariable int id
   ) {
     logger.info("Get user userId = %s".formatted(id));
-    Optional<UserJson> userJson = userService.get(id);
+    Optional<UserDTO> userJson = userService.get(id);
 
     if (userJson.isEmpty()) {
       return ResponseEntity.notFound().build();
@@ -45,7 +45,7 @@ public class UserController {
       @PathVariable int id
   ) {
     logger.info("Delete user userId = %s".formatted(id));
-    Optional<UserJson> userJson = userService.get(id);
+    Optional<UserDTO> userJson = userService.get(id);
     if (userJson.isEmpty()) {
       return ResponseEntity.notFound().build();
     }
@@ -56,12 +56,12 @@ public class UserController {
   }
 
   @PatchMapping("/user/{id}")
-  public ResponseEntity<UserJson> updateUser(
+  public ResponseEntity<UserDTO> updateUser(
       @PathVariable int id,
-      @Validated(UpdateValidationGroup.class) @RequestBody UserJson updateUser
+      @Validated(UpdateValidationGroup.class) @RequestBody UserDTO updateUser
   ) {
     logger.info("Update user userId = %s, %s".formatted(id, updateUser));
-    Optional<UserJson> user = userService.get(id);
+    Optional<UserDTO> user = userService.get(id);
 
     if (user.isEmpty()) {
       logger.info("Not found user with userId = " + id);
@@ -70,7 +70,7 @@ public class UserController {
 
     userService.update(id, updateUser);
 
-    UserJson updatedUser = userService.get(id).get();
+    UserDTO updatedUser = userService.get(id).get();
     logger.info("Updated user %s to %s".formatted(user.get(), updatedUser));
 
     return ResponseEntity.ok(updatedUser);

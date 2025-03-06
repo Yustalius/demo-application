@@ -1,18 +1,18 @@
 package sdb.app.data.dao;
 
-import sdb.app.data.entity.user.UserEntity;
+import sdb.app.data.entity.user.UserEntityOld;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface UserDao {
-  UserEntity create(UserEntity user);
+  UserEntityOld create(UserEntityOld user);
 
-  Optional<UserEntity> get(int id);
+  Optional<UserEntityOld> get(int id);
 
-  List<UserEntity> getUsers();
+  List<UserEntityOld> getUsers();
 
   void delete(int id);
 
-  void update(int id, UserEntity user);
+  void update(int id, UserEntityOld user);
 }

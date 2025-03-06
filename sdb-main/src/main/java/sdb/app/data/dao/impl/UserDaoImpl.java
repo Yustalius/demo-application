@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import sdb.app.config.Config;
 import sdb.app.data.Databases;
 import sdb.app.data.dao.UserDao;
-import sdb.app.data.entity.user.UserEntity;
+import sdb.app.data.entity.user.UserEntityOld;
 import sdb.app.logging.Logger;
 
 import java.sql.*;
@@ -24,7 +24,7 @@ public class UserDaoImpl implements UserDao {
   }
 
   @Override
-  public UserEntity create(UserEntity user) {
+  public UserEntityOld create(UserEntityOld user) {
     try (PreparedStatement ps = connection.prepareStatement(
         "INSERT INTO users (id, first_name, last_name, age) VALUES (?, ?, ?, ?)",
         Statement.RETURN_GENERATED_KEYS
@@ -53,7 +53,7 @@ public class UserDaoImpl implements UserDao {
   }
 
   @Override
-  public Optional<UserEntity> get(int id) {
+  public Optional<UserEntityOld> get(int id) {
     try (Connection connection = Databases.connection(CFG.postgresUrl())) {
       try (PreparedStatement ps = connection.prepareStatement(
           "SELECT * FROM users WHERE id = ?"
@@ -63,7 +63,7 @@ public class UserDaoImpl implements UserDao {
 
         try (ResultSet rs = ps.getResultSet()) {
           if (rs.next()) {
-            UserEntity user = new UserEntity();
+            UserEntityOld user = new UserEntityOld();
             user.setId(rs.getInt("id"));
             user.setFirstName(rs.getString("first_name"));
             user.setLastName(rs.getString("last_name"));
@@ -81,7 +81,7 @@ public class UserDaoImpl implements UserDao {
   }
 
   @Override
-  public List<UserEntity> getUsers() {
+  public List<UserEntityOld> getUsers() {
     try (Connection connection = Databases.connection(CFG.postgresUrl())) {
       try (PreparedStatement ps = connection.prepareStatement(
           "SELECT * FROM users"
@@ -89,9 +89,9 @@ public class UserDaoImpl implements UserDao {
         ps.execute();
 
         try (ResultSet rs = ps.getResultSet()) {
-          List<UserEntity> users = new ArrayList<>();
+          List<UserEntityOld> users = new ArrayList<>();
           while (rs.next()) {
-            UserEntity user = new UserEntity();
+            UserEntityOld user = new UserEntityOld();
             user.setId(rs.getInt("id"));
             user.setFirstName(rs.getString("first_name"));
             user.setLastName(rs.getString("last_name"));
@@ -123,7 +123,7 @@ public class UserDaoImpl implements UserDao {
   }
 
   @Override
-  public void update(int userId, UserEntity user) {
+  public void update(int userId, UserEntityOld user) {
     try (Connection connection = Databases.connection(CFG.postgresUrl())) {
       try (PreparedStatement ps = connection.prepareStatement(
           updateUserSql(userId, user)
@@ -135,7 +135,7 @@ public class UserDaoImpl implements UserDao {
     }
   }
 
-  public static String updateUserSql(int userId, UserEntity userEntity) {
+  public static String updateUserSql(int userId, UserEntityOld userEntity) {
     StringBuilder sqlBuilder = new StringBuilder("UPDATE users SET ");
 
     boolean hasUpdates = false;

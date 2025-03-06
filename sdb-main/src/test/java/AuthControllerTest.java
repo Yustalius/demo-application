@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import sdb.app.controller.AuthController;
 import sdb.app.model.auth.RegisterJson;
-import sdb.app.model.user.UserJson;
+import sdb.app.model.user.UserDTO;
 import sdb.app.service.AuthService;
 import sdb.app.service.UserService;
 
@@ -29,13 +29,13 @@ class AuthControllerTest {
   private AuthController authController;
 
   private RegisterJson validRegisterJson;
-  private UserJson registeredUser;
+  private UserDTO registeredUser;
   private RegisterJson loginJson;
 
   @BeforeEach
   void setUp() {
     validRegisterJson = new RegisterJson("testuser", "password", "John", "Doe", 30);
-    registeredUser = new UserJson(1, "John", "Doe", 30);
+    registeredUser = new UserDTO(1, "John", "Doe", 30);
     loginJson = new RegisterJson("testuser", "password", "", "", null);
   }
 
@@ -43,7 +43,7 @@ class AuthControllerTest {
   void register_ShouldReturn200_WhenUserCreated() {
     when(authService.register(validRegisterJson)).thenReturn(registeredUser);
 
-    ResponseEntity<UserJson> response = authController.register(validRegisterJson);
+    ResponseEntity<UserDTO> response = authController.register(validRegisterJson);
 
     verify(authService).register(validRegisterJson);
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -52,10 +52,10 @@ class AuthControllerTest {
 
   @Test
   void login_ShouldReturn200_WhenUserExists() {
-    UserJson loggedInUser = new UserJson(1, "John", "Doe", 30);
+    UserDTO loggedInUser = new UserDTO(1, "John", "Doe", 30);
     when(authService.login(loginJson)).thenReturn(loggedInUser);
 
-    ResponseEntity<UserJson> response = authController.login(loginJson);
+    ResponseEntity<UserDTO> response = authController.login(loginJson);
 
     verify(authService).login(loginJson);
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);

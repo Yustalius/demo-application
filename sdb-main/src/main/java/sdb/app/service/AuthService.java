@@ -1,11 +1,11 @@
 package sdb.app.service;
 
 import sdb.app.model.auth.RegisterJson;
-import sdb.app.model.user.UserJson;
+import sdb.app.model.user.UserDTO;
 
 public interface AuthService {
 
-  UserJson register(RegisterJson json);
+  UserDTO register(RegisterJson json);
 
-  UserJson login(RegisterJson json);
+  String login(RegisterJson json);
 }

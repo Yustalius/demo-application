@@ -9,7 +9,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 import sdb.app.data.dao.AuthDao;
 import sdb.app.data.entity.auth.RegisterEntity;
-import sdb.app.data.entity.user.UserEntity;
+import sdb.app.data.entity.user.UserEntityOld;
 import sdb.app.data.mapper.UserEntityRowMapper;
 import sdb.app.ex.UserNotFoundException;
 import sdb.app.logging.Logger;
@@ -32,7 +32,7 @@ public class AuthDaoSpringImpl implements AuthDao {
   }
 
   @Override
-  public UserEntity register(RegisterEntity entity) {
+  public UserEntityOld register(RegisterEntity entity) {
     KeyHolder keyHolder = new GeneratedKeyHolder();
 
     jdbcTemplate.update(connection -> {
@@ -45,7 +45,7 @@ public class AuthDaoSpringImpl implements AuthDao {
       return ps;
     }, keyHolder);
 
-    UserEntity user = new UserEntity();
+    UserEntityOld user = new UserEntityOld();
     user.setId((Integer) requireNonNull(keyHolder.getKeys().get("id")));
     user.setFirstName(entity.getFirstName());
     user.setLastName(entity.getLastName());
@@ -54,14 +54,11 @@ public class AuthDaoSpringImpl implements AuthDao {
   }
 
   @Override
-  public UserEntity login(RegisterEntity entity) {
+  public UserEntityOld login(RegisterEntity entity) {
     try {
       return jdbcTemplate.queryForObject(
           """
-              SELECT users.id, users.first_name, users.last_name, users.age 
-              FROM users 
-              JOIN user_creds uc ON users.id = uc.id 
-              WHERE uc.username = ? AND uc.pass = ?
+              SELECT * FROM user_creds WHERE username = ? AND pass = ?
               """,
           UserEntityRowMapper.instance,
           entity.getUsername(),

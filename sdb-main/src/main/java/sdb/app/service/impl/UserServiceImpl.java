@@ -1,8 +1,8 @@
 package sdb.app.service.impl;
 
 import sdb.app.data.dao.UserDao;
-import sdb.app.data.entity.user.UserEntity;
-import sdb.app.model.user.UserJson;
+import sdb.app.data.entity.user.UserEntityOld;
+import sdb.app.model.user.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import sdb.app.service.UserService;
@@ -17,20 +17,20 @@ public class UserServiceImpl implements UserService{
   private UserDao userDao;
 
   @Override
-  public void create(UserJson json) {
-    userDao.create(UserEntity.fromJson(json));
+  public void create(UserDTO json) {
+    userDao.create(UserEntityOld.fromJson(json));
   }
 
   @Override
-  public Optional<UserJson> get(int id) {
-    return userDao.get(id).map(UserJson::fromEntity);
+  public Optional<UserDTO> get(int id) {
+    return userDao.get(id).map(UserDTO::fromEntity);
   }
 
   @Override
-  public List<UserJson> getUsers() {
+  public List<UserDTO> getUsers() {
     return userDao.getUsers().stream()
-        .sorted(Comparator.comparing(UserEntity::getId))
-        .map(UserJson::fromEntity)
+        .sorted(Comparator.comparing(UserEntityOld::getId))
+        .map(UserDTO::fromEntity)
         .toList();
   }
 
@@ -40,8 +40,8 @@ public class UserServiceImpl implements UserService{
   }
 
   @Override
-  public void update(int userId, UserJson user) {
-    UserEntity userEntity = UserEntity.fromJson(user);
+  public void update(int userId, UserDTO user) {
+    UserEntityOld userEntity = UserEntityOld.fromJson(user);
     userDao.update(userId, userEntity);
   }
 }

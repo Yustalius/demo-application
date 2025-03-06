@@ -1,62 +1,66 @@
 package sdb.app.service.impl;
 
+import jakarta.annotation.Nonnull;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.jdbc.support.JdbcTransactionManager;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionException;
-import org.springframework.transaction.support.TransactionTemplate;
-import sdb.app.data.dao.AuthDao;
-import sdb.app.data.dao.UserDao;
-import sdb.app.data.entity.auth.RegisterEntity;
-import sdb.app.data.entity.user.UserEntity;
+import org.springframework.transaction.annotation.Transactional;
+import sdb.app.data.entity.user.UserCredsEntity;
+import sdb.app.data.entity.user.UsersEntity;
+import sdb.app.data.repository.UserCredsRepository;
+import sdb.app.data.repository.UsersRepository;
+import sdb.app.ex.UserNotFoundException;
 import sdb.app.model.auth.RegisterJson;
-import sdb.app.model.user.UserJson;
+import sdb.app.model.user.UserDTO;
 import sdb.app.service.AuthService;
 import sdb.app.logging.Logger;
-
-import javax.sql.DataSource;
 
 import static sdb.app.data.Databases.transaction;
 
 @Service
+@RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
-  @Autowired
-  private Logger logger;
+  private final Logger logger;
+  private final UserCredsRepository userCredsRepository;
 
-  private final AuthDao authDao;
-  private final UserDao userDao;
-  private final TransactionTemplate transactionTemplate;
+  @Override
+  @Transactional
+  public UserDTO register(@Nonnull RegisterJson json) {
+    logger.info("Starting register process for user " + json);
+    UserCredsEntity creds = new UserCredsEntity();
+    creds.setUsername(json.username());
+    creds.setPassword(json.password());
 
-  public AuthServiceImpl(
-      AuthDao authDao,
-      UserDao userDao,
-      @Qualifier("dbDatasource") DataSource dataSource
-  ) {
-    this.authDao = authDao;
-    this.userDao = userDao;
-    this.transactionTemplate = new TransactionTemplate(new JdbcTransactionManager(dataSource));
+    UsersEntity user = new UsersEntity();
+    user.setFirstName(json.firstName());
+    user.setLastName(json.lastName());
+    user.setAge(json.age());
+
+    user.setUserCreds(creds);
+    creds.setUser(user);
+    UserCredsEntity createdUser = userCredsRepository.save(creds);
+    return new UserDTO(
+        createdUser.getId(),
+        json.firstName(),
+        json.lastName(),
+        json.age());
   }
 
   @Override
-  public UserJson register(RegisterJson json) {
-    logger.info("Starting user creation process for ", json);
-    try {
-      UserEntity user = transactionTemplate.execute(status -> {
-        UserEntity registeredUser = authDao.register(RegisterEntity.fromJson(json));
+  @Transactional(readOnly = true)
+  public String login(@Nonnull RegisterJson json) {
+    UserCredsEntity creds = userCredsRepository.findByUsername(json.username())
+        .orElseThrow(() ->
+            new UserNotFoundException("Not found user with username = " + json.username()));
 
-        return userDao.create(registeredUser);
-      });
-      return UserJson.fromEntity(user);
-    } catch (TransactionException e) {
-      logger.error("Couldn't create user ", e.getMessage());
-      throw new RuntimeException(e);
+    if (!creds.getPassword().equals(json.password())) {
+      throw new RuntimeException("bad creds");
     }
+
+    return generateToken();
   }
 
-  @Override
-  public UserJson login(RegisterJson json) {
-    return UserJson.fromEntity(
-        authDao.login(RegisterEntity.fromJson(json)));
+  private String generateToken() {
+    return "token";
   }
 }

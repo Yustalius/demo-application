@@ -1,6 +1,6 @@
 package sdb.app.model.user;
 
-import sdb.app.data.entity.user.UserEntity;
+import sdb.app.data.entity.user.UserEntityOld;
 import sdb.app.model.validation.CreateValidationGroup;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -8,7 +8,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.SneakyThrows;
 
-public record UserJson(
+public record UserDTO(
     @JsonProperty("id")
     Integer id,
     @JsonProperty("firstName")
@@ -21,8 +21,8 @@ public record UserJson(
     @NotNull(message = "Field 'age' required", groups = CreateValidationGroup.class)
     Integer age
 ) {
-  public static UserJson fromEntity(UserEntity user) {
-    return new UserJson(
+  public static UserDTO fromEntity(UserEntityOld user) {
+    return new UserDTO(
         user.getId(),
         user.getFirstName(),
         user.getLastName(),

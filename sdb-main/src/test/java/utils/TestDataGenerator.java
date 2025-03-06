@@ -1,7 +1,7 @@
 package utils;
 
 import net.datafaker.Faker;
-import sdb.app.model.user.UserJson;
+import sdb.app.model.user.UserDTO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,10 +16,10 @@ public class TestDataGenerator {
    * @param count количество пользователей для генерации
    * @return список сгенерированных пользователей
    */
-  public static List<UserJson> generateUsers(int count) {
-    List<UserJson> users = new ArrayList<>();
+  public static List<UserDTO> generateUsers(int count) {
+    List<UserDTO> users = new ArrayList<>();
     for (int i = 1; i <= count; i++) {
-      UserJson user = new UserJson(
+      UserDTO user = new UserDTO(
           i, // ID
           faker.name().firstName(), // firstName
           faker.name().lastName(),  // lastName
@@ -35,8 +35,8 @@ public class TestDataGenerator {
    *
    * @return сгенерированный пользователь
    */
-  public static UserJson generateUser() {
-    return new UserJson(
+  public static UserDTO generateUser() {
+    return new UserDTO(
         faker.number().randomDigitNotZero(), // ID
         faker.name().firstName(),            // firstName
         faker.name().lastName(),             // lastName

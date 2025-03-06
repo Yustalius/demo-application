@@ -3,7 +3,7 @@ package sdb.app.data.dao.impl;
 import org.springframework.beans.factory.annotation.Qualifier;
 import sdb.app.data.dao.AuthDao;
 import sdb.app.data.entity.auth.RegisterEntity;
-import sdb.app.data.entity.user.UserEntity;
+import sdb.app.data.entity.user.UserEntityOld;
 import sdb.app.ex.DuplicateUsernameException;
 import sdb.app.logging.Logger;
 
@@ -20,7 +20,7 @@ public class AuthDaoImpl implements AuthDao {
   }
 
   @Override
-  public UserEntity register(RegisterEntity entity) {
+  public UserEntityOld register(RegisterEntity entity) {
     try (PreparedStatement ps = connection.prepareStatement(
         "INSERT INTO user_creds (username, pass) VALUES (?, ?)",
         Statement.RETURN_GENERATED_KEYS
@@ -39,7 +39,7 @@ public class AuthDaoImpl implements AuthDao {
         }
       }
 
-      UserEntity user = new UserEntity();
+      UserEntityOld user = new UserEntityOld();
       user.setId(userId);
       user.setFirstName(entity.getFirstName());
       user.setLastName(entity.getLastName());
@@ -56,7 +56,7 @@ public class AuthDaoImpl implements AuthDao {
   }
 
   @Override
-  public UserEntity login(RegisterEntity entity) {
+  public UserEntityOld login(RegisterEntity entity) {
 
     return null;
   }

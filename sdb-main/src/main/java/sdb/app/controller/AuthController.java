@@ -8,7 +8,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import sdb.app.model.auth.RegisterJson;
-import sdb.app.model.user.UserJson;
+import sdb.app.model.auth.Token;
+import sdb.app.model.user.UserDTO;
 import sdb.app.model.validation.LoginValidationGroup;
 import sdb.app.model.validation.RegistrationValidationGroup;
 import sdb.app.service.AuthService;
@@ -24,19 +25,18 @@ public class AuthController {
   private AuthService authService;
 
   @PostMapping("/register")
-  public ResponseEntity<UserJson> register(
+  public ResponseEntity<UserDTO> register(
       @Validated(RegistrationValidationGroup.class) @RequestBody RegisterJson json) {
-    logger.info("Starting register process for user " + json);
-    UserJson user = authService.register(json);
+    UserDTO user = authService.register(json);
 
     logger.info("Successfully registered user id = ", user.id());
     return ResponseEntity.ok(user);
   }
 
   @PostMapping("/login")
-  public ResponseEntity<UserJson> login(
+  public Token login(
       @Validated(LoginValidationGroup.class) @RequestBody RegisterJson json
   ) {
-    return ResponseEntity.ok(authService.login(json));
+    return new Token(authService.login(json));
   }
 }

@@ -5,7 +5,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import sdb.app.controller.UserController;
-import sdb.app.model.user.UserJson;
+import sdb.app.model.user.UserDTO;
 import sdb.app.service.UserService;
 
 import java.util.List;
@@ -24,13 +24,13 @@ public class UserControllerTest {
   @InjectMocks
   private UserController userController;
 
-  private final List<UserJson> testUsers = generateUsers(3);
+  private final List<UserDTO> testUsers = generateUsers(3);
 
   @Test
   void getAllUsersShouldReturnListOfUsers() {
     when(userService.getUsers()).thenReturn(testUsers);
 
-    List<UserJson> result = userController.getAllUsers();
+    List<UserDTO> result = userController.getAllUsers();
 
     assertThat(result).containsExactlyElementsOf(testUsers);
     verify(userService, times(1)).getUsers();
@@ -80,7 +80,7 @@ public class UserControllerTest {
   @Test
   @Disabled
   void updateUserWhenUserExistsReturnsUpdatedUser() {
-    UserJson updatedUser = new UserJson(1, "Jane", "Doe", 31);
+    UserDTO updatedUser = new UserDTO(1, "Jane", "Doe", 31);
     when(userService.get(1)).thenReturn(Optional.of(testUsers.get(0)));
 //    when(userService.update(eq(1), any())).thenReturn(updatedUser);
 

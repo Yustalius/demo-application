@@ -42,19 +42,27 @@ public class ProductService {
   }
 
   @Transactional(readOnly = true)
-  public ProductEntity getById(int productId) {
-    return productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException(productId));
+  public ProductDTO getById(int productId) {
+    return ProductDTO.fromEntity(
+        productRepository.findById(productId)
+            .orElseThrow(() -> new ProductNotFoundException(productId))
+    );
   }
 
   @Transactional(readOnly = true)
-  public List<ProductEntity> getAll() {
-    return productRepository.findAll();
+  public List<ProductDTO> getAll() {
+    return productRepository.findAll().stream()
+        .map(ProductDTO::fromEntity)
+        .toList();
   }
 
   @Transactional
   public void delete(int productId) {
-    productRepository.findById(productId).ifPresent(product -> {
-      productRepository.deleteById(productId);
-    });
+    productRepository.findById(productId)
+        .map(product -> {
+          productRepository.delete(product);
+          return product;
+        })
+        .orElseThrow(() -> new ProductNotFoundException(productId));
   }
 }

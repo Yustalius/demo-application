@@ -1,19 +1,19 @@
 package sdb.app.service;
 
-import sdb.app.model.user.UserJson;
+import sdb.app.model.user.UserDTO;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface UserService {
 
-  void create(UserJson user);
+  void create(UserDTO user);
 
-  Optional<UserJson> get(int id);
+  Optional<UserDTO> get(int id);
 
-  List<UserJson> getUsers();
+  List<UserDTO> getUsers();
 
   void delete(int id);
 
-  void update(int userId, UserJson user);
+  void update(int userId, UserDTO user);
 }

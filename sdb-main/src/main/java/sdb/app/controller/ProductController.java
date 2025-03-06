@@ -28,12 +28,12 @@ public class ProductController {
   }
 
   @GetMapping("{id}")
-  public ProductEntity getProductById(@PathVariable int id) {
+  public ProductDTO getProductById(@PathVariable int id) {
     return productService.getById(id);
   }
 
   @GetMapping
-  public List<ProductEntity> getAllProducts() {
+  public List<ProductDTO> getAllProducts() {
     return productService.getAll();
   }
 

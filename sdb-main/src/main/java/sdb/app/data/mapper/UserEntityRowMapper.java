@@ -1,12 +1,12 @@
 package sdb.app.data.mapper;
 
 import org.springframework.jdbc.core.RowMapper;
-import sdb.app.data.entity.user.UserEntity;
+import sdb.app.data.entity.user.UserEntityOld;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class UserEntityRowMapper implements RowMapper<UserEntity> {
+public class UserEntityRowMapper implements RowMapper<UserEntityOld> {
 
   public static final UserEntityRowMapper instance = new UserEntityRowMapper();
 
@@ -14,8 +14,8 @@ public class UserEntityRowMapper implements RowMapper<UserEntity> {
   }
 
   @Override
-  public UserEntity mapRow(ResultSet rs, int rowNum) throws SQLException {
-    UserEntity result = new UserEntity();
+  public UserEntityOld mapRow(ResultSet rs, int rowNum) throws SQLException {
+    UserEntityOld result = new UserEntityOld();
     result.setId(rs.getInt("id"));
     result.setFirstName(rs.getString("first_name"));
     result.setLastName(rs.getString("last_name"));
