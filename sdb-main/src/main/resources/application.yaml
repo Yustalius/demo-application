@@ -29,6 +29,11 @@ spring:
     username: postgres
     password: 1234
     driver-class-name: org.postgresql.Driver
+  rabbitmq:
+    host: localhost
+    port: 15672
+    username: "sdb_admin"
+    password: "sdb_password"
 
 server:
   port: 8080
@@ -52,6 +57,11 @@ spring:
     username: postgres
     password: 1234
     driver-class-name: org.postgresql.Driver
+  rabbitmq:
+    host: host.docker.internal
+    port: 15672
+    username: "sdb_admin"
+    password: "sdb_password"
 
 server:
   port: 8080

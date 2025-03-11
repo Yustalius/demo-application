@@ -5,8 +5,8 @@ services:
 #    hostname: sdb-rabbit
 #    restart: always
 #    environment:
-#      - RABBITMQ_DEFAULT_USER=rmuser
-#      - RABBITMQ_DEFAULT_PASS=rmpassword
+#      - RABBITMQ_DEFAULT_USER=sdb_admin
+#      - RABBITMQ_DEFAULT_PASS=sdb_password
 #      - RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS=-rabbit disk_free_limit 2147483648
 #    volumes:
 #      - rabbitmq_data:/var/lib/rabbitmq

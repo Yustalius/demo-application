@@ -41,6 +41,9 @@ dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.18.2'
     implementation 'org.apache.commons:commons-lang3:3.17.0'
 
+    // RabbitMQ
+    implementation 'org.springframework.boot:spring-boot-starter-amqp'
+
     // Rest
     implementation "com.squareup.retrofit2:converter-jackson:${retrofitVersion}"
     implementation "com.squareup.retrofit2:retrofit:${retrofitVersion}"
