@@ -1,5 +1,18 @@
 version: '3.8'
 services:
+#  sdb-rabbit:
+#    image: rabbitmq:3.13.7-management
+#    hostname: sdb-rabbit
+#    restart: always
+#    environment:
+#      - RABBITMQ_DEFAULT_USER=rmuser
+#      - RABBITMQ_DEFAULT_PASS=rmpassword
+#      - RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS=-rabbit disk_free_limit 2147483648
+#    volumes:
+#      - rabbitmq_data:/var/lib/rabbitmq
+#    ports:
+#      - 15672:15672
+
   sdb-core:
     environment:
       - SPRING_PROFILES_ACTIVE=docker
@@ -13,3 +26,6 @@ services:
     build: ./sdb-logging
     ports:
       - "8082:8082"
+
+volumes:
+  rabbitmq_data:
