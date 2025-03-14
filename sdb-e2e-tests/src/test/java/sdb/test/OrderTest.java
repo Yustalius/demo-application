@@ -3,7 +3,7 @@ package sdb.test;
 import org.junit.jupiter.api.Test;
 import sdb.jupiter.annotation.Order;
 import sdb.jupiter.annotation.User;
-import sdb.model.product.OrderDTO;
+import sdb.model.order.OrderDTO;
 import sdb.model.user.UserDTO;
 import sdb.service.OrderClient;
 
@@ -25,6 +25,7 @@ public class OrderTest {
             user.id(),
             PRODUCT_ID,
             200,
+            null,
             null));
 
     assertThat(orders.getFirst().orderId()).isNotNull();

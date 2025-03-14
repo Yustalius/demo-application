@@ -1,4 +1,4 @@
-package sdb.model.product;
+package sdb.model.order;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -14,7 +14,8 @@ public record OrderDTO(
     Integer productId,
     @JsonProperty("price")
     Integer price,
-    Long timestamp
+    Long timestamp,
+    OrderStatus status
 ) {
   public static OrderDTO fromEntity(OrderEntity entity) {
     return new OrderDTO(
@@ -22,7 +23,8 @@ public record OrderDTO(
         entity.getUserId(),
         entity.getProductId(),
         entity.getPrice(),
-        entity.getTimestamp()
+        entity.getTimestamp(),
+        entity.getStatus()
     );
   }
 

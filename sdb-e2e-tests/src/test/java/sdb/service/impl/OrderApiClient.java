@@ -4,7 +4,7 @@ import retrofit2.Response;
 import sdb.api.OrderApi;
 import sdb.api.core.AuthInterceptor;
 import sdb.api.core.RestClient;
-import sdb.model.product.OrderDTO;
+import sdb.model.order.OrderDTO;
 import sdb.service.OrderClient;
 
 import java.io.IOException;

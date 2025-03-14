@@ -8,7 +8,7 @@ import sdb.config.Config;
 import sdb.data.entity.orders.OrderEntity;
 import sdb.jupiter.annotation.Order;
 import sdb.jupiter.annotation.User;
-import sdb.model.product.OrderDTO;
+import sdb.model.order.OrderDTO;
 import sdb.model.user.UserDTO;
 import sdb.service.impl.OrderDbClient;
 

@@ -1,7 +1,7 @@
 package sdb.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import sdb.model.product.OrderDTO;
+import sdb.model.order.OrderDTO;
 
 import java.util.ArrayList;
 import java.util.List;

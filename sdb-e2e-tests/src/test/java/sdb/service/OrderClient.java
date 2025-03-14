@@ -1,7 +1,7 @@
 package sdb.service;
 
 
-import sdb.model.product.OrderDTO;
+import sdb.model.order.OrderDTO;
 import sdb.service.impl.OrderApiClient;
 
 import java.util.List;

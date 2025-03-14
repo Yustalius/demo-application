@@ -2,7 +2,7 @@ package sdb.api;
 
 import retrofit2.Call;
 import retrofit2.http.*;
-import sdb.model.product.OrderDTO;
+import sdb.model.order.OrderDTO;
 
 import java.util.List;
 

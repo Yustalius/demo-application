@@ -3,7 +3,8 @@ package sdb.data.entity.orders;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import sdb.model.product.OrderDTO;
+import sdb.model.order.OrderDTO;
+import sdb.model.order.OrderStatus;
 
 @Getter
 @Setter
@@ -14,6 +15,7 @@ public class OrderEntity {
   private Integer productId;
   private Integer price;
   private Long timestamp;
+  private OrderStatus status;
 
   public static OrderEntity fromJson(OrderDTO json) {
     OrderEntity entity = new OrderEntity();
@@ -21,6 +23,7 @@ public class OrderEntity {
     entity.setProductId(json.productId());
     entity.setPrice(json.price());
     entity.setTimestamp(json.timestamp());
+    entity.setStatus(json.status());
 
     return entity;
   }
