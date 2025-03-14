@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import sdb.app.data.entity.product.ProductEntity;
 import sdb.app.data.entity.user.UsersEntity;
+import sdb.app.model.order.OrderStatus;
 
 @Entity
 @Table(name = "orders")
@@ -30,4 +31,8 @@ public class OrderEntity {
 
   @Column(nullable = false)
   private Long timestamp;
+
+  @Column(nullable = false)
+  @Enumerated(EnumType.STRING)
+  private OrderStatus status;
 }

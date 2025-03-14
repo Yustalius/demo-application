@@ -33,7 +33,7 @@ public class OrderController {
       @PathVariable int id
   ) {
     logger.info("Get user orders id = ", id);
-    return orderService.getUserPurchases(id);
+    return orderService.getUserOrders(id);
   }
 
   @GetMapping("/{id}")
@@ -41,7 +41,7 @@ public class OrderController {
       @PathVariable int id
   ) {
     logger.info("Get order id = ", id);
-    return orderService.getPurchase(id);
+    return orderService.getOrder(id);
   }
 
   @GetMapping

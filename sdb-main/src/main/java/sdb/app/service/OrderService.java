@@ -10,7 +10,7 @@ public interface OrderService {
 
   List<OrderDTO> getOrders();
 
-  OrderDTO getPurchase(int purchaseId);
+  OrderDTO getOrder(int purchaseId);
 
-  List<OrderDTO> getUserPurchases(int userId);
+  List<OrderDTO> getUserOrders(int userId);
 }

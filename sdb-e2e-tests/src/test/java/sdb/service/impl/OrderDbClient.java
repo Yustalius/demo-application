@@ -45,7 +45,7 @@ public class OrderDbClient {
 
   }
 
-  PurchaseJson getPurchase(int purchaseId) {
+  PurchaseJson getPurchase(int orderId) {
 
   }
 

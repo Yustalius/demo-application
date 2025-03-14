@@ -27,7 +27,7 @@ public class OrderTest {
             200,
             null));
 
-    assertThat(orders.getFirst().purchaseId()).isNotNull();
+    assertThat(orders.getFirst().orderId()).isNotNull();
     assertThat(orders.getFirst().productId()).isEqualTo(PRODUCT_ID);
   }
 
@@ -55,8 +55,8 @@ public class OrderTest {
         .findAny()
         .orElseThrow();
 
-    OrderDTO purchase = orderClient.getOrder(randomOrder.purchaseId());
-    assertThat(purchase.purchaseId()).isEqualTo(randomOrder.purchaseId());
+    OrderDTO purchase = orderClient.getOrder(randomOrder.orderId());
+    assertThat(purchase.orderId()).isEqualTo(randomOrder.orderId());
   }
 
   @Test

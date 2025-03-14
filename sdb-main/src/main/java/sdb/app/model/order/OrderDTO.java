@@ -6,13 +6,14 @@ import lombok.SneakyThrows;
 import sdb.app.data.entity.order.OrderEntity;
 
 public record OrderDTO(
-    Integer purchaseId,
+    Integer orderId,
     Integer userId,
     @JsonProperty("productId")
     Integer productId,
     @JsonProperty("price")
     Integer price,
-    Long timestamp
+    Long timestamp,
+    OrderStatus status
 ) {
   public static OrderDTO fromEntity(OrderEntity entity) {
     return new OrderDTO(
@@ -20,7 +21,8 @@ public record OrderDTO(
         entity.getUser().getId(),
         entity.getProduct() == null ? null : entity.getProduct().getId(),
         entity.getPrice(),
-        entity.getTimestamp()
+        entity.getTimestamp(),
+        entity.getStatus()
     );
   }
 

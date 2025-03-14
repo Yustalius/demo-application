@@ -14,6 +14,7 @@ import sdb.app.ex.OrderNotFoundException;
 import sdb.app.ex.ProductNotFoundException;
 import sdb.app.ex.UserNotFoundException;
 import sdb.app.model.order.OrderDTO;
+import sdb.app.model.order.OrderStatus;
 import sdb.app.service.OrderService;
 
 import java.util.ArrayList;
@@ -43,6 +44,7 @@ public class OrderServiceImpl implements OrderService {
       entity.setProduct(product);
       entity.setPrice(order.price());
       entity.setTimestamp(System.currentTimeMillis());
+      entity.setStatus(OrderStatus.PENDING);
 
       entities.add(entity);
     }
@@ -63,7 +65,7 @@ public class OrderServiceImpl implements OrderService {
 
   @Override
   @Transactional(readOnly = true)
-  public OrderDTO getPurchase(int orderId) {
+  public OrderDTO getOrder(int orderId) {
     return OrderDTO.fromEntity(
         orderRepository.findById(orderId)
             .orElseThrow(() -> new OrderNotFoundException(orderId))
@@ -72,7 +74,7 @@ public class OrderServiceImpl implements OrderService {
 
   @Override
   @Transactional
-  public List<OrderDTO> getUserPurchases(int userId) {
+  public List<OrderDTO> getUserOrders(int userId) {
     UsersEntity user = usersRepository.findById(userId)
         .orElseThrow(() -> new UserNotFoundException(userId));
 

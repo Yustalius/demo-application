@@ -8,7 +8,7 @@ import sdb.data.entity.orders.OrderEntity;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record OrderDTO(
-    Integer purchaseId,
+    Integer orderId,
     Integer userId,
     @JsonProperty("productId")
     Integer productId,
