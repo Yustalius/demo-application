@@ -1,27 +1,34 @@
 package sdb.app.data.entity.purchase;
 
+import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
-import sdb.app.model.purchase.PurchaseJson;
+import sdb.app.data.entity.product.ProductEntity;
+import sdb.app.data.entity.user.UsersEntity;
 
+@Entity
+@Table(name = "orders")
 @Getter
 @Setter
-@ToString
 public class PurchaseEntity {
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer purchaseId;
-  private Integer userId;
-  private Integer productId;
+
+  @ManyToOne
+  @JoinColumn(name = "user_id", // <- имя колонки во внешнем ключе
+      referencedColumnName = "id", // <- имя колонки в users
+      nullable = false)
+  private UsersEntity user;
+
+  @ManyToOne
+  @JoinColumn(name = "product_id", referencedColumnName = "id", nullable = true)
+  private ProductEntity product;
+
+  @Column(nullable = false)
   private Integer price;
+
+  @Column(nullable = false)
   private Long timestamp;
-
-  public static PurchaseEntity fromJson(PurchaseJson json) {
-    PurchaseEntity entity = new PurchaseEntity();
-    entity.setUserId(json.userId());
-    entity.setProductId(json.productId());
-    entity.setPrice(json.price());
-    entity.setTimestamp(json.timestamp());
-
-    return entity;
-  }
 }

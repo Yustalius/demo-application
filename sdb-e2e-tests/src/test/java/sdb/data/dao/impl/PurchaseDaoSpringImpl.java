@@ -25,7 +25,7 @@ public class PurchaseDaoSpringImpl implements PurchaseDao {
   public void createPurchase(PurchaseEntity... purchases) {
     JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
     jdbcTemplate.batchUpdate(
-        "INSERT INTO purchases (user_id, product_id, price, timestamp) VALUES (?, ?, ?, ?)",
+        "INSERT INTO orders (user_id, product_id, price, timestamp) VALUES (?, ?, ?, ?)",
         new BatchPreparedStatementSetter() {
           @Override
           public void setValues(PreparedStatement ps, int i) throws SQLException {
@@ -48,7 +48,7 @@ public class PurchaseDaoSpringImpl implements PurchaseDao {
     JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
     return Optional.of(
         jdbcTemplate.query(
-            "SELECT * FROM \"purchases\"",
+            "SELECT * FROM \"orders\"",
             PurchaseEntityRowMapper.instance
         ));
   }
@@ -58,7 +58,7 @@ public class PurchaseDaoSpringImpl implements PurchaseDao {
     JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
     return Optional.ofNullable(
         jdbcTemplate.queryForObject(
-            "SELECT * FROM \"purchases\" WHERE purchase_id = ?",
+            "SELECT * FROM \"orders\" WHERE purchase_id = ?",
             PurchaseEntityRowMapper.instance,
             purchaseId
         ));
@@ -68,7 +68,7 @@ public class PurchaseDaoSpringImpl implements PurchaseDao {
   public Optional<List<PurchaseEntity>> getUserPurchases(int userId) {
     JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
     return Optional.of(jdbcTemplate.query(
-        "SELECT * FROM \"purchases\" WHERE user_id = ?",
+        "SELECT * FROM \"orders\" WHERE user_id = ?",
         PurchaseEntityRowMapper.instance,
         userId
     ));

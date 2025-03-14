@@ -1,17 +1,17 @@
 package sdb.app.data.dao;
 
-import sdb.app.data.entity.purchase.PurchaseEntity;
+import sdb.app.data.entity.purchase.PurchaseEntityOld;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface PurchaseDao {
 
-  PurchaseEntity createPurchase(PurchaseEntity purchase);
+  PurchaseEntityOld createPurchase(PurchaseEntityOld purchase);
 
-  Optional<List<PurchaseEntity>> getPurchases();
+  Optional<List<PurchaseEntityOld>> getPurchases();
 
-  Optional<PurchaseEntity> getPurchase(int purchaseId);
+  Optional<PurchaseEntityOld> getPurchase(int purchaseId);
 
-  Optional<List<PurchaseEntity>> getUserPurchases(int userId);
+  Optional<List<PurchaseEntityOld>> getUserPurchases(int userId);
 }

@@ -14,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class PurchaseTest {
 
   private final PurchaseClient purchaseClient = PurchaseClient.getInstance();
-  private static final int PRODUCT_ID = 156;
+  private static final int PRODUCT_ID = 217;
 
   @Test
   @User

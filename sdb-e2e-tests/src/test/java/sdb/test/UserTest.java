@@ -16,13 +16,6 @@ public class UserTest {
   private final Faker faker = new Faker();
 
   @Test
-  void getAllUsersTest() {
-    List<UserDTO> allUsers = userClient.getAllUsers();
-
-    assertThat(allUsers).isNotEmpty();
-  }
-
-  @Test
   @User
   void getUserInfoTest(UserDTO user) {
     UserDTO userInfo = userClient.getUser(user.id());

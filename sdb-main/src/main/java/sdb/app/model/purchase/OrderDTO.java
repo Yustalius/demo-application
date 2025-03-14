@@ -5,7 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import sdb.app.data.entity.purchase.PurchaseEntity;
 
-public record PurchaseJson(
+import java.util.Objects;
+
+public record OrderDTO(
     Integer purchaseId,
     Integer userId,
     @JsonProperty("productId")
@@ -14,11 +16,11 @@ public record PurchaseJson(
     Integer price,
     Long timestamp
 ) {
-  public static PurchaseJson fromEntity(PurchaseEntity entity) {
-    return new PurchaseJson(
+  public static OrderDTO fromEntity(PurchaseEntity entity) {
+    return new OrderDTO(
         entity.getPurchaseId(),
-        entity.getUserId(),
-        entity.getProductId(),
+        entity.getUser().getId(),
+        entity.getProduct() == null ? null : entity.getProduct().getId(),
         entity.getPrice(),
         entity.getTimestamp()
     );

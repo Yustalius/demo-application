@@ -6,7 +6,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 import sdb.app.data.dao.PurchaseDao;
-import sdb.app.data.entity.purchase.PurchaseEntity;
+import sdb.app.data.entity.purchase.PurchaseEntityOld;
 import sdb.app.data.mapper.PurchaseEntityRowMapper;
 
 import java.sql.*;
@@ -20,7 +20,7 @@ public class PurchaseDaoSpringImpl implements PurchaseDao {
   private JdbcTemplate jdbcTemplate;
 
   @Override
-  public PurchaseEntity createPurchase(PurchaseEntity purchase) {
+  public PurchaseEntityOld createPurchase(PurchaseEntityOld purchase) {
     KeyHolder keyHolder = new GeneratedKeyHolder();
     jdbcTemplate.update(connection -> {
       PreparedStatement ps = connection.prepareStatement(
@@ -41,7 +41,7 @@ public class PurchaseDaoSpringImpl implements PurchaseDao {
   }
 
   @Override
-  public Optional<List<PurchaseEntity>> getPurchases() {
+  public Optional<List<PurchaseEntityOld>> getPurchases() {
     return Optional.of(
         jdbcTemplate.query(
             "SELECT * FROM \"purchases\"",
@@ -50,7 +50,7 @@ public class PurchaseDaoSpringImpl implements PurchaseDao {
   }
 
   @Override
-  public Optional<PurchaseEntity> getPurchase(int purchaseId) {
+  public Optional<PurchaseEntityOld> getPurchase(int purchaseId) {
     return Optional.ofNullable(
         jdbcTemplate.queryForObject(
             "SELECT * FROM \"purchases\" WHERE purchase_id = ?",
@@ -60,7 +60,7 @@ public class PurchaseDaoSpringImpl implements PurchaseDao {
   }
 
   @Override
-  public Optional<List<PurchaseEntity>> getUserPurchases(int userId) {
+  public Optional<List<PurchaseEntityOld>> getUserPurchases(int userId) {
     return Optional.of(jdbcTemplate.query(
         "SELECT * FROM \"purchases\" WHERE user_id = ?",
         PurchaseEntityRowMapper.instance,

@@ -1,11 +1,14 @@
 package sdb.app.config;
 
 import org.postgresql.util.PSQLException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import sdb.app.ex.OrderNotFoundException;
 import sdb.app.ex.ProductNotFoundException;
 import sdb.app.model.error.ErrorResponse;
 import sdb.app.ex.UserNotFoundException;
@@ -15,10 +18,11 @@ import static org.springframework.http.HttpStatus.*;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-  private static final Logger logger = new Logger();
+  @Autowired
+  private Logger logger;
 
-  @ExceptionHandler(PSQLException.class)
-  public ResponseEntity<ErrorResponse> handlePSQLException(PSQLException ex) {
+  @ExceptionHandler(DataIntegrityViolationException.class)
+  public ResponseEntity<ErrorResponse> handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
     if (ex.getMessage().contains(") is not present in table \"user_creds\"") || ex.getMessage().contains("Key (user_id)=(")) {
       logger.warn("User not found ", ex.getMessage());
       return ResponseEntity.status(NOT_FOUND)
@@ -26,7 +30,7 @@ public class GlobalExceptionHandler {
               "USER_NOT_FOUND",
               ex.getMessage()
           ));
-    } else if (ex.getMessage().contains("duplicate key value violates unique constraint \"user_creds_unique\"")) {
+    } else if (ex.getMessage().contains("constraint [user_creds_unique]")) {
       logger.warn("Username already exists ", ex.getMessage());
       return ResponseEntity.status(HttpStatus.BAD_REQUEST)
           .body(new ErrorResponse(
@@ -56,6 +60,15 @@ public class GlobalExceptionHandler {
     return ResponseEntity.status(NOT_FOUND)
         .body(new ErrorResponse(
             "PRODUCT_NOT_FOUND",
+            ex.getMessage()
+        ));
+  }
+
+  @ExceptionHandler(OrderNotFoundException.class)
+  public ResponseEntity<ErrorResponse> handleOrderNotFoundException(OrderNotFoundException ex) {
+    return ResponseEntity.status(NOT_FOUND)
+        .body(new ErrorResponse(
+            "ORDER_NOT_FOUND",
             ex.getMessage()
         ));
   }

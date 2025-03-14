@@ -1,8 +1,14 @@
 package sdb.app.data.entity.user;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import sdb.app.data.entity.purchase.PurchaseEntity;
+import sdb.app.model.user.UserDTO;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -22,7 +28,23 @@ public class UsersEntity {
   private Integer age;
 
   @OneToOne
-  @MapsId // id в UsersEntity совпадает с id в UserCredsEntity
-  @JoinColumn(name = "id") // Внешний ключ
+  @MapsId
+  @JoinColumn(name = "id")
+  @JsonManagedReference
   private UserCredsEntity userCreds;
+
+  @OneToMany(mappedBy = "user",
+      cascade = CascadeType.ALL,
+      orphanRemoval = true)
+  private List<PurchaseEntity> purchases = new ArrayList<>();
+
+  public static UsersEntity fromDto(UserDTO userDTO) {
+    UsersEntity entity = new UsersEntity();
+    entity.setId(userDTO.id());
+    entity.setFirstName(userDTO.firstName());
+    entity.setLastName(userDTO.lastName());
+    entity.setAge(userDTO.age());
+
+    return entity;
+  }
 }

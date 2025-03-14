@@ -1,6 +1,7 @@
 package sdb.app.model.user;
 
 import sdb.app.data.entity.user.UserEntityOld;
+import sdb.app.data.entity.user.UsersEntity;
 import sdb.app.model.validation.CreateValidationGroup;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,7 +22,7 @@ public record UserDTO(
     @NotNull(message = "Field 'age' required", groups = CreateValidationGroup.class)
     Integer age
 ) {
-  public static UserDTO fromEntity(UserEntityOld user) {
+  public static UserDTO fromEntity(UsersEntity user) {
     return new UserDTO(
         user.getId(),
         user.getFirstName(),

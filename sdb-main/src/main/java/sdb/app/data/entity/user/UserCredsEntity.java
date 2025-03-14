@@ -1,5 +1,6 @@
 package sdb.app.data.entity.user;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,5 +21,6 @@ public class UserCredsEntity {
   private String password;
 
   @OneToOne(mappedBy = "userCreds", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  @JsonBackReference
   private UsersEntity user;
 }
