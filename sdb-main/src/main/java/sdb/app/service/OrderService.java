@@ -1,6 +1,6 @@
 package sdb.app.service;
 
-import sdb.app.model.purchase.OrderDTO;
+import sdb.app.model.order.OrderDTO;
 
 import java.util.List;
 

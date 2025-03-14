@@ -1,7 +1,7 @@
 package sdb.jupiter.annotation;
 
 import org.junit.jupiter.api.extension.ExtendWith;
-import sdb.jupiter.extension.PurchaseExtension;
+import sdb.jupiter.extension.OrderExtension;
 import sdb.jupiter.extension.UserExtension;
 
 import java.lang.annotation.ElementType;
@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @ExtendWith({
     UserExtension.class,
-    PurchaseExtension.class
+    OrderExtension.class
 })
 public @interface User {
   String username() default "";
@@ -26,5 +26,5 @@ public @interface User {
 
   int age() default 0;
 
-  Purchase[] purchases() default {};
+  Order[] orders() default {};
 }

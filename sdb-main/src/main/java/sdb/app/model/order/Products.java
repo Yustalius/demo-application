@@ -1,4 +1,4 @@
-package sdb.app.model.purchase;
+package sdb.app.model.order;
 
 public enum Products {
   NEGRONI,

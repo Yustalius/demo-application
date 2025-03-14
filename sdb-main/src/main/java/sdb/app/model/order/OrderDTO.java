@@ -1,11 +1,9 @@
-package sdb.app.model.purchase;
+package sdb.app.model.order;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
-import sdb.app.data.entity.purchase.PurchaseEntity;
-
-import java.util.Objects;
+import sdb.app.data.entity.order.OrderEntity;
 
 public record OrderDTO(
     Integer purchaseId,
@@ -16,7 +14,7 @@ public record OrderDTO(
     Integer price,
     Long timestamp
 ) {
-  public static OrderDTO fromEntity(PurchaseEntity entity) {
+  public static OrderDTO fromEntity(OrderEntity entity) {
     return new OrderDTO(
         entity.getPurchaseId(),
         entity.getUser().getId(),

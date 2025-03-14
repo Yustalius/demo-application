@@ -4,10 +4,10 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
-import sdb.data.entity.purchases.PurchaseEntity;
+import sdb.data.entity.orders.OrderEntity;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public record PurchaseJson(
+public record OrderDTO(
     Integer purchaseId,
     Integer userId,
     @JsonProperty("productId")
@@ -16,8 +16,8 @@ public record PurchaseJson(
     Integer price,
     Long timestamp
 ) {
-  public static PurchaseJson fromEntity(PurchaseEntity entity) {
-    return new PurchaseJson(
+  public static OrderDTO fromEntity(OrderEntity entity) {
+    return new OrderDTO(
         entity.getPurchaseId(),
         entity.getUserId(),
         entity.getProductId(),

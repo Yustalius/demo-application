@@ -1,7 +1,6 @@
-package sdb.app.data.entity.purchase;
+package sdb.app.data.entity.order;
 
 import jakarta.persistence.*;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import sdb.app.data.entity.product.ProductEntity;
@@ -11,7 +10,7 @@ import sdb.app.data.entity.user.UsersEntity;
 @Table(name = "orders")
 @Getter
 @Setter
-public class PurchaseEntity {
+public class OrderEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer purchaseId;

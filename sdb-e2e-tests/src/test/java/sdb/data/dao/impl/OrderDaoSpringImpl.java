@@ -2,8 +2,8 @@ package sdb.data.dao.impl;
 
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
-import sdb.data.dao.PurchaseDao;
-import sdb.data.entity.purchases.PurchaseEntity;
+import sdb.data.dao.OrderDao;
+import sdb.data.entity.orders.OrderEntity;
 import sdb.data.mapper.PurchaseEntityRowMapper;
 
 import javax.sql.DataSource;
@@ -12,17 +12,17 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
-public class PurchaseDaoSpringImpl implements PurchaseDao {
+public class OrderDaoSpringImpl implements OrderDao {
 
   private final DataSource dataSource;
 
-  public PurchaseDaoSpringImpl(DataSource dataSource) {
+  public OrderDaoSpringImpl(DataSource dataSource) {
     this.dataSource = dataSource;
   }
 
   // todo переписать на единственный метод, который возвращает готовую покупку и возвращать список добавленных
   @Override
-  public void createPurchase(PurchaseEntity... purchases) {
+  public void createPurchase(OrderEntity... purchases) {
     JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
     jdbcTemplate.batchUpdate(
         "INSERT INTO orders (user_id, product_id, price, timestamp) VALUES (?, ?, ?, ?)",
@@ -44,7 +44,7 @@ public class PurchaseDaoSpringImpl implements PurchaseDao {
   }
 
   @Override
-  public Optional<List<PurchaseEntity>> getPurchases() {
+  public Optional<List<OrderEntity>> getPurchases() {
     JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
     return Optional.of(
         jdbcTemplate.query(
@@ -54,7 +54,7 @@ public class PurchaseDaoSpringImpl implements PurchaseDao {
   }
 
   @Override
-  public Optional<PurchaseEntity> getPurchase(int purchaseId) {
+  public Optional<OrderEntity> getPurchase(int purchaseId) {
     JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
     return Optional.ofNullable(
         jdbcTemplate.queryForObject(
@@ -65,7 +65,7 @@ public class PurchaseDaoSpringImpl implements PurchaseDao {
   }
 
   @Override
-  public Optional<List<PurchaseEntity>> getUserPurchases(int userId) {
+  public Optional<List<OrderEntity>> getUserPurchases(int userId) {
     JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
     return Optional.of(jdbcTemplate.query(
         "SELECT * FROM \"orders\" WHERE user_id = ?",

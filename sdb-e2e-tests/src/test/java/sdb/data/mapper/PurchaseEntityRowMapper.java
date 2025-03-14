@@ -1,12 +1,12 @@
 package sdb.data.mapper;
 
 import org.springframework.jdbc.core.RowMapper;
-import sdb.data.entity.purchases.PurchaseEntity;
+import sdb.data.entity.orders.OrderEntity;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class PurchaseEntityRowMapper implements RowMapper<PurchaseEntity> {
+public class PurchaseEntityRowMapper implements RowMapper<OrderEntity> {
 
   public static final PurchaseEntityRowMapper instance = new PurchaseEntityRowMapper();
 
@@ -14,8 +14,8 @@ public class PurchaseEntityRowMapper implements RowMapper<PurchaseEntity> {
   }
 
   @Override
-  public PurchaseEntity mapRow(ResultSet rs, int rowNum) throws SQLException {
-    PurchaseEntity result = new PurchaseEntity();
+  public OrderEntity mapRow(ResultSet rs, int rowNum) throws SQLException {
+    OrderEntity result = new OrderEntity();
     result.setPurchaseId(rs.getInt("purchase_id"));
     result.setUserId(rs.getInt("user_id"));
     result.setProductId(rs.getInt("product"));

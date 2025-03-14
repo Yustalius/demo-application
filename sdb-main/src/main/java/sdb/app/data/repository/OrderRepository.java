@@ -3,19 +3,19 @@ package sdb.app.data.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-import sdb.app.data.entity.purchase.PurchaseEntity;
+import sdb.app.data.entity.order.OrderEntity;
 import sdb.app.data.entity.user.UsersEntity;
 
 import java.util.List;
 
 @Repository
-public interface OrderRepository extends JpaRepository<PurchaseEntity, Integer> {
+public interface OrderRepository extends JpaRepository<OrderEntity, Integer> {
 
-  @Query("SELECT p FROM PurchaseEntity p " +
-      "LEFT JOIN FETCH p.user " +
-      "LEFT JOIN FETCH p.product " +
-      "ORDER BY p.purchaseId ASC")
-  List<PurchaseEntity> findAllWithJoins();
+  @Query("SELECT o FROM OrderEntity o " +
+      "LEFT JOIN FETCH o.user " +
+      "LEFT JOIN FETCH o.product " +
+      "ORDER BY o.purchaseId ASC")
+  List<OrderEntity> findAllWithJoins();
 
-  List<PurchaseEntity> findByUser(UsersEntity user);
+  List<OrderEntity> findByUser(UsersEntity user);
 }

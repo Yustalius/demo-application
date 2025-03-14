@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import sdb.app.data.entity.purchase.PurchaseEntity;
+import sdb.app.data.entity.order.OrderEntity;
 import sdb.app.model.user.UserDTO;
 
 import java.util.ArrayList;
@@ -36,7 +36,7 @@ public class UsersEntity {
   @OneToMany(mappedBy = "user",
       cascade = CascadeType.ALL,
       orphanRemoval = true)
-  private List<PurchaseEntity> purchases = new ArrayList<>();
+  private List<OrderEntity> purchases = new ArrayList<>();
 
   public static UsersEntity fromDto(UserDTO userDTO) {
     UsersEntity entity = new UsersEntity();

@@ -1,7 +1,7 @@
 package sdb.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import sdb.model.product.PurchaseJson;
+import sdb.model.product.OrderDTO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +9,7 @@ import java.util.List;
 public record TestData(
     @JsonIgnore String username,
     @JsonIgnore String password,
-    @JsonIgnore List<PurchaseJson> purchases
+    @JsonIgnore List<OrderDTO> orders
 ) {
   public TestData(String username, String password) {
     this(username, password, new ArrayList<>());

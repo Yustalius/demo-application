@@ -4,7 +4,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import sdb.config.Config;
-import sdb.data.entity.purchases.PurchaseEntity;
+import sdb.data.entity.orders.OrderEntity;
 
 import javax.sql.DataSource;
 import java.sql.PreparedStatement;
@@ -12,20 +12,20 @@ import java.sql.Statement;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class PurchaseDbClient {
+public class OrderDbClient {
   private static final Config CFG = Config.getInstance();
 
   private final JdbcTemplate jdbcTemplate;
 
-  public PurchaseDbClient(DataSource dataSource) {
+  public OrderDbClient(DataSource dataSource) {
     this.jdbcTemplate = new JdbcTemplate(dataSource);
   }
 
-  public PurchaseEntity createPurchase(PurchaseEntity purchase) {
+  public OrderEntity createPurchase(OrderEntity purchase) {
     KeyHolder keyHolder = new GeneratedKeyHolder();
     jdbcTemplate.update(connection -> {
       PreparedStatement ps = connection.prepareStatement(
-          "INSERT INTO purchases (user_id, product_id, price, \"timestamp\") VALUES (?, ?, ?, ?)",
+          "INSERT INTO orders (user_id, product_id, price, \"timestamp\") VALUES (?, ?, ?, ?)",
           Statement.RETURN_GENERATED_KEYS
       );
       ps.setObject(1, purchase.getUserId());
