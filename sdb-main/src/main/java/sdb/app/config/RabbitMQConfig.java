@@ -1,6 +1,8 @@
 package sdb.app.config;
 
 import org.springframework.amqp.core.*;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;
@@ -15,6 +17,9 @@ public class RabbitMQConfig {
   public static final String ROUTING_KEY_PENDING = "order.pending";
   public static final String ROUTING_KEY_APPROVAL = "order.approval";
 
+  public static final String DLQ_PENDING = "order.pending.dlq";
+  public static final String DLQ_APPROVAL = "order.approval.dlq";
+
   @Bean
   public DirectExchange orderExchange() {
     return new DirectExchange(ORDER_EXCHANGE);
@@ -22,12 +27,28 @@ public class RabbitMQConfig {
 
   @Bean
   public Queue orderPendingQueue() {
-    return new Queue(ORDER_PENDING_QUEUE, true);
+    return QueueBuilder.durable(ORDER_PENDING_QUEUE)
+        .withArgument("x-dead-letter-exchange", "")
+        .withArgument("x-dead-letter-routing-key", DLQ_PENDING)
+        .build();
   }
 
   @Bean
   public Queue orderApprovalQueue() {
-    return new Queue(ORDER_APPROVAL_QUEUE, true);
+    return QueueBuilder.durable(ORDER_APPROVAL_QUEUE)
+        .withArgument("x-dead-letter-exchange", "")
+        .withArgument("x-dead-letter-routing-key", DLQ_APPROVAL)
+        .build();
+  }
+
+  @Bean
+  public Queue dlqPendingQueue() {
+    return QueueBuilder.durable(DLQ_PENDING).build();
+  }
+
+  @Bean
+  public Queue dlqApprovalQueue() {
+    return QueueBuilder.durable(DLQ_APPROVAL).build();
   }
 
   @Bean

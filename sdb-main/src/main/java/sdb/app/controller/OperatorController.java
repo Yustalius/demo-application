@@ -23,7 +23,7 @@ public class OperatorController {
     logger.info("operator");
     rabbit.convertAndSend(
         RabbitMQConfig.ORDER_EXCHANGE,
-        RabbitMQConfig.ROUTING_KEY_APPROVAL,
+        RabbitMQConfig.ROUTING_KEY_PENDING,
         order
     );
   }
