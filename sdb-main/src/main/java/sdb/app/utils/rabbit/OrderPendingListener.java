@@ -13,9 +13,9 @@ public class OrderPendingListener {
   @Autowired
   private Logger logger;
 
-  @RabbitListener(queues = RabbitMQConfig.ORDER_PENDING_QUEUE)
+/*  @RabbitListener(queues = RabbitMQConfig.ORDER_PENDING_QUEUE)
   public void handlePendingOrder(OrderDTO order) {
     // Передача заказа на склад
     logger.info("Order pending queue received message " + order);
-  }
+  }*/
 }

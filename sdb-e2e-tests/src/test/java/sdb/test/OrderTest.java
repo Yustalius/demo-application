@@ -14,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class OrderTest {
 
   private final OrderClient orderClient = OrderClient.getInstance();
-  private static final int PRODUCT_ID = 293;
+  private static final int PRODUCT_ID = 422;
 
   @Test
   @User
@@ -24,7 +24,7 @@ public class OrderTest {
             null,
             user.id(),
             PRODUCT_ID,
-            200,
+            220,
             null,
             null));
 

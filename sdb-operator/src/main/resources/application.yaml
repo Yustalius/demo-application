@@ -1,0 +1,71 @@
+server:
+  port: 8083
+  address: localhost
+
+spring:
+  application:
+    name: sdb-operator
+  profiles:
+    active: default
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: "sdb_admin"
+    password: "sdb_password"
+    listener:
+      simple:
+        concurrency: 1
+        max-concurrency: 1
+        prefetch: 1
+        default-requeue-rejected: false
+        retry:
+          enabled: true
+          initial-interval: 1000
+          max-attempts: 3
+          multiplier: 1.0
+          max-interval: 10000
+
+logging:
+  level:
+    org.springframework.amqp: INFO
+    sdb.app: DEBUG
+
+app:
+  logging:
+    url: "http://localhost:8082/"
+
+---
+spring:
+  config:
+    activate:
+      on-profile: docker
+  rabbitmq:
+    host: host.docker.internal
+    port: 5672
+    username: "sdb_admin"
+    password: "sdb_password"
+    listener:
+      simple:
+        concurrency: 1
+        max-concurrency: 1
+        prefetch: 1
+        default-requeue-rejected: false
+        retry:
+          enabled: true
+          initial-interval: 1000
+          max-attempts: 3
+          multiplier: 1.0
+          max-interval: 10000
+
+server:
+  port: 8083
+  address: 0.0.0.0
+
+logging:
+  level:
+    org.springframework.amqp: INFO
+    sdb.app: DEBUG
+
+app:
+  logging:
+    url: "http://host.docker.internal:8082/"

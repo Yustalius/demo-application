@@ -17,9 +17,9 @@ public class OrderApprovalListener {
   @Autowired
   private OrderService orderService;
 
-  @RabbitListener(queues = RabbitMQConfig.ORDER_APPROVAL_QUEUE)
+/*  @RabbitListener(queues = RabbitMQConfig.ORDER_APPROVAL_QUEUE)
   public void handleOrderApproval(OrderDTO order) {
     logger.info("Order approval queue received message ", order);
     orderService.updateStatus(order.orderId(), order.status());
-  }
+  }*/
 }
