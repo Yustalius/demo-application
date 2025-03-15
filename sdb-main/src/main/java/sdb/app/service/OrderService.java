@@ -1,6 +1,7 @@
 package sdb.app.service;
 
 import sdb.app.model.order.OrderDTO;
+import sdb.app.model.order.OrderStatus;
 
 import java.util.List;
 
@@ -8,9 +9,11 @@ public interface OrderService {
 
   List<OrderDTO> createOrder(OrderDTO... purchases);
 
+  OrderDTO updateStatus(int orderId, OrderStatus status);
+
   List<OrderDTO> getOrders();
 
-  OrderDTO getOrder(int purchaseId);
+  OrderDTO getOrder(int orderId);
 
   List<OrderDTO> getUserOrders(int userId);
 }

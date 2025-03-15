@@ -1,16 +1,15 @@
 package sdb.app.model.order;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import sdb.app.data.entity.order.OrderEntity;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public record OrderDTO(
     Integer orderId,
     Integer userId,
-    @JsonProperty("productId")
     Integer productId,
-    @JsonProperty("price")
     Integer price,
     Long timestamp,
     OrderStatus status
@@ -23,6 +22,17 @@ public record OrderDTO(
         entity.getPrice(),
         entity.getTimestamp(),
         entity.getStatus()
+    );
+  }
+
+  public OrderDTO setStatus(OrderStatus status) {
+    return new OrderDTO(
+        this.orderId(),
+        this.userId,
+        this.productId,
+        this.price,
+        this.timestamp,
+        status
     );
   }
 

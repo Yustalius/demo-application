@@ -2,7 +2,7 @@
     <appender name="FILE" class="ch.qos.logback.core.FileAppender">
         <file>sdb-main/src/main/app.log</file> <!-- Путь к файлу логов -->
         <encoder>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level - %logger{36} - %msg%n</pattern>
+            <pattern>%d{HH:mm:ss.SSS} %highlight(%-5level) %cyan(%class{50}.%M:%L) - %msg%n</pattern>
         </encoder>
     </appender>
 
