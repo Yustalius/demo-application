@@ -71,17 +71,29 @@ public class OrderService3Impl implements OrderService3 {
 
   @Override
   public List<OrderDTO3> getOrders() {
-    return List.of();
+    return orderRepository.findAll().stream()
+        .map(OrderDTO3::fromEntity)
+        .toList();
   }
 
   @Override
+  @Transactional(readOnly = true)
   public OrderDTO3 getOrder(int orderId) {
-    return null;
+    return OrderDTO3.fromEntity(
+        orderRepository.findById(orderId)
+            .orElseThrow(() -> new OrderNotFoundException(orderId))
+    );
   }
 
   @Override
+  @Transactional(readOnly = true)
   public List<OrderDTO3> getUserOrders(int userId) {
-    return List.of();
+    UsersEntity user = usersRepository.findById(userId)
+        .orElseThrow(() -> new UserNotFoundException(userId));
+
+    return orderRepository.findByUser(user).stream()
+        .map(OrderDTO3::fromEntity)
+        .toList();
   }
 
   /**
