@@ -2,18 +2,13 @@ package sdb.app.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import sdb.app.model.order.OrderStatusDTO;
 import sdb.app.model.order.OrderDTO;
 import sdb.app.service.OrderService;
 import sdb.app.logging.Logger;
 
 import java.util.List;
-
-import static sdb.app.model.order.OrderStatus.APPROVED;
-import static sdb.app.model.order.OrderStatus.REJECTED;
 
 @RestController
 @RequestMapping("/order")
@@ -27,7 +22,7 @@ public class OrderController {
   private OrderService orderService;
 
   @PostMapping("/add")
-  public List<OrderDTO> addOrder(@RequestBody OrderDTO... orders) throws JsonProcessingException {
+  public List<OrderDTO> createOrder(@RequestBody OrderDTO... orders) throws JsonProcessingException {
     logger.info("Creating order: ", mapper.writeValueAsString(orders));
     return orderService.createOrder(orders);
   }

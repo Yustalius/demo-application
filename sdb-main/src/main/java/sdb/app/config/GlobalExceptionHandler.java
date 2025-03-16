@@ -1,20 +1,26 @@
 package sdb.app.config;
 
-import org.postgresql.util.PSQLException;
+import static org.springframework.http.HttpStatus.*;
+
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
 import sdb.app.ex.OrderNotFoundException;
 import sdb.app.ex.ProductNotFoundException;
-import sdb.app.model.error.ErrorResponse;
+import sdb.app.ex.StatusTransitionException;
 import sdb.app.ex.UserNotFoundException;
 import sdb.app.logging.Logger;
-
-import static org.springframework.http.HttpStatus.*;
+import sdb.app.model.error.ErrorResponse;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -41,7 +47,7 @@ public class GlobalExceptionHandler {
 
     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
         .body(new ErrorResponse(
-            "UNKNOWN",
+            "DATABASE_ERROR",
             ex.getMessage()
             ));
   }
@@ -73,15 +79,30 @@ public class GlobalExceptionHandler {
         ));
   }
 
-  @ExceptionHandler(MethodArgumentNotValidException.class)
-  public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+  @ExceptionHandler(StatusTransitionException.class)
+  public ResponseEntity<ErrorResponse> handleOStatusTransitionException(StatusTransitionException ex) {
     return ResponseEntity.status(BAD_REQUEST)
         .body(new ErrorResponse(
-            "BAD_REQUEST",
+            "STATUS_TRANSITION_ERROR",
             ex.getMessage()
         ));
   }
 
+  @ExceptionHandler(MethodArgumentNotValidException.class)
+  public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+    String errorMessage = ex.getBindingResult()
+        .getFieldErrors()
+        .stream()
+        .map(error -> error.getDefaultMessage())
+        .collect(Collectors.joining(", "));
+
+    return ResponseEntity.status(BAD_REQUEST)
+        .body(new ErrorResponse(
+            "BAD_REQUEST",
+            errorMessage
+        ));
+  }
+  
   @ExceptionHandler(RuntimeException.class)
   public ResponseEntity<ErrorResponse> handleRuntimeException(RuntimeException ex) {
     if (ex.getMessage().contains(") is not present in table \"user_creds\"") || ex.getMessage().contains("Key (user_id)=(")) {
@@ -97,6 +118,43 @@ public class GlobalExceptionHandler {
         .body(new ErrorResponse(
             "UNKNOWN",
             ex.getMessage()
+        ));
+  }
+
+  @ExceptionHandler(HttpMessageNotReadableException.class)
+  public ResponseEntity<ErrorResponse> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
+    String errorMessage = "Ошибка при чтении JSON";
+
+    // Проверяем, является ли причиной ошибки неверный формат enum
+    if (ex.getCause() instanceof InvalidFormatException) {
+      InvalidFormatException invalidFormatEx = (InvalidFormatException) ex.getCause();
+
+      // Проверяем, что это ошибка с enum
+      if (invalidFormatEx.getTargetType() != null && invalidFormatEx.getTargetType().isEnum()) {
+        String fieldName = invalidFormatEx.getPath().isEmpty() ? "поле" :
+            invalidFormatEx.getPath().get(invalidFormatEx.getPath().size() - 1).getFieldName();
+
+        String invalidValue = invalidFormatEx.getValue().toString();
+
+        // Получаем все допустимые значения enum
+        Object[] enumValues = invalidFormatEx.getTargetType().getEnumConstants();
+        String validValues = Arrays.stream(enumValues)
+            .map(Object::toString)
+            .collect(Collectors.joining(", "));
+
+        errorMessage = String.format(
+            "Поле '%s' со значением '%s' должно быть одним из: [%s]",
+            fieldName,
+            invalidValue,
+            validValues
+        );
+      }
+    }
+
+    return ResponseEntity.status(BAD_REQUEST)
+        .body(new ErrorResponse(
+            "BAD_REQUEST",
+            errorMessage
         ));
   }
 }
