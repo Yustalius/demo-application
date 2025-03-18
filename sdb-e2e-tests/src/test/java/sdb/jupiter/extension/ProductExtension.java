@@ -25,10 +25,14 @@ public class ProductExtension implements BeforeEachCallback, AfterEachCallback, 
     AnnotationSupport.findAnnotation(context.getRequiredTestMethod(), Product.class)
         .ifPresent(productAnno -> {
 
+          String productName = productAnno.productName().isEmpty() 
+              ? String.join(" ", faker.beer().name(), faker.color().name(), faker.food().ingredient()) 
+              : productAnno.productName();
+          String description = productAnno.description().isEmpty() ? faker.lorem().sentence() : productAnno.description();
           ProductDTO createdProduct = productClient.addProduct(new ProductDTO(
               null,
-              productAnno.productName().isEmpty() ? faker.beer().name() : productAnno.productName(),
-              productAnno.description().isEmpty() ? faker.color().name() : productAnno.description(),
+              productName,
+              description,
               productAnno.price() == 0 ? faker.number().numberBetween(100, 1000) : productAnno.price()
           ));
 

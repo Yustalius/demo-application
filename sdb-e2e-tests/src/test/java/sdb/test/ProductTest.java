@@ -20,7 +20,7 @@ public class ProductTest {
   void createProductTest() {
     ProductDTO product = new ProductDTO(
         null,
-        faker.animal().name(),
+        String.join(" ", faker.beer().name(), faker.color().name(), faker.food().ingredient()),
         faker.color().name(),
         faker.number().numberBetween(100, 1000)
     );

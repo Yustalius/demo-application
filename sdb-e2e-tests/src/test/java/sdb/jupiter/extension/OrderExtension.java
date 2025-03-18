@@ -22,6 +22,7 @@ import sdb.service.impl.UserApiClient;
 import java.util.ArrayList;
 import java.util.List;
 
+
 import static java.util.Objects.requireNonNull;
 import static sdb.data.Databases.dataSource;
 
@@ -37,27 +38,27 @@ public class OrderExtension implements BeforeEachCallback, ParameterResolver {
   public void beforeEach(ExtensionContext context) {
     AnnotationSupport.findAnnotation(context.getRequiredTestMethod(), User.class)
         .ifPresent(userAnno -> {
-              if (ArrayUtils.isNotEmpty(userAnno.orders())) {
-                UserDTO user = context.getStore(UserExtension.NAMESPACE)
-                    .get(context.getUniqueId(), UserDTO.class);
+          if (ArrayUtils.isNotEmpty(userAnno.orders())) {
+            UserDTO user = context.getStore(UserExtension.NAMESPACE)
+                .get(context.getUniqueId(), UserDTO.class);
 
-                UsersEntity usersEntity = getUserEntity(user.id());
+            UsersEntity usersEntity = getUserEntity(user.id());
 
-                OrderDbClient orderClient = new OrderDbClient(dataSource(CFG.postgresUrl()));
-                ProductApiClient productApiClient = new ProductApiClient();
+            OrderDbClient orderClient = new OrderDbClient(dataSource(CFG.postgresUrl()));
+            ProductApiClient productApiClient = new ProductApiClient();
 
-                List<OrderDTO> createdOrders = createOrdersForUser(
-                    userAnno.orders(),
-                    usersEntity,
-                    orderClient,
-                    productApiClient
-                );
+            List<OrderDTO> createdOrders = createOrdersForUser(
+                userAnno.orders(),
+                usersEntity,
+                orderClient
+            );
 
-                user.testData().orders().addAll(createdOrders);
-              }
-            }
-        );
-  }@Override
+            user.testData().orders().addAll(createdOrders);
+          }
+        });
+  }
+
+  @Override
   public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
     return parameterContext.getParameter().getType().isAssignableFrom(OrderDTO[].class);
   }
@@ -86,16 +87,15 @@ public class OrderExtension implements BeforeEachCallback, ParameterResolver {
    * @param orderAnnotations массив аннотаций заказов
    * @param usersEntity сущность пользователя
    * @param orderClient клиент для работы с заказами
-   * @param productApiClient клиент для работы с товарами
    * @return список созданных заказов в виде DTO
    */
   private List<OrderDTO> createOrdersForUser(
       Order[] orderAnnotations,
       UsersEntity usersEntity,
-      OrderDbClient orderClient,
-      ProductApiClient productApiClient
+      OrderDbClient orderClient
   ) {
     List<OrderDTO> createdOrders = new ArrayList<>();
+    ProductApiClient productApiClient = new ProductApiClient();
 
     for (Order orderAnno : orderAnnotations) {
       List<OrderItemEntity> orderItems = createOrderItems(orderAnno.orderItems(), productApiClient);
@@ -107,7 +107,6 @@ public class OrderExtension implements BeforeEachCallback, ParameterResolver {
       );
 
       OrderEntity savedOrder = requireNonNull(orderClient.getOrder(createdOrderId));
-
       createdOrders.add(OrderDTO.fromEntity(savedOrder));
     }
 
