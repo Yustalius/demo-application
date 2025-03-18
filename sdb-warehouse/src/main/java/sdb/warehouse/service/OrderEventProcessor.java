@@ -6,13 +6,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sdb.warehouse.config.RabbitMQConfig;
 import sdb.warehouse.model.event.OrderCreatedEvent;
-import sdb.warehouse.utils.logging.Logger;
+import utils.logging.Logger;
 
 /**
  * Сервис для обработки событий заказов.
  */
 @Service
 public class OrderEventProcessor {
+    
     @Autowired
     private Logger logger;
 
