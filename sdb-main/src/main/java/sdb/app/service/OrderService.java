@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface OrderService {
 
-  List<OrderDTO> createOrder(OrderDTO... purchases);
+  OrderDTO createOrder(OrderDTO order);
 
   OrderDTO updateStatus(int orderId, OrderStatus status);
 

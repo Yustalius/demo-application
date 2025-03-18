@@ -1,71 +1,76 @@
 package sdb.app.service.impl;
 
-import jakarta.annotation.Nonnull;
-import lombok.RequiredArgsConstructor;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import sdb.app.config.RabbitMQConfig;
+
+import jakarta.annotation.Nonnull;
+import lombok.RequiredArgsConstructor;
+import sdb.app.data.entity.order.OrderEntity3;
+import sdb.app.data.entity.order.OrderItemEntity;
 import sdb.app.data.entity.product.ProductEntity;
-import sdb.app.data.entity.order.OrderEntity;
 import sdb.app.data.entity.user.UsersEntity;
 import sdb.app.data.repository.OrderRepository;
+import sdb.app.data.repository.OrderItemRepository;
 import sdb.app.data.repository.ProductRepository;
 import sdb.app.data.repository.UsersRepository;
 import sdb.app.ex.OrderNotFoundException;
 import sdb.app.ex.ProductNotFoundException;
+import sdb.app.ex.StatusTransitionException;
 import sdb.app.ex.UserNotFoundException;
 import sdb.app.model.order.OrderDTO;
 import sdb.app.model.order.OrderStatus;
+import sdb.app.model.order.OrderStatusTransition;
 import sdb.app.service.OrderService;
-
-import java.util.ArrayList;
-import java.util.List;
+import sdb.app.utils.ProductPriceKey;
 
 @Service
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
-  private final OrderRepository orderRepository;
+
   private final UsersRepository usersRepository;
   private final ProductRepository productRepository;
-  private final RabbitTemplate rabbit;
+  private final OrderRepository orderRepository;
+  private final OrderItemRepository orderItemRepository;
 
   @Override
   @Transactional
-  public List<OrderDTO> createOrder(@Nonnull OrderDTO... orders) {
-    List<OrderDTO> createdOrders = orderRepository.saveAll(convertOrdersToEntities(orders)).stream()
-        .map(OrderDTO::fromEntity)
-        .toList();
+  public OrderDTO createOrder(OrderDTO order) {
+    OrderEntity3 createdOrder = createOrderEntity(order);
+    createOrderItems(createdOrder, groupProductsByIdAndPrice(order));
 
-    for (OrderDTO order : createdOrders) {
-      rabbit.convertAndSend(
-          RabbitMQConfig.ORDER_EXCHANGE,
-          RabbitMQConfig.ROUTING_KEY_PENDING,
-          order
-      );
+    return OrderDTO.fromEntity(createdOrder);
+  }
+
+  @Override
+  @Transactional
+  public OrderDTO updateStatus(int orderId, @Nonnull OrderStatus newStatus) {
+    OrderEntity3 order = orderRepository.findById(orderId)
+        .orElseThrow(() -> new OrderNotFoundException(orderId));
+
+    OrderStatus currentStatus = order.getStatus();
+    if (currentStatus == newStatus) {
+      return OrderDTO.fromEntity(order);
     }
 
-    return createdOrders;
+    if (!OrderStatusTransition.isTransitionAllowed(currentStatus, newStatus)) {
+      throw new StatusTransitionException(currentStatus, newStatus);
+    }
+
+    order.setStatus(newStatus);
+    OrderEntity3 updatedOrder = orderRepository.save(order);
+
+    return OrderDTO.fromEntity(updatedOrder);
   }
 
   @Override
-  @Transactional
-  public OrderDTO updateStatus(int orderId, OrderStatus status) {
-    return OrderDTO.fromEntity(
-        orderRepository.findById(orderId)
-            .map(order -> {
-              order.setStatus(status);
-              return orderRepository.save(order);
-            })
-            .orElseThrow(() -> new OrderNotFoundException(orderId))
-    );
-  }
-
-  @Override
-  @Deprecated
   @Transactional(readOnly = true)
   public List<OrderDTO> getOrders() {
-    return orderRepository.findAllWithJoins().stream()
+    return orderRepository.findAll().stream()
         .map(OrderDTO::fromEntity)
         .toList();
   }
@@ -80,7 +85,7 @@ public class OrderServiceImpl implements OrderService {
   }
 
   @Override
-  @Transactional
+  @Transactional(readOnly = true)
   public List<OrderDTO> getUserOrders(int userId) {
     UsersEntity user = usersRepository.findById(userId)
         .orElseThrow(() -> new UserNotFoundException(userId));
@@ -90,25 +95,48 @@ public class OrderServiceImpl implements OrderService {
         .toList();
   }
 
-  private List<OrderEntity> convertOrdersToEntities(OrderDTO[] orders) {
-    List<OrderEntity> entities = new ArrayList<>();
-    for (OrderDTO order : orders) {
-      UsersEntity user = usersRepository.findById(order.userId())
-          .orElseThrow(() -> new UserNotFoundException(order.userId()));
+  /**
+   * Создает и сохраняет сущность заказа
+   */
+  private OrderEntity3 createOrderEntity(OrderDTO order) {
+    UsersEntity user = usersRepository.findById(order.userId())
+        .orElseThrow(() -> new UserNotFoundException(order.userId()));
 
-      ProductEntity product = productRepository.findById(order.productId())
-          .orElseThrow(() -> new ProductNotFoundException(order.productId()));
+    OrderEntity3 orderEntity = new OrderEntity3();
+    orderEntity.setUser(user);
+    orderEntity.setStatus(OrderStatus.PENDING);
 
-      OrderEntity entity = new OrderEntity();
-      entity.setUser(user);
-      entity.setProduct(product);
-      entity.setPrice(order.price());
-      entity.setTimestamp(System.currentTimeMillis());
-      entity.setStatus(OrderStatus.PENDING);
+    return orderRepository.save(orderEntity);
+  }
 
-      entities.add(entity);
-    }
+  /**
+   * Группирует продукты по ID и цене, суммируя количество
+   */
+  private Map<ProductPriceKey, Integer> groupProductsByIdAndPrice(OrderDTO order) {
+    return Arrays.stream(order.products())
+        .collect(Collectors.toMap(
+            product -> new ProductPriceKey(product.id(), product.price()),
+            product -> product.quantity(),
+            Integer::sum
+        ));
+  }
 
-    return entities;
+  /**
+   * Создает и сохраняет элементы заказа для каждой уникальной комбинации ID и цены
+   */
+  private void createOrderItems(OrderEntity3 order, Map<ProductPriceKey, Integer> productQuantities) {
+    productQuantities.forEach((key, totalQuantity) -> {
+      ProductEntity productEntity = productRepository.findById(key.getProductId())
+          .orElseThrow(() -> new ProductNotFoundException(key.getProductId()));
+
+      OrderItemEntity orderItemEntity = new OrderItemEntity();
+      orderItemEntity.setOrder(order);
+      orderItemEntity.setProduct(productEntity);
+      orderItemEntity.setQuantity(totalQuantity);
+      orderItemEntity.setPrice(key.getPrice());
+
+      OrderItemEntity savedItem = orderItemRepository.save(orderItemEntity);
+      order.addOrderItem(savedItem);
+    });
   }
 }
