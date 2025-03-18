@@ -1,16 +1,16 @@
 package sdb.app.data.entity.order;
 
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-import sdb.app.data.entity.product.ProductEntity;
-import sdb.app.data.entity.user.UsersEntity;
-import sdb.app.model.order.OrderStatus;
-import org.hibernate.annotations.CreationTimestamp;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.hibernate.annotations.CreationTimestamp;
+
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import sdb.app.data.entity.user.UsersEntity;
+import sdb.app.model.order.OrderStatus;
 
 @Entity
 @Table(name = "orders3")
@@ -27,7 +27,7 @@ public class OrderEntity3 {
       nullable = false)
   private UsersEntity user;
 
-  @Column(nullable = false)
+  @Column(name = "status", columnDefinition = "varchar(20) check (status in ('PENDING', 'APPROVED', 'REJECTED', 'IN_WORK', 'FINISHED', 'CANCELED'))")
   @Enumerated(EnumType.STRING)
   private OrderStatus status;
 

@@ -53,8 +53,6 @@ public class OrderService3Impl implements OrderService3 {
         .orElseThrow(() -> new OrderNotFoundException(orderId));
 
     OrderStatus currentStatus = order.getStatus();
-    
-    // Если статус не изменился, просто возвращаем текущий заказ
     if (currentStatus == newStatus) {
       return OrderDTO3.fromEntity(order);
     }
@@ -70,6 +68,7 @@ public class OrderService3Impl implements OrderService3 {
   }
 
   @Override
+  @Transactional(readOnly = true)
   public List<OrderDTO3> getOrders() {
     return orderRepository.findAll().stream()
         .map(OrderDTO3::fromEntity)
