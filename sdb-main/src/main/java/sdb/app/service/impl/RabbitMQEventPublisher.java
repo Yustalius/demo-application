@@ -4,9 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 import sdb.app.config.RabbitMQConfig;
-import sdb.app.logging.Logger;
 import sdb.app.model.event.OrderCreatedEvent;
 import sdb.app.service.EventPublisher;
+import utils.logging.Logger;
 
 /**
  * Реализация сервиса публикации событий с использованием RabbitMQ.

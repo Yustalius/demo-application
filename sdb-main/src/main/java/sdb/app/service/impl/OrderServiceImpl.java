@@ -16,7 +16,6 @@ import sdb.app.ex.OrderNotFoundException;
 import sdb.app.ex.ProductNotFoundException;
 import sdb.app.ex.StatusTransitionException;
 import sdb.app.ex.UserNotFoundException;
-import sdb.app.logging.Logger;
 import sdb.app.model.event.OrderCreatedEvent;
 import sdb.app.model.order.OrderDTO;
 import sdb.app.model.order.OrderStatus;
@@ -24,6 +23,7 @@ import sdb.app.model.order.OrderStatusTransition;
 import sdb.app.service.EventPublisher;
 import sdb.app.service.OrderService;
 import sdb.app.utils.ProductPriceKey;
+import utils.logging.Logger;
 
 import java.util.List;
 import java.util.Map;

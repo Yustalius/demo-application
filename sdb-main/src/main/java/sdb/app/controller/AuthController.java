@@ -13,7 +13,7 @@ import sdb.app.model.user.UserDTO;
 import sdb.app.model.validation.LoginValidationGroup;
 import sdb.app.model.validation.RegistrationValidationGroup;
 import sdb.app.service.AuthService;
-import sdb.app.logging.Logger;
+import utils.logging.Logger;
 
 @RestController
 @RequestMapping("/auth")
@@ -29,7 +29,7 @@ public class AuthController {
       @Validated(RegistrationValidationGroup.class) @RequestBody RegisterJson json) {
     UserDTO user = authService.register(json);
 
-    logger.info("Successfully registered user productId = ", user.id());
+    logger.info("Successfully registered user id = ", user.id());
     return user;
   }
 
