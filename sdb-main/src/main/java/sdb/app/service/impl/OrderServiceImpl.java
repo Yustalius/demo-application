@@ -1,29 +1,33 @@
 package sdb.app.service.impl;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import jakarta.annotation.Nonnull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import sdb.app.data.entity.order.OrderEntity;
 import sdb.app.data.entity.order.OrderItemEntity;
 import sdb.app.data.entity.product.ProductEntity;
 import sdb.app.data.entity.user.UsersEntity;
-import sdb.app.data.repository.*;
+import sdb.app.data.repository.OrderItemRepository;
+import sdb.app.data.repository.OrderRepository;
+import sdb.app.data.repository.ProductRepository;
+import sdb.app.data.repository.UsersRepository;
 import sdb.app.ex.OrderNotFoundException;
 import sdb.app.ex.ProductNotFoundException;
 import sdb.app.ex.StatusTransitionException;
 import sdb.app.ex.UserNotFoundException;
+import sdb.app.model.event.OrderCreatedEvent;
 import sdb.app.model.order.OrderDTO;
 import sdb.app.model.order.OrderStatus;
 import sdb.app.model.order.OrderStatusTransition;
+import sdb.app.service.EventPublisher;
 import sdb.app.service.OrderService;
 import sdb.app.utils.ProductPriceKey;
+import utils.logging.Logger;
+
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -33,6 +37,8 @@ public class OrderServiceImpl implements OrderService {
   private final ProductRepository productRepository;
   private final OrderRepository orderRepository;
   private final OrderItemRepository orderItemRepository;
+  private final EventPublisher eventPublisher;
+  private final Logger logger;
 
   @Override
   @Transactional
@@ -40,7 +46,14 @@ public class OrderServiceImpl implements OrderService {
     OrderEntity createdOrder = createOrderEntity(order);
     createOrderItems(createdOrder, groupProductsByIdAndPrice(order));
 
-    return OrderDTO.fromEntity(createdOrder);
+    // Создаем DTO заказа из сущности
+    OrderDTO createdOrderDTO = OrderDTO.fromEntity(createdOrder);
+    
+    // Публикуем событие о создании заказа напрямую с использованием fromDTO
+    // Обработка исключений происходит внутри реализации publishOrderCreatedEvent
+    eventPublisher.publishOrderCreatedEvent(OrderCreatedEvent.fromDTO(createdOrderDTO));
+    
+    return createdOrderDTO;
   }
 
   @Override
@@ -110,7 +123,7 @@ public class OrderServiceImpl implements OrderService {
    * Группирует продукты по ID и цене, суммируя количество
    */
   private Map<ProductPriceKey, Integer> groupProductsByIdAndPrice(OrderDTO order) {
-    return Arrays.stream(order.products())
+    return order.products().stream()
         .collect(Collectors.toMap(
             product -> new ProductPriceKey(product.productId(), product.price()),
             product -> product.quantity(),

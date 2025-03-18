@@ -13,7 +13,7 @@ import sdb.app.model.order.OrderDTO;
 import sdb.app.model.validation.ValidationGroups.Create;
 import sdb.app.model.validation.ValidationGroups.UpdateStatus;
 import sdb.app.service.OrderService;
-import sdb.app.logging.Logger;
+import utils.logging.Logger;
 
 @RestController
 @RequestMapping("/order")

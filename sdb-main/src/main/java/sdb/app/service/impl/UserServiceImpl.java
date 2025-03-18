@@ -9,10 +9,10 @@ import sdb.app.data.entity.user.UsersEntity;
 import sdb.app.data.repository.UserCredsRepository;
 import sdb.app.data.repository.UsersRepository;
 import sdb.app.ex.UserNotFoundException;
-import sdb.app.logging.Logger;
 import sdb.app.model.user.UserDTO;
 import org.springframework.stereotype.Service;
 import sdb.app.service.UserService;
+import utils.logging.Logger;
 
 @Service
 @RequiredArgsConstructor
@@ -44,12 +44,12 @@ public class UserServiceImpl implements UserService {
         })
         .orElseThrow(() -> new UserNotFoundException(userId));
 
-    logger.info("User productId = %s deleted".formatted(userId));
+    logger.info("User id = %s deleted".formatted(userId));
   }
 
   @Override
   public UserDTO update(int userId, @Nonnull UserDTO update) {
-    logger.info("Update user userId = %s, %s".formatted(userId, update));
+    logger.info("Update user id = %s, %s".formatted(userId, update));
     return usersRepository.findById(userId).map(user -> {
           if (update.firstName() != null) {
             user.setFirstName(update.firstName());

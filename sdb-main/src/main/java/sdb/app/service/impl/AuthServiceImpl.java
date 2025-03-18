@@ -15,7 +15,7 @@ import sdb.app.ex.UserNotFoundException;
 import sdb.app.model.auth.RegisterJson;
 import sdb.app.model.user.UserDTO;
 import sdb.app.service.AuthService;
-import sdb.app.logging.Logger;
+import utils.logging.Logger;
 
 import javax.crypto.SecretKey;
 import java.time.Instant;

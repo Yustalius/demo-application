@@ -2,5 +2,6 @@ rootProject.name = 'demo'
 include 'sdb-main'
 include 'sdb-logging'
 include 'sdb-e2e-tests'
-include 'sdb-operator'
+include 'sdb-warehouse'
+include 'common-utils'
 

@@ -19,8 +19,8 @@ import sdb.app.ex.OrderNotFoundException;
 import sdb.app.ex.ProductNotFoundException;
 import sdb.app.ex.StatusTransitionException;
 import sdb.app.ex.UserNotFoundException;
-import sdb.app.logging.Logger;
 import sdb.app.model.error.ErrorResponse;
+import utils.logging.Logger;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
