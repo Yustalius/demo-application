@@ -48,6 +48,8 @@ dependencies {
     implementation "com.squareup.retrofit2:converter-jackson:${retrofitVersion}"
     implementation "com.squareup.retrofit2:retrofit:${retrofitVersion}"
 
+    implementation project(":common-utils")
+
     // DB
     implementation "org.springframework:spring-jdbc:${springJdbcVersion}"
     implementation 'org.postgresql:postgresql:42.6.0'

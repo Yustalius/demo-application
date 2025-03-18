@@ -3,4 +3,5 @@ include 'sdb-main'
 include 'sdb-logging'
 include 'sdb-e2e-tests'
 include 'sdb-warehouse'
+include 'common-utils'
 
