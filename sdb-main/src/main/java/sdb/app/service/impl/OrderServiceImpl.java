@@ -10,14 +10,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.annotation.Nonnull;
 import lombok.RequiredArgsConstructor;
-import sdb.app.data.entity.order.OrderEntity3;
+import sdb.app.data.entity.order.OrderEntity;
 import sdb.app.data.entity.order.OrderItemEntity;
 import sdb.app.data.entity.product.ProductEntity;
 import sdb.app.data.entity.user.UsersEntity;
-import sdb.app.data.repository.OrderRepository;
-import sdb.app.data.repository.OrderItemRepository;
-import sdb.app.data.repository.ProductRepository;
-import sdb.app.data.repository.UsersRepository;
+import sdb.app.data.repository.*;
 import sdb.app.ex.OrderNotFoundException;
 import sdb.app.ex.ProductNotFoundException;
 import sdb.app.ex.StatusTransitionException;
@@ -40,7 +37,7 @@ public class OrderServiceImpl implements OrderService {
   @Override
   @Transactional
   public OrderDTO createOrder(OrderDTO order) {
-    OrderEntity3 createdOrder = createOrderEntity(order);
+    OrderEntity createdOrder = createOrderEntity(order);
     createOrderItems(createdOrder, groupProductsByIdAndPrice(order));
 
     return OrderDTO.fromEntity(createdOrder);
@@ -49,7 +46,7 @@ public class OrderServiceImpl implements OrderService {
   @Override
   @Transactional
   public OrderDTO updateStatus(int orderId, @Nonnull OrderStatus newStatus) {
-    OrderEntity3 order = orderRepository.findById(orderId)
+    OrderEntity order = orderRepository.findById(orderId)
         .orElseThrow(() -> new OrderNotFoundException(orderId));
 
     OrderStatus currentStatus = order.getStatus();
@@ -62,7 +59,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     order.setStatus(newStatus);
-    OrderEntity3 updatedOrder = orderRepository.save(order);
+    OrderEntity updatedOrder = orderRepository.save(order);
 
     return OrderDTO.fromEntity(updatedOrder);
   }
@@ -98,11 +95,11 @@ public class OrderServiceImpl implements OrderService {
   /**
    * Создает и сохраняет сущность заказа
    */
-  private OrderEntity3 createOrderEntity(OrderDTO order) {
+  private OrderEntity createOrderEntity(OrderDTO order) {
     UsersEntity user = usersRepository.findById(order.userId())
         .orElseThrow(() -> new UserNotFoundException(order.userId()));
 
-    OrderEntity3 orderEntity = new OrderEntity3();
+    OrderEntity orderEntity = new OrderEntity();
     orderEntity.setUser(user);
     orderEntity.setStatus(OrderStatus.PENDING);
 
@@ -115,7 +112,7 @@ public class OrderServiceImpl implements OrderService {
   private Map<ProductPriceKey, Integer> groupProductsByIdAndPrice(OrderDTO order) {
     return Arrays.stream(order.products())
         .collect(Collectors.toMap(
-            product -> new ProductPriceKey(product.id(), product.price()),
+            product -> new ProductPriceKey(product.productId(), product.price()),
             product -> product.quantity(),
             Integer::sum
         ));
@@ -124,7 +121,7 @@ public class OrderServiceImpl implements OrderService {
   /**
    * Создает и сохраняет элементы заказа для каждой уникальной комбинации ID и цены
    */
-  private void createOrderItems(OrderEntity3 order, Map<ProductPriceKey, Integer> productQuantities) {
+  private void createOrderItems(OrderEntity order, Map<ProductPriceKey, Integer> productQuantities) {
     productQuantities.forEach((key, totalQuantity) -> {
       ProductEntity productEntity = productRepository.findById(key.getProductId())
           .orElseThrow(() -> new ProductNotFoundException(key.getProductId()));

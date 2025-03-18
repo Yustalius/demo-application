@@ -6,12 +6,11 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.groups.Default;
 import lombok.SneakyThrows;
-import sdb.app.data.entity.order.OrderEntity3;
+import sdb.app.data.entity.order.OrderEntity;
 import sdb.app.model.validation.ValidationGroups.Create;
 import sdb.app.model.validation.ValidationGroups.UpdateStatus;
 
@@ -27,24 +26,24 @@ public record OrderDTO(
     @NotNull(message = "Список продуктов не может быть null", groups = {Default.class, Create.class})
     @NotEmpty(message = "Список продуктов не может быть пустым", groups = {Default.class, Create.class})
     @Valid
-    OrderProductDTO[] products,
+    OrderItemDTO[] products,
     
     LocalDateTime timestamp,
     
     @NotNull(message = "Статус заказа не может быть null", groups = UpdateStatus.class)
     OrderStatus status
 ) {
-  public static OrderDTO fromEntity(OrderEntity3 entity) {
+  public static OrderDTO fromEntity(OrderEntity entity) {
     return new OrderDTO(
         entity.getOrderId(),
         entity.getUser().getId(),
         entity.getOrderItems().stream()
-            .map(item -> new OrderProductDTO(
+            .map(item -> new OrderItemDTO(
                 item.getProduct().getId(),
                 item.getQuantity(),
                 item.getPrice()
             ))
-            .toArray(OrderProductDTO[]::new),
+            .toArray(OrderItemDTO[]::new),
         entity.getCreatedAt(),
         entity.getStatus()
     );

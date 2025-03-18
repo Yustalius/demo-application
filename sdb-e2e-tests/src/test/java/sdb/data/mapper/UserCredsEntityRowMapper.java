@@ -2,7 +2,6 @@ package sdb.data.mapper;
 
 import org.springframework.jdbc.core.RowMapper;
 import sdb.data.entity.auth.RegisterEntity;
-import sdb.data.entity.user.UserEntity;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

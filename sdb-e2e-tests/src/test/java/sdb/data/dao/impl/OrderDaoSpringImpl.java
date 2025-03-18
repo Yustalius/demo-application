@@ -29,10 +29,10 @@ public class OrderDaoSpringImpl implements OrderDao {
         new BatchPreparedStatementSetter() {
           @Override
           public void setValues(PreparedStatement ps, int i) throws SQLException {
-            ps.setObject(1, purchases[i].getUserId());
-            ps.setInt(2, purchases[i].getProductId());
-            ps.setInt(3, purchases[i].getPrice());
-            ps.setLong(4, purchases[i].getTimestamp());
+//            ps.setObject(1, purchases[i].getUserId());
+//            ps.setInt(2, purchases[i].getProductId());
+//            ps.setInt(3, purchases[i].getPrice());
+//            ps.setLong(4, purchases[i].getTimestamp());
           }
 
           @Override
@@ -46,31 +46,34 @@ public class OrderDaoSpringImpl implements OrderDao {
   @Override
   public Optional<List<OrderEntity>> getPurchases() {
     JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-    return Optional.of(
-        jdbcTemplate.query(
-            "SELECT * FROM \"orders\"",
-            PurchaseEntityRowMapper.instance
-        ));
+//    return Optional.of(
+//        jdbcTemplate.query(
+//            "SELECT * FROM \"orders\"",
+//            PurchaseEntityRowMapper.instance
+//        ));
+    return Optional.empty();
   }
 
   @Override
   public Optional<OrderEntity> getPurchase(int purchaseId) {
     JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-    return Optional.ofNullable(
+/*    return Optional.ofNullable(
         jdbcTemplate.queryForObject(
             "SELECT * FROM \"orders\" WHERE purchase_id = ?",
             PurchaseEntityRowMapper.instance,
             purchaseId
-        ));
+        ));*/
+    return Optional.empty();
   }
 
   @Override
   public Optional<List<OrderEntity>> getUserPurchases(int userId) {
     JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-    return Optional.of(jdbcTemplate.query(
+/*    return Optional.of(jdbcTemplate.query(
         "SELECT * FROM \"orders\" WHERE user_id = ?",
         PurchaseEntityRowMapper.instance,
         userId
-    ));
+    ));*/
+    return Optional.empty();
   }
 }

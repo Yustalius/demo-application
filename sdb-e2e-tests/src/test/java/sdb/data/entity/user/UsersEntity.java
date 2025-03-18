@@ -9,14 +9,14 @@ import sdb.model.user.UserDTO;
 @Getter
 @Setter
 @ToString
-public class UserEntity {
+public class UsersEntity {
   private Integer id;
   private String firstName;
   private String lastName;
   private Integer age;
 
-  public static @NonNull UserEntity fromJson(UserDTO json) {
-    UserEntity user = new UserEntity();
+  public static @NonNull UsersEntity fromJson(UserDTO json) {
+    UsersEntity user = new UsersEntity();
     user.setId(json.id());
     user.setFirstName(json.firstName());
     user.setLastName(json.lastName());

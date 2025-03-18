@@ -12,7 +12,7 @@ public interface OrderClient {
     return new OrderApiClient();
   }
 
-  List<OrderDTO> createOrder(OrderDTO... purchases);
+  OrderDTO createOrder(OrderDTO order);
 
   List<OrderDTO> getOrders();
 

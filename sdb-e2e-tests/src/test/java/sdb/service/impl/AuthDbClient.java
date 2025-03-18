@@ -10,7 +10,7 @@ import sdb.data.dao.UserDao;
 import sdb.data.dao.impl.AuthDaoSpringImpl;
 import sdb.data.dao.impl.UserDaoSpringImpl;
 import sdb.data.entity.auth.RegisterEntity;
-import sdb.data.entity.user.UserEntity;
+import sdb.data.entity.user.UsersEntity;
 import sdb.model.auth.RegisterDTO;
 import sdb.model.user.UserDTO;
 
@@ -33,8 +33,8 @@ public class AuthDbClient {
 
   public @NonNull
   UserDTO createNewUser(RegisterEntity entity) {
-    UserEntity user = transactionTemplate.execute(status -> {
-      UserEntity registeredUser = authDao.register(entity);
+    UsersEntity user = transactionTemplate.execute(status -> {
+      UsersEntity registeredUser = authDao.register(entity);
 
       return userDao.create(registeredUser);
     });

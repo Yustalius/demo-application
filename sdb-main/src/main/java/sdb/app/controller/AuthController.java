@@ -29,7 +29,7 @@ public class AuthController {
       @Validated(RegistrationValidationGroup.class) @RequestBody RegisterJson json) {
     UserDTO user = authService.register(json);
 
-    logger.info("Successfully registered user id = ", user.id());
+    logger.info("Successfully registered user productId = ", user.id());
     return user;
   }
 

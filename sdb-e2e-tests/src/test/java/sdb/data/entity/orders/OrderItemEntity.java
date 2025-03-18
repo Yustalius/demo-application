@@ -1,9 +1,9 @@
-package sdb.app.data.entity.order;
+package sdb.data.entity.orders;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import sdb.app.data.entity.product.ProductEntity;
+import sdb.data.entity.products.ProductEntity;
 
 @Entity
 @Table(name = "order_items")

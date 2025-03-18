@@ -41,7 +41,7 @@ public class UserController {
       @Validated(UpdateValidationGroup.class) @RequestBody UserDTO user
   ) {
     UserDTO updatedUser = userService.update(id, user);
-    logger.info("Succesfully updated user id = " + id);
+    logger.info("Succesfully updated user productId = " + id);
     return ResponseEntity.ok(updatedUser);
   }
 }

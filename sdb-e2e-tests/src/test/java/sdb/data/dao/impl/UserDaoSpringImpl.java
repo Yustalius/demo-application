@@ -4,7 +4,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import sdb.data.dao.UserDao;
-import sdb.data.entity.user.UserEntity;
+import sdb.data.entity.user.UsersEntity;
 import sdb.data.mapper.UserEntityRowMapper;
 
 import javax.sql.DataSource;
@@ -22,7 +22,7 @@ public class UserDaoSpringImpl implements UserDao {
   }
 
   @Override
-  public UserEntity create(UserEntity user) {
+  public UsersEntity create(UsersEntity user) {
     KeyHolder keyHolder = new GeneratedKeyHolder();
 
     jdbcTemplate.update(connection -> {
@@ -42,7 +42,7 @@ public class UserDaoSpringImpl implements UserDao {
   }
 
   @Override
-  public Optional<UserEntity> get(int id) {
+  public Optional<UsersEntity> get(int id) {
     return Optional.ofNullable(
         jdbcTemplate.queryForObject(
             "SELECT * FROM \"users\" WHERE id = ?",
@@ -53,7 +53,7 @@ public class UserDaoSpringImpl implements UserDao {
   }
 
   @Override
-  public List<UserEntity> getUsers() {
+  public List<UsersEntity> getUsers() {
     return jdbcTemplate.query("SELECT * FROM users", UserEntityRowMapper.instance);
   }
 
@@ -63,7 +63,7 @@ public class UserDaoSpringImpl implements UserDao {
   }
 
   @Override
-  public void update(int userId, UserEntity user) {
+  public void update(int userId, UsersEntity user) {
     StringBuilder sql = new StringBuilder("UPDATE users SET ");
     List<Object> params = new ArrayList<>();
 

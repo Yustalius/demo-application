@@ -22,10 +22,10 @@ public class OrderApiClient extends RestClient implements OrderClient {
   }
 
   @Override
-  public List<OrderDTO> createOrder(OrderDTO... purchases) {
-    Response<List<OrderDTO>> response;
+  public OrderDTO createOrder(OrderDTO order) {
+    Response<OrderDTO> response;
     try {
-      response = orderApi.addOrders(purchases).execute();
+      response = orderApi.addOrders(order).execute();
     } catch (IOException e) {
       throw new AssertionError(e);
     }

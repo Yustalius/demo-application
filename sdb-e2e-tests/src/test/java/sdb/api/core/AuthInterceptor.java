@@ -34,7 +34,7 @@ public class AuthInterceptor implements Interceptor {
         .build();
 
     AuthApi authApi = authRetrofit.create(AuthApi.class);
-    retrofit2.Response<Token> authResponse = authApi.login(new LoginRequest("username28", "qwerty")).execute();
+    retrofit2.Response<Token> authResponse = authApi.login(new LoginRequest("yustalius", "1234")).execute();
 
     if (!authResponse.isSuccessful()) {
       throw new IOException("Authentication failed: " + authResponse.code());

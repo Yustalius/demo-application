@@ -44,7 +44,7 @@ public class UserServiceImpl implements UserService {
         })
         .orElseThrow(() -> new UserNotFoundException(userId));
 
-    logger.info("User id = %s deleted".formatted(userId));
+    logger.info("User productId = %s deleted".formatted(userId));
   }
 
   @Override

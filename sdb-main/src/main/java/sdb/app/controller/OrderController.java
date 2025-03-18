@@ -37,19 +37,19 @@ public class OrderController {
   public OrderDTO updateStatus(
       @PathVariable int id,
       @Validated(UpdateStatus.class) @RequestBody OrderDTO order) {
-    logger.info("Updating order id = %s status to %s".formatted(id, order.status()));
+    logger.info("Updating order productId = %s status to %s".formatted(id, order.status()));
     return orderService.updateStatus(id, order.status());
   }
 
   @GetMapping("/user/{id}")
   public List<OrderDTO> getUserOrders(@PathVariable int id) {
-    logger.info("Get user orders id = ", id);
+    logger.info("Get user orders productId = ", id);
     return orderService.getUserOrders(id);
   }
 
   @GetMapping("/{id}")
   public OrderDTO getOrder(@PathVariable int id) {
-    logger.info("Get order id = ", id);
+    logger.info("Get order productId = ", id);
     return orderService.getOrder(id);
   }
 

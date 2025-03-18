@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Nonnull;
 import lombok.NonNull;
 import lombok.SneakyThrows;
-import sdb.data.entity.user.UserEntity;
+import sdb.data.entity.user.UsersEntity;
 import sdb.model.TestData;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -22,7 +22,7 @@ public record UserDTO(
     Integer age,
     @JsonIgnore TestData testData
 ) {
-  public static UserDTO fromEntity(@NonNull UserEntity user) {
+  public static UserDTO fromEntity(@NonNull UsersEntity user) {
     return new UserDTO(
         user.getId(),
         user.getFirstName(),

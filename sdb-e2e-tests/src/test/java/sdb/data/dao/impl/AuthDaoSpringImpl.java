@@ -1,12 +1,11 @@
 package sdb.data.dao.impl;
 
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import sdb.data.dao.AuthDao;
 import sdb.data.entity.auth.RegisterEntity;
-import sdb.data.entity.user.UserEntity;
+import sdb.data.entity.user.UsersEntity;
 import sdb.data.mapper.UserEntityRowMapper;
 
 import javax.sql.DataSource;
@@ -23,7 +22,7 @@ public class AuthDaoSpringImpl implements AuthDao {
   }
 
   @Override
-  public UserEntity register(RegisterEntity entity) {
+  public UsersEntity register(RegisterEntity entity) {
     KeyHolder keyHolder = new GeneratedKeyHolder();
 
     jdbcTemplate.update(connection -> {
@@ -36,7 +35,7 @@ public class AuthDaoSpringImpl implements AuthDao {
       return ps;
     }, keyHolder);
 
-    UserEntity user = new UserEntity();
+    UsersEntity user = new UsersEntity();
     user.setId((Integer) requireNonNull(keyHolder.getKeys().get("id")));
     user.setFirstName(entity.getFirstName());
     user.setLastName(entity.getLastName());
@@ -45,7 +44,7 @@ public class AuthDaoSpringImpl implements AuthDao {
   }
 
   @Override
-  public UserEntity login(RegisterEntity entity) {
+  public UsersEntity login(RegisterEntity entity) {
     return jdbcTemplate.queryForObject(
         """
             SELECT users.id, users.first_name, users.last_name, users.age 

@@ -16,11 +16,11 @@ public class PurchaseEntityRowMapper implements RowMapper<OrderEntity> {
   @Override
   public OrderEntity mapRow(ResultSet rs, int rowNum) throws SQLException {
     OrderEntity result = new OrderEntity();
-    result.setPurchaseId(rs.getInt("purchase_id"));
-    result.setUserId(rs.getInt("user_id"));
-    result.setProductId(rs.getInt("product"));
-    result.setPrice(rs.getInt("price"));
-    result.setTimestamp(rs.getLong("timestamp"));
+//    result.setPurchaseId(rs.getInt("purchase_id"));
+//    result.setUserId(rs.getInt("user_id"));
+//    result.setProductId(rs.getInt("product"));
+//    result.setPrice(rs.getInt("price"));
+//    result.setTimestamp(rs.getLong("timestamp"));
 
     return result;
   }
