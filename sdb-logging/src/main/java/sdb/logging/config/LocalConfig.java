@@ -24,22 +24,22 @@ enum LocalConfig implements Config {
     }
 
     @Override
-    public String postgresUrl() {
-        return sqlConfig.get("postgres-url");
-    }
-
-    @Override
-    public String postgresUsername() {
-        return sqlConfig.get("postgres-username");
-    }
-
-    @Override
-    public String postgresPassword() {
-        return sqlConfig.get("postgres-password");
-    }
-
-    @Override
     public String logFilePath() {
+        return logConfig.get("log-file-path");
+    }
+
+    @Override
+    public String coreLogFilePath() {
+        return logConfig.get("log-file-path");
+    }
+
+    @Override
+    public String whLogFilePath() {
+        return logConfig.get("log-file-path");
+    }
+
+    @Override
+    public String rabbitLogFilePath() {
         return logConfig.get("log-file-path");
     }
 }

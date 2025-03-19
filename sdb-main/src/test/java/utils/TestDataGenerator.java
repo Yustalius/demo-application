@@ -1,7 +1,7 @@
 package utils;
 
 import net.datafaker.Faker;
-import sdb.app.model.user.UserDTO;
+import sdb.core.model.user.UserDTO;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -6,11 +6,11 @@ public interface Config {
     return LocalConfig.INSTANCE;
   }
 
-  String postgresUrl();
-
-  String postgresUsername();
-
-  String postgresPassword();
-
   String logFilePath();
+
+  String coreLogFilePath();
+
+  String whLogFilePath();
+
+  String rabbitLogFilePath();
 }
