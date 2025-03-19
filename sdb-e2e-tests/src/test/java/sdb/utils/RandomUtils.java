@@ -10,7 +10,10 @@ public class RandomUtils {
 
   @Nonnull
   public static String randomUsername() {
-    return faker.name().username();
+    String username = faker.name().username();
+    String suffix = faker.number().digits(4);
+    String prefix = faker.letterify("??");
+    return prefix + "_" + username + "_" + suffix;
   }
 
   @Nonnull

@@ -85,6 +85,15 @@ public class GlobalExceptionHandler {
         ));
   }
 
+  @ExceptionHandler(PermissionDeniedException.class)
+  public ResponseEntity<ErrorResponse> handlePermissionDeniedException(PermissionDeniedException ex) {
+    return ResponseEntity.status(FORBIDDEN)
+        .body(new ErrorResponse(
+            "PERMISSION_DENIED",
+            ex.getMessage()
+        ));
+  }
+
   @ExceptionHandler(StatusTransitionException.class)
   public ResponseEntity<ErrorResponse> handleOStatusTransitionException(StatusTransitionException ex) {
     return ResponseEntity.status(BAD_REQUEST)

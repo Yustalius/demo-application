@@ -17,6 +17,7 @@ import sdb.core.ex.ProductNotFoundException;
 import sdb.core.ex.StatusTransitionException;
 import sdb.core.ex.UserNotFoundException;
 import sdb.core.model.event.OrderCreatedEvent;
+import sdb.core.model.order.CreateOrderDTO;
 import sdb.core.model.order.OrderDTO;
 import sdb.core.model.order.OrderStatus;
 import sdb.core.model.order.OrderStatusTransition;
@@ -42,15 +43,12 @@ public class OrderServiceImpl implements OrderService {
 
   @Override
   @Transactional
-  public OrderDTO createOrder(OrderDTO order) {
+  public OrderDTO createOrder(CreateOrderDTO order) {
     OrderEntity createdOrder = createOrderEntity(order);
     createOrderItems(createdOrder, groupProductsByIdAndPrice(order));
 
-    // Создаем DTO заказа из сущности
     OrderDTO createdOrderDTO = OrderDTO.fromEntity(createdOrder);
     
-    // Публикуем событие о создании заказа напрямую с использованием fromDTO
-    // Обработка исключений происходит внутри реализации publishOrderCreatedEvent
     eventPublisher.publishOrderCreatedEvent(OrderCreatedEvent.fromDTO(createdOrderDTO));
     
     return createdOrderDTO;
@@ -108,7 +106,7 @@ public class OrderServiceImpl implements OrderService {
   /**
    * Создает и сохраняет сущность заказа
    */
-  private OrderEntity createOrderEntity(OrderDTO order) {
+  private OrderEntity createOrderEntity(CreateOrderDTO order) {
     UsersEntity user = usersRepository.findById(order.userId())
         .orElseThrow(() -> new UserNotFoundException(order.userId()));
 
@@ -122,7 +120,7 @@ public class OrderServiceImpl implements OrderService {
   /**
    * Группирует продукты по ID и цене, суммируя количество
    */
-  private Map<ProductPriceKey, Integer> groupProductsByIdAndPrice(OrderDTO order) {
+  private Map<ProductPriceKey, Integer> groupProductsByIdAndPrice(CreateOrderDTO order) {
     return order.products().stream()
         .collect(Collectors.toMap(
             product -> new ProductPriceKey(product.productId(), product.price()),

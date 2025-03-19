@@ -7,6 +7,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.annotation.Nonnull;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
@@ -19,20 +20,23 @@ import sdb.core.model.validation.ValidationGroups.UpdateStatus;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record OrderDTO(
-//    @NotNull(message = "ID заказа не может быть null", groups = UpdateStatus.class)
-//    @Min(value = 1, message = "ID продукта должен быть положительным числом", groups = UpdateStatus.class)
+    @Schema(description = "ID заказа")
     Integer orderId,
-
+    
+    @Schema(description = "ID пользователя")
     @NotNull(message = "ID пользователя не может быть null", groups = {Default.class, Create.class})
     Integer userId,
 
+    @Schema(description = "Список продуктов")
     @NotNull(message = "Список продуктов не может быть null", groups = {Default.class, Create.class})
     @NotEmpty(message = "Список продуктов не может быть пустым", groups = {Default.class, Create.class})
     @Valid
     List<OrderItemDTO> products,
 
+    @Schema(description = "Временная метка")
     LocalDateTime timestamp,
 
+    @Schema(description = "Статус заказа")
     @NotNull(message = "Статус заказа не может быть null", groups = UpdateStatus.class)
     OrderStatus status
 ) {
