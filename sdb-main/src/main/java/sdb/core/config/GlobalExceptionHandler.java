@@ -1,6 +1,8 @@
 package sdb.core.config;
 
 import static org.springframework.http.HttpStatus.*;
+import static sdb.core.model.order.ErrorCode.*;
+import static sdb.core.model.order.ErrorCode.BAD_REQUEST;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -30,21 +32,21 @@ public class GlobalExceptionHandler {
       logger.warn("User not found ", ex.getMessage());
       return ResponseEntity.status(NOT_FOUND)
           .body(new ErrorResponse(
-              "USER_NOT_FOUND",
+              USER_NOT_FOUND,
               ex.getMessage()
           ));
     } else if (ex.getMessage().contains("constraint [user_creds_unique]")) {
       logger.warn("Username already exists ", ex.getMessage());
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+      return ResponseEntity.status(org.springframework.http.HttpStatus.BAD_REQUEST)
           .body(new ErrorResponse(
-              "USERNAME_ALREADY_TAKEN",
+              USERNAME_ALREADY_TAKEN,
               ex.getMessage()
           ));
     }
 
     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
         .body(new ErrorResponse(
-            "DATABASE_ERROR",
+            DATABASE_ERROR,
             ex.getMessage()
             ));
   }
@@ -53,7 +55,7 @@ public class GlobalExceptionHandler {
   public ResponseEntity<ErrorResponse> handleUserNotFoundException(UserNotFoundException ex) {
     return ResponseEntity.status(NOT_FOUND)
         .body(new ErrorResponse(
-            "USER_NOT_FOUND",
+            USER_NOT_FOUND,
             ex.getMessage()
         ));
   }
@@ -62,7 +64,7 @@ public class GlobalExceptionHandler {
   public ResponseEntity<ErrorResponse> handleProductNotFoundException(ProductNotFoundException ex) {
     return ResponseEntity.status(NOT_FOUND)
         .body(new ErrorResponse(
-            "PRODUCT_NOT_FOUND",
+            PRODUCT_NOT_FOUND,
             ex.getMessage()
         ));
   }
@@ -71,7 +73,7 @@ public class GlobalExceptionHandler {
   public ResponseEntity<ErrorResponse> handleOrderNotFoundException(OrderNotFoundException ex) {
     return ResponseEntity.status(NOT_FOUND)
         .body(new ErrorResponse(
-            "ORDER_NOT_FOUND",
+            ORDER_NOT_FOUND,
             ex.getMessage()
         ));
   }
@@ -80,16 +82,25 @@ public class GlobalExceptionHandler {
   public ResponseEntity<ErrorResponse> handleInvalidCredentialsException(InvalidCredentialsException ex) {
     return ResponseEntity.status(UNAUTHORIZED)
         .body(new ErrorResponse(
-            "INVALID_CREDS",
+            INVALID_CREDS,
+            ex.getMessage()
+        ));
+  }
+
+  @ExceptionHandler(PermissionDeniedException.class)
+  public ResponseEntity<ErrorResponse> handlePermissionDeniedException(PermissionDeniedException ex) {
+    return ResponseEntity.status(FORBIDDEN)
+        .body(new ErrorResponse(
+            PERMISSION_DENIED,
             ex.getMessage()
         ));
   }
 
   @ExceptionHandler(StatusTransitionException.class)
   public ResponseEntity<ErrorResponse> handleOStatusTransitionException(StatusTransitionException ex) {
-    return ResponseEntity.status(BAD_REQUEST)
+    return ResponseEntity.status(org.springframework.http.HttpStatus.BAD_REQUEST)
         .body(new ErrorResponse(
-            "STATUS_TRANSITION_ERROR",
+            STATUS_TRANSITION_ERROR,
             ex.getMessage()
         ));
   }
@@ -102,9 +113,9 @@ public class GlobalExceptionHandler {
         .map(error -> error.getDefaultMessage())
         .collect(Collectors.joining(", "));
 
-    return ResponseEntity.status(BAD_REQUEST)
+    return ResponseEntity.status(org.springframework.http.HttpStatus.BAD_REQUEST)
         .body(new ErrorResponse(
-            "BAD_REQUEST",
+            BAD_REQUEST,
             errorMessage
         ));
   }
@@ -115,14 +126,14 @@ public class GlobalExceptionHandler {
       logger.warn("User not found ", ex.getMessage());
       return ResponseEntity.status(NOT_FOUND)
           .body(new ErrorResponse(
-              "USER_NOT_FOUND",
+              USER_NOT_FOUND,
               ex.getMessage()
           ));
     }
 
     return ResponseEntity.status(INTERNAL_SERVER_ERROR)
         .body(new ErrorResponse(
-            "UNKNOWN",
+            UNKNOWN,
             ex.getMessage()
         ));
   }
@@ -157,9 +168,9 @@ public class GlobalExceptionHandler {
       }
     }
 
-    return ResponseEntity.status(BAD_REQUEST)
+    return ResponseEntity.status(org.springframework.http.HttpStatus.BAD_REQUEST)
         .body(new ErrorResponse(
-            "BAD_REQUEST",
+            BAD_REQUEST,
             errorMessage
         ));
   }
