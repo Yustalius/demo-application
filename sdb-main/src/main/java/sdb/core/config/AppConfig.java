@@ -10,8 +10,6 @@ import java.sql.Connection;
 
 @Configuration
 public class AppConfig {
-  private static final Config CFG = Config.getInstance();
-
   @Value("${app.database.url}")
   private String dbUrl;
 

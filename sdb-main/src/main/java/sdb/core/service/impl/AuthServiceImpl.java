@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import sdb.core.data.entity.user.UserCredsEntity;
 import sdb.core.data.entity.user.UsersEntity;
 import sdb.core.data.repository.UserCredsRepository;
+import sdb.core.ex.InvalidCredentialsException;
 import sdb.core.ex.UserNotFoundException;
 import sdb.core.model.auth.RegisterJson;
 import sdb.core.model.user.UserDTO;
@@ -57,10 +58,10 @@ public class AuthServiceImpl implements AuthService {
   public String login(@Nonnull RegisterJson json) {
     UserCredsEntity creds = userCredsRepository.findByUsername(json.username())
         .orElseThrow(() ->
-            new UserNotFoundException("Not found user with username = " + json.username()));
+            new InvalidCredentialsException());
 
     if (!passwordEncoder.matches(json.password(), creds.getPassword())) {
-      throw new RuntimeException("Invalid credentials");
+      throw new InvalidCredentialsException();
     }
 
     return generateToken(creds.getUsername());

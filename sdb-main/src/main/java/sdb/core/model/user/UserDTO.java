@@ -1,5 +1,6 @@
 package sdb.core.model.user;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import sdb.core.data.entity.user.UsersEntity;
 import sdb.core.model.validation.CreateValidationGroup;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -10,15 +11,19 @@ import lombok.SneakyThrows;
 
 public record UserDTO(
     @JsonProperty("id")
+    @Schema(description = "ID пользователя")
     Integer id,
     @JsonProperty("firstName")
     @NotBlank(message = "Field 'name' required", groups = CreateValidationGroup.class)
+    @Schema(description = "Имя пользователя")
     String firstName,
     @JsonProperty("lastName")
     @NotBlank(message = "Field 'lastName' required", groups = CreateValidationGroup.class)
+    @Schema(description = "Фамилия пользователя")
     String lastName,
     @JsonProperty("age")
     @NotNull(message = "Field 'age' required", groups = CreateValidationGroup.class)
+    @Schema(description = "Возраст пользователя")
     Integer age
 ) {
   public static UserDTO fromEntity(UsersEntity user) {

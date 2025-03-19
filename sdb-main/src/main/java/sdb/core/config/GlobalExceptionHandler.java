@@ -15,10 +15,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import sdb.core.ex.OrderNotFoundException;
-import sdb.core.ex.ProductNotFoundException;
-import sdb.core.ex.StatusTransitionException;
-import sdb.core.ex.UserNotFoundException;
+import sdb.core.ex.*;
 import sdb.core.model.error.ErrorResponse;
 import utils.logging.Logger;
 
@@ -75,6 +72,15 @@ public class GlobalExceptionHandler {
     return ResponseEntity.status(NOT_FOUND)
         .body(new ErrorResponse(
             "ORDER_NOT_FOUND",
+            ex.getMessage()
+        ));
+  }
+
+  @ExceptionHandler(InvalidCredentialsException.class)
+  public ResponseEntity<ErrorResponse> handleInvalidCredentialsException(InvalidCredentialsException ex) {
+    return ResponseEntity.status(UNAUTHORIZED)
+        .body(new ErrorResponse(
+            "INVALID_CREDS",
             ex.getMessage()
         ));
   }
