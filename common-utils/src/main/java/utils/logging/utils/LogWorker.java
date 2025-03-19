@@ -1,15 +1,16 @@
 package utils.logging.utils;
 
-
 import utils.logging.api.LogApiClient;
 import utils.logging.model.LogTask;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
+/**
+ * Рабочий поток для обработки логов
+ * Собирает логи в буфер и отправляет их пакетами
+ */
 public class LogWorker {
   private final LogApiClient logClient;
 
@@ -26,6 +27,9 @@ public class LogWorker {
     scheduler.scheduleAtFixedRate(this::flush, 0, FLUSH_INTERVAL, TimeUnit.SECONDS);
   }
 
+  /**
+   * Принудительная отправка всех логов из буфера
+   */
   private void flush() {
     synchronized (buffer) {
       if (!buffer.isEmpty()) {
@@ -36,6 +40,10 @@ public class LogWorker {
     }
   }
 
+  /**
+   * Добавление лога в буфер
+   * @param logTask задание для логирования
+   */
   public void enqueueLog(LogTask logTask) {
     synchronized (buffer) {
       buffer.add(logTask);
@@ -46,8 +54,11 @@ public class LogWorker {
     }
   }
 
+  /**
+   * Остановка рабочего потока
+   */
   public void shutdown() {
-    flush();
+    flush(); // Отправляем все оставшиеся логи
     scheduler.shutdown();
     try {
       if (!scheduler.awaitTermination(5, TimeUnit.SECONDS)) {
@@ -57,4 +68,4 @@ public class LogWorker {
       scheduler.shutdownNow();
     }
   }
-}
+} 

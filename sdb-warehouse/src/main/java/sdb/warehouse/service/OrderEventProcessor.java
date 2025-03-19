@@ -13,9 +13,7 @@ import utils.logging.Logger;
  */
 @Service
 public class OrderEventProcessor {
-    
-    @Autowired
-    private Logger logger;
+    private Logger logger = new Logger("http://localhost:8082/");
 
     /**
      * Обрабатывает событие создания заказа.

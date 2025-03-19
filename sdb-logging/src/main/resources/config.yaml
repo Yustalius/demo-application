@@ -5,3 +5,6 @@ sql:
 
 logging:
   log-file-path: "sdb-logging/log/sdb.log"
+  core-log-file-path: "sdb-logging/log/sdb-core.log"
+  wh-log-file-path: "sdb-logging/log/sdb-wh.log"
+  rabbit-log-file-path: "sdb-logging/log/sdb-rabbit.log"
