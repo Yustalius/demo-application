@@ -30,8 +30,10 @@ public class SwaggerConfig {
         .components(new Components()
             .addSchemas("ErrorResponse", createErrorResponseSchema())
             .addResponses("BadRequestResponse", createBadRequestResponse())
+            .addResponses("NotAuthorizedResponse", createNotAuthorizedResponse())
             .addResponses("InternalServerErrorResponse", createInternalServerErrorResponse())
             .addResponses("InvalidCredsResponse", createInvalidCredsResponse())
+            .addResponses("PermissionDeniedResponse", createPermissionDeniedResponse())
             .addResponses("UserNotFoundResponse", createUserNotFoundResponse())
             .addResponses("OrderNotFoundResponse", createOrderNotFoundResponse())
             .addResponses("StatusTransitionErrorResponse", createStatusTransitionErrorResponse()));  
@@ -42,6 +44,20 @@ public class SwaggerConfig {
         .type("object")
         .addProperty("errorCode", new StringSchema())
         .addProperty("message", new StringSchema());
+  }
+
+  private ApiResponse createNotAuthorizedResponse() {
+    Schema resultEntitySchema = ModelConverters.getInstance()
+        .resolveAsResolvedSchema(new AnnotatedType(ErrorResponse.class)).schema;
+    return new ApiResponse()
+        .description("Требуется аутентификация")
+        .content(
+            new Content().addMediaType(org.springframework.http.MediaType.APPLICATION_JSON_VALUE,
+                new MediaType()
+                    .schema(resultEntitySchema.description("Schema 1"))
+                    .addExamples("example",
+                        new Example()
+                            .value(new ErrorResponse(NOT_AUTHORIZED, "Authentication required")))));
   }
 
   private ApiResponse createInvalidCredsResponse() {
@@ -56,6 +72,20 @@ public class SwaggerConfig {
                     .addExamples("example",
                         new Example()
                             .value(new ErrorResponse(INVALID_CREDS, "Invalid login or password")))));
+  }
+
+  private ApiResponse createPermissionDeniedResponse() {
+    Schema resultEntitySchema = ModelConverters.getInstance()
+        .resolveAsResolvedSchema(new AnnotatedType(ErrorResponse.class)).schema;
+    return new ApiResponse()
+        .description("Нет прав на выполнение операции")
+        .content(
+            new Content().addMediaType(org.springframework.http.MediaType.APPLICATION_JSON_VALUE,
+                new MediaType()
+                    .schema(resultEntitySchema.description("Schema 1"))
+                    .addExamples("example",
+                        new Example()
+                            .value(new ErrorResponse(PERMISSION_DENIED, "Permission denied")))));
   }
 
   private ApiResponse createBadRequestResponse() {
@@ -98,6 +128,20 @@ public class SwaggerConfig {
                     .addExamples("example",
                         new Example()
                             .value(new ErrorResponse(ORDER_NOT_FOUND, "error message")))));
+  }
+
+  private ApiResponse createProductNotFoundResponse() {
+    Schema resultEntitySchema = ModelConverters.getInstance()
+        .resolveAsResolvedSchema(new AnnotatedType(ErrorResponse.class)).schema;
+    return new ApiResponse()
+        .description("Продукт не найден")
+        .content(
+            new Content().addMediaType(org.springframework.http.MediaType.APPLICATION_JSON_VALUE,
+                new MediaType()
+                    .schema(resultEntitySchema.description("Schema 1"))
+                    .addExamples("example",
+                        new Example()
+                            .value(new ErrorResponse(PRODUCT_NOT_FOUND, "error message")))));
   }
 
   private ApiResponse createStatusTransitionErrorResponse() {

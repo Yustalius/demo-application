@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +27,7 @@ import utils.logging.Logger;
 @RestController
 @RequestMapping("/order")
 @Validated
+@Tag(name = "Заказы", description = "Операции с заказами")
 public class OrderController {
   private static final ObjectMapper mapper = new ObjectMapper();
 
@@ -40,6 +42,7 @@ public class OrderController {
       @ApiResponse(responseCode = "201", description = "Заказ успешно добавлен",
           content = @Content(schema = @Schema(implementation = OrderDTO.class))),
       @ApiResponse(responseCode = "400", ref = "BadRequestResponse"),
+      @ApiResponse(responseCode = "401", ref = "NotAuthorizedResponse"),
       @ApiResponse(responseCode = "404", ref = "UserNotFoundResponse"),
       @ApiResponse(responseCode = "500", ref = "InternalServerErrorResponse")
   })
@@ -54,6 +57,7 @@ public class OrderController {
       @ApiResponse(responseCode = "200", description = "Статус заказа успешно обновлен",
           content = @Content(schema = @Schema(implementation = OrderDTO.class))),
       @ApiResponse(responseCode = "400", ref = "StatusTransitionErrorResponse"),
+      @ApiResponse(responseCode = "401", ref = "NotAuthorizedResponse"),
       @ApiResponse(responseCode = "404", ref = "OrderNotFoundResponse"),
       @ApiResponse(responseCode = "500", ref = "InternalServerErrorResponse")
   })
@@ -70,6 +74,7 @@ public class OrderController {
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "Заказы пользователя успешно получены",
           content = @Content(array = @ArraySchema(schema = @Schema(implementation = OrderDTO.class)))),
+      @ApiResponse(responseCode = "401", ref = "NotAuthorizedResponse"),
       @ApiResponse(responseCode = "404", ref = "UserNotFoundResponse"),
       @ApiResponse(responseCode = "500", ref = "InternalServerErrorResponse")
   })
@@ -83,6 +88,7 @@ public class OrderController {
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "Заказ успешно получен",
           content = @Content(schema = @Schema(implementation = OrderDTO.class))),
+      @ApiResponse(responseCode = "401", ref = "NotAuthorizedResponse"),
       @ApiResponse(responseCode = "404", ref = "OrderNotFoundResponse"),
       @ApiResponse(responseCode = "500", ref = "InternalServerErrorResponse")
   })
@@ -96,6 +102,7 @@ public class OrderController {
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "Заказы успешно получены",
           content = @Content(array = @ArraySchema(schema = @Schema(implementation = OrderDTO.class)))),
+      @ApiResponse(responseCode = "401", ref = "NotAuthorizedResponse"),
       @ApiResponse(responseCode = "500", ref = "InternalServerErrorResponse")
   })
   @GetMapping
