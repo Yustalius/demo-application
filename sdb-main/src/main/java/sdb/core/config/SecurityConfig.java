@@ -16,6 +16,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import sdb.core.model.error.ErrorResponse;
 import sdb.core.utils.security.JwtTokenFilter;
 
+import static sdb.core.model.order.ErrorCode.NOT_AUTHORIZED;
+import static sdb.core.model.order.ErrorCode.PERMISSION_DENIED;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -47,14 +50,14 @@ public class SecurityConfig {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 response.setContentType(MediaType.APPLICATION_JSON_VALUE);
                 response.getWriter().write(objectMapper.writeValueAsString(
-                    new ErrorResponse("NOT_AUTHORIZED", "Authentication required")
+                    new ErrorResponse(NOT_AUTHORIZED, "Authentication required")
                 ));
             })
             .accessDeniedHandler((request, response, accessDeniedException) -> {
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                 response.setContentType(MediaType.APPLICATION_JSON_VALUE);
                 response.getWriter().write(objectMapper.writeValueAsString(
-                    new ErrorResponse("PERMISSION_DENIED", "Access denied")
+                    new ErrorResponse(PERMISSION_DENIED, "Access denied")
                 ));
             })
         )

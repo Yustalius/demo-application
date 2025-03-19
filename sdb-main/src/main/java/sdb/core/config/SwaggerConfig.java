@@ -18,6 +18,7 @@ import sdb.core.model.error.ErrorResponse;
 import java.util.Map;
 
 import static io.swagger.v3.oas.models.media.Content.*;
+import static sdb.core.model.order.ErrorCode.*;
 
 @Configuration
 public class SwaggerConfig {
@@ -54,7 +55,7 @@ public class SwaggerConfig {
                     .schema(resultEntitySchema.description("Schema 1"))
                     .addExamples("example",
                         new Example()
-                            .value(new ErrorResponse("INVALID_CREDS", "Invalid login or password")))));
+                            .value(new ErrorResponse(INVALID_CREDS, "Invalid login or password")))));
   }
 
   private ApiResponse createBadRequestResponse() {
@@ -68,7 +69,7 @@ public class SwaggerConfig {
                     .schema(resultEntitySchema.description("Schema 1"))
                     .addExamples("example",
                         new Example()
-                            .value(new ErrorResponse("BAD_REQUEST", "error message")))));
+                            .value(new ErrorResponse(BAD_REQUEST, "error message")))));
   }
 
   private ApiResponse createUserNotFoundResponse() {
@@ -82,7 +83,7 @@ public class SwaggerConfig {
                     .schema(resultEntitySchema.description("Schema 1"))
                     .addExamples("example",
                         new Example()
-                            .value(new ErrorResponse("USER_NOT_FOUND", "error message")))));
+                            .value(new ErrorResponse(USER_NOT_FOUND, "error message")))));
   }
 
   private ApiResponse createOrderNotFoundResponse() {
@@ -96,7 +97,7 @@ public class SwaggerConfig {
                     .schema(resultEntitySchema.description("Schema 1"))
                     .addExamples("example",
                         new Example()
-                            .value(new ErrorResponse("ORDER_NOT_FOUND", "error message")))));
+                            .value(new ErrorResponse(ORDER_NOT_FOUND, "error message")))));
   }
 
   private ApiResponse createStatusTransitionErrorResponse() {
@@ -110,7 +111,7 @@ public class SwaggerConfig {
                     .schema(resultEntitySchema.description("Schema 1"))
                     .addExamples("example",
                         new Example()
-                            .value(new ErrorResponse("STATUS_TRANSITION_ERROR", "error message")))));
+                            .value(new ErrorResponse(STATUS_TRANSITION_ERROR, "error message")))));
   }
 
   private ApiResponse createInternalServerErrorResponse() {
@@ -124,6 +125,6 @@ public class SwaggerConfig {
                     .schema(resultEntitySchema.description("Schema 1"))
                     .addExamples("example",
                         new Example()
-                            .value(new ErrorResponse("UNKNOWN", "error message")))));
+                            .value(new ErrorResponse(UNKNOWN, "error message")))));
   }
 }
