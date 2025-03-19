@@ -11,6 +11,7 @@ import sdb.core.data.entity.user.UsersEntity;
 import sdb.core.data.repository.UserCredsRepository;
 import sdb.core.ex.InvalidCredentialsException;
 import sdb.core.ex.UserNotFoundException;
+import sdb.core.model.auth.LoginDTO;
 import sdb.core.model.auth.RegisterJson;
 import sdb.core.model.user.UserDTO;
 import sdb.core.service.AuthService;
@@ -55,12 +56,12 @@ public class AuthServiceImpl implements AuthService {
 
   @Override
   @Transactional(readOnly = true)
-  public String login(@Nonnull RegisterJson json) {
-    UserCredsEntity creds = userCredsRepository.findByUsername(json.username())
+  public String login(@Nonnull LoginDTO login) {
+    UserCredsEntity creds = userCredsRepository.findByUsername(login.username())
         .orElseThrow(() ->
             new InvalidCredentialsException());
 
-    if (!passwordEncoder.matches(json.password(), creds.getPassword())) {
+    if (!passwordEncoder.matches(login.password(), creds.getPassword())) {
       throw new InvalidCredentialsException();
     }
 

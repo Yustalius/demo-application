@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import sdb.core.model.auth.LoginDTO;
 import sdb.core.model.auth.RegisterJson;
 import sdb.core.model.auth.Token;
 import sdb.core.model.error.ErrorResponse;
@@ -58,9 +59,7 @@ public class AuthController {
       @ApiResponse(responseCode = "500", ref = "InternalServerErrorResponse")
   })
   @PostMapping("/login")
-  public Token login(
-      @Validated(LoginValidationGroup.class) @RequestBody RegisterJson json
-  ) {
-    return new Token(authService.login(json));
+  public Token login(@RequestBody LoginDTO login) {
+    return new Token(authService.login(login));
   }
 }
