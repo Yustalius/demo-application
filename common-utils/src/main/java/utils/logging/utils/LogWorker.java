@@ -35,7 +35,16 @@ public class LogWorker {
       if (!buffer.isEmpty()) {
         List<LogTask> batch = new ArrayList<>(buffer);
         buffer.clear();
-        logClient.sendLog(batch);
+        try {
+          CompletableFuture.runAsync(() -> logClient.sendLog(batch))
+              .orTimeout(5, TimeUnit.SECONDS)
+              .exceptionally(ex -> {
+                System.err.println("Ошибка отправки логов: " + ex.getMessage());
+                return null;
+              });
+        } catch (Exception e) {
+          System.err.println("Ошибка при запуске задачи отправки логов: " + e.getMessage());
+        }
       }
     }
   }

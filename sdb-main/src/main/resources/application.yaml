@@ -25,6 +25,10 @@ spring:
       ddl-auto: none
     show-sql: true
 
+security:
+  admin:
+    usernames:
+      - yustalius
 ---
 spring:
   config:

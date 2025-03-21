@@ -37,14 +37,14 @@ public class ProductService {
 
           return ProductDTO.fromEntity(productRepository.save(product));
         }
-    ).orElseThrow(() -> new ProductNotFoundException(id));
+    ).orElseThrow(() -> new ProductNotFoundException("Error while updating product", id));
   }
 
   @Transactional(readOnly = true)
   public ProductDTO getById(int productId) {
     return ProductDTO.fromEntity(
         productRepository.findById(productId)
-            .orElseThrow(() -> new ProductNotFoundException(productId))
+            .orElseThrow(() -> new ProductNotFoundException("Error while getting product", productId))
     );
   }
 
@@ -62,6 +62,6 @@ public class ProductService {
           productRepository.delete(product);
           return product;
         })
-        .orElseThrow(() -> new ProductNotFoundException(productId));
+        .orElseThrow(() -> new ProductNotFoundException("Error while deleting product", productId));
   }
 }

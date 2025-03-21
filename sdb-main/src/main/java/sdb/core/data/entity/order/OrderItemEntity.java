@@ -33,4 +33,14 @@ public class OrderItemEntity {
 
   @Column(nullable = false)
   private Integer price;
+
+  @Override
+  public String toString() {
+    return "OrderItemEntity{" +
+        "orderItemId=" + orderItemId +
+        ", productId=" + (product != null ? product.getId() : null) +
+        ", quantity=" + quantity +
+        ", price=" + price +
+        '}';
+  }
 }
