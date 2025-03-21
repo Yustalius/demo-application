@@ -1,16 +1,29 @@
-FROM gradle:jdk21 AS build
+FROM eclipse-temurin:21-jdk AS builder
 
-WORKDIR /home/gradle/src
-COPY --chown=gradle:gradle build.gradle ./
+WORKDIR /app
 
-RUN gradle dependencies --no-daemon --parallel
+# Копируем gradle-файлы
+COPY gradlew .
+COPY gradle gradle
+COPY settings.gradle .
+COPY build.gradle .
 
-COPY --chown=gradle:gradle src ./src
+# Копируем модули
+COPY common-utils common-utils
+COPY sdb-logging sdb-logging
 
-RUN gradle bootJar --no-daemon --parallel
+# Устанавливаем права на исполнение для gradlew
+RUN chmod +x ./gradlew
 
-FROM openjdk:21-jdk-slim
+# Собираем проект
+RUN ./gradlew sdb-logging:bootJar
 
-COPY --from=build /home/gradle/src/build/libs/sdb-logger.jar app.jar
+# Итоговый образ
+FROM eclipse-temurin:21-jre
+
+WORKDIR /app
+
+# Копируем JAR-файл из предыдущего этапа
+COPY --from=builder /app/sdb-logging/build/libs/*.jar /app/app.jar
 
 ENTRYPOINT ["java", "-jar", "app.jar"]

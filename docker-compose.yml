@@ -14,19 +14,35 @@ services:
       - 15672:15672
       - 5672:5672
 
+  common-utils:
+    build:
+      context: .
+      dockerfile: ./common-utils/Dockerfile
+    image: common-utils:latest
+
   sdb-core:
     environment:
       - SPRING_PROFILES_ACTIVE=docker
-    build: ./sdb-main
+    build: 
+      context: .
+      dockerfile: ./sdb-main/Dockerfile
     ports:
       - "8080:8080"
+    depends_on:
+      - sdb-rabbit
+      - common-utils
 
   sdb-logging:
     environment:
       - SPRING_PROFILES_ACTIVE=docker
-    build: ./sdb-logging
+    build:
+      context: .
+      dockerfile: ./sdb-logging/Dockerfile
     ports:
       - "8082:8082"
+    depends_on:
+      - sdb-rabbit
+      - common-utils
 
 volumes:
   rabbitmq_data:
