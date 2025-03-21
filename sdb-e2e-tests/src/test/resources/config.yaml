@@ -1,5 +1,5 @@
 sql:
-  postgres-url: "jdbc:postgresql://127.0.0.1:5432/postgres"
+  postgres-url: "jdbc:postgresql://127.0.0.1:5432/sdb_core"
   postgres-username: "postgres"
   postgres-password: 1234
 

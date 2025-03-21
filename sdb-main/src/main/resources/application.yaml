@@ -35,7 +35,7 @@ spring:
     activate:
       on-profile: default
   datasource:
-    url: "jdbc:postgresql://127.0.0.1:5432/postgres"
+    url: "jdbc:postgresql://127.0.0.1:5432/sdb_core"
     username: postgres
     password: 1234
     driver-class-name: org.postgresql.Driver
@@ -51,7 +51,7 @@ server:
 
 app:
   database:
-    url: "jdbc:postgresql://127.0.0.1:5432/postgres"
+    url: "jdbc:postgresql://127.0.0.1:5432/sdb_core"
     username: "postgres"
     password: 1234
   logging:
@@ -63,7 +63,7 @@ spring:
     activate:
       on-profile: docker
   datasource:
-    url: "jdbc:postgresql://host.docker.internal:5432/postgres"
+    url: "jdbc:postgresql://host.docker.internal:5432/sdb_core"
     username: postgres
     password: 1234
     driver-class-name: org.postgresql.Driver
@@ -79,7 +79,7 @@ server:
 
 app:
   database:
-    url: "jdbc:postgresql://host.docker.internal:5432/postgres"
+    url: "jdbc:postgresql://host.docker.internal:5432/sdb_core"
     username: "postgres"
     password: 1234
   logging:
