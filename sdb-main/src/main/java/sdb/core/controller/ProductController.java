@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.validation.annotation.Validated;
+import utils.logging.Logger;
 
 import java.util.List;
 
@@ -18,6 +19,9 @@ import java.util.List;
 @RequestMapping("/product")
 @Tag(name = "Продукты", description = "Операции с продуктами")
 public class ProductController {
+
+  @Autowired
+  private Logger logger;
 
   @Autowired
   private ProductService productService;
@@ -31,7 +35,8 @@ public class ProductController {
       @ApiResponse(responseCode = "500", ref = "InternalServerErrorResponse")
   })
   @PostMapping("/add")
-  public ProductDTO createProduct(@Validated @RequestBody ProductDTO product) {
+  public ProductDTO add(@Validated @RequestBody ProductDTO product) {
+    logger.info("Creating product " + product);
     return productService.create(product);
   }
 
@@ -45,7 +50,7 @@ public class ProductController {
       @ApiResponse(responseCode = "500", ref = "InternalServerErrorResponse")
   })
   @PatchMapping("{id}")
-  public ProductDTO updateProduct(
+  public ProductDTO update(
       @PathVariable int id,
       @RequestBody ProductDTO product) {
     return productService.update(id, product);
@@ -61,7 +66,8 @@ public class ProductController {
       @ApiResponse(responseCode = "500", ref = "InternalServerErrorResponse")
   })
   @GetMapping("{id}")
-  public ProductDTO getProductById(@PathVariable int id) {
+  public ProductDTO byId(@PathVariable int id) {
+    logger.info("Getting product with id " + id);
     return productService.getById(id);
   }
 
@@ -74,7 +80,8 @@ public class ProductController {
       @ApiResponse(responseCode = "500", ref = "InternalServerErrorResponse")
   })
   @GetMapping
-  public List<ProductDTO> getAllProducts() {
+  public List<ProductDTO> get() {
+    logger.info("Getting all products");
     return productService.getAll();
   }
 
@@ -88,7 +95,8 @@ public class ProductController {
       @ApiResponse(responseCode = "500", ref = "InternalServerErrorResponse")
   })
   @DeleteMapping("{id}")
-  public void deleteProduct(@PathVariable int id) {
+  public void delete(@PathVariable int id) {
+    logger.info("Deleting product with id " + id);
     productService.delete(id);
   }
 }

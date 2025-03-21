@@ -9,11 +9,13 @@ import org.hibernate.annotations.CreationTimestamp;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.SneakyThrows;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import sdb.core.data.entity.user.UsersEntity;
 import sdb.core.model.order.OrderStatus;
 
 @Entity
-@Table(name = "orders3")
+@Table(name = "orders")
 @Getter
 @Setter
 public class OrderEntity {
@@ -46,5 +48,16 @@ public class OrderEntity {
   public void removeOrderItem(OrderItemEntity item) {
     orderItems.remove(item);
     item.setOrder(null);
+  }
+
+  @Override
+  public String toString() {
+    return "OrderEntity{" +
+        "orderId=" + orderId +
+        ", userId=" + (user != null ? user.getId() : null) +
+        ", status=" + status +
+        ", createdAt=" + createdAt +
+        ", orderItemsCount=" + (orderItems != null ? orderItems.size() : 0) +
+        '}';
   }
 }

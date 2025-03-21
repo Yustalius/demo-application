@@ -53,7 +53,7 @@ public class OrderExtension implements BeforeEachCallback, ParameterResolver {
                 orderClient
             );
 
-            user.testData().orders().addAll(createdOrders);
+              user.testData().orders().addAll(createdOrders);
           }
         });
   }

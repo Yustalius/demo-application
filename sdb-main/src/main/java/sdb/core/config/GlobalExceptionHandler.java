@@ -36,7 +36,7 @@ public class GlobalExceptionHandler {
               ex.getMessage()
           ));
     } else if (ex.getMessage().contains("constraint [user_creds_unique]")) {
-      logger.warn("Username already exists ", ex.getMessage());
+      logger.info("Username already exists ", ex.getMessage());
       return ResponseEntity.status(org.springframework.http.HttpStatus.BAD_REQUEST)
           .body(new ErrorResponse(
               USERNAME_ALREADY_TAKEN,
@@ -53,6 +53,7 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(UserNotFoundException.class)
   public ResponseEntity<ErrorResponse> handleUserNotFoundException(UserNotFoundException ex) {
+    logger.warn("User not found ", ex.getMessage());
     return ResponseEntity.status(NOT_FOUND)
         .body(new ErrorResponse(
             USER_NOT_FOUND,
@@ -62,6 +63,7 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(ProductNotFoundException.class)
   public ResponseEntity<ErrorResponse> handleProductNotFoundException(ProductNotFoundException ex) {
+    logger.warn(ex.getMessage());
     return ResponseEntity.status(NOT_FOUND)
         .body(new ErrorResponse(
             PRODUCT_NOT_FOUND,
@@ -71,6 +73,7 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(OrderNotFoundException.class)
   public ResponseEntity<ErrorResponse> handleOrderNotFoundException(OrderNotFoundException ex) {
+    logger.warn(ex.getMessage());
     return ResponseEntity.status(NOT_FOUND)
         .body(new ErrorResponse(
             ORDER_NOT_FOUND,
@@ -80,6 +83,7 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(InvalidCredentialsException.class)
   public ResponseEntity<ErrorResponse> handleInvalidCredentialsException(InvalidCredentialsException ex) {
+    logger.info("Invalid credentials ", ex.getMessage());
     return ResponseEntity.status(UNAUTHORIZED)
         .body(new ErrorResponse(
             INVALID_CREDS,
@@ -89,6 +93,7 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(PermissionDeniedException.class)
   public ResponseEntity<ErrorResponse> handlePermissionDeniedException(PermissionDeniedException ex) {
+    logger.warn("Permission denied ", ex.getMessage());
     return ResponseEntity.status(FORBIDDEN)
         .body(new ErrorResponse(
             PERMISSION_DENIED,
@@ -97,7 +102,8 @@ public class GlobalExceptionHandler {
   }
 
   @ExceptionHandler(StatusTransitionException.class)
-  public ResponseEntity<ErrorResponse> handleOStatusTransitionException(StatusTransitionException ex) {
+  public ResponseEntity<ErrorResponse> handleOrderStatusTransitionException(StatusTransitionException ex) {
+    logger.warn("Transition from " + ex.getCurrentStatus() + " to " + ex.getNewStatus() + " is not allowed ", ex.getMessage());
     return ResponseEntity.status(org.springframework.http.HttpStatus.BAD_REQUEST)
         .body(new ErrorResponse(
             STATUS_TRANSITION_ERROR,

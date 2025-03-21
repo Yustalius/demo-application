@@ -1,8 +1,10 @@
 package sdb.core.model.product;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.annotation.Nonnull;
 import jakarta.validation.constraints.NotNull;
+import lombok.SneakyThrows;
 import sdb.core.data.entity.product.ProductEntity;
 
 public record ProductDTO(
@@ -25,5 +27,12 @@ public record ProductDTO(
         entity.getDescription(),
         entity.getPrice()
     );
+  }
+
+  @Override
+  @SneakyThrows
+  public String toString() {
+    ObjectMapper objectMapper = new ObjectMapper();
+    return objectMapper.writeValueAsString(this);
   }
 }

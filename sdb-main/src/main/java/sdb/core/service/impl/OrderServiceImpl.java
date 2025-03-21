@@ -58,7 +58,7 @@ public class OrderServiceImpl implements OrderService {
   @Transactional
   public OrderDTO updateStatus(int orderId, @Nonnull OrderStatus newStatus) {
     OrderEntity order = orderRepository.findById(orderId)
-        .orElseThrow(() -> new OrderNotFoundException(orderId));
+        .orElseThrow(() -> new OrderNotFoundException("Error while updating status for order " + orderId, orderId));
 
     OrderStatus currentStatus = order.getStatus();
     if (currentStatus == newStatus) {
@@ -135,7 +135,9 @@ public class OrderServiceImpl implements OrderService {
   private void createOrderItems(OrderEntity order, Map<ProductPriceKey, Integer> productQuantities) {
     productQuantities.forEach((key, totalQuantity) -> {
       ProductEntity productEntity = productRepository.findById(key.getProductId())
-          .orElseThrow(() -> new ProductNotFoundException(key.getProductId()));
+          .orElseThrow(() -> new ProductNotFoundException(
+            "Error while creating order items for order " + order,
+            key.getProductId()));
 
       OrderItemEntity orderItemEntity = new OrderItemEntity();
       orderItemEntity.setOrder(order);
@@ -146,5 +148,6 @@ public class OrderServiceImpl implements OrderService {
       OrderItemEntity savedItem = orderItemRepository.save(orderItemEntity);
       order.addOrderItem(savedItem);
     });
+    logger.info("Order items created for order ID = " + order);
   }
 }

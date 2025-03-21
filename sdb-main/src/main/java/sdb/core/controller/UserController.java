@@ -34,7 +34,7 @@ public class UserController {
       @ApiResponse(responseCode = "500", ref = "InternalServerErrorResponse")
   })
   @GetMapping("/user/{id}")
-  public ResponseEntity<UserDTO> getUser(
+  public ResponseEntity<UserDTO> getById(
       @PathVariable int id
   ) {
     logger.info("Get user id = %s".formatted(id));
@@ -52,7 +52,7 @@ public class UserController {
       @ApiResponse(responseCode = "500", ref = "InternalServerErrorResponse")
   })
   @DeleteMapping("/user/{id}")
-  public ResponseEntity<Void> deleteUser(
+  public ResponseEntity<Void> delete(
       @PathVariable int id) {
     logger.info("Delete user id = %s".formatted(id));
     userService.delete(id);
@@ -69,7 +69,7 @@ public class UserController {
       @ApiResponse(responseCode = "500", ref = "InternalServerErrorResponse")
   })
   @PatchMapping("/user/{id}")
-  public ResponseEntity<UserDTO> updateUser(
+  public ResponseEntity<UserDTO> update(
       @PathVariable int id,
       @Validated(UpdateValidationGroup.class) @RequestBody UserDTO user) {
     UserDTO updatedUser = userService.update(id, user);
