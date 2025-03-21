@@ -13,7 +13,7 @@ import sdb.core.data.entity.user.UsersEntity;
 import sdb.core.model.order.OrderStatus;
 
 @Entity
-@Table(name = "orders3")
+@Table(name = "orders")
 @Getter
 @Setter
 public class OrderEntity {

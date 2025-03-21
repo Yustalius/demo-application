@@ -41,7 +41,7 @@ public class SwaggerConfig {
 
   private Schema<?> createErrorResponseSchema() {
     return new Schema<>()
-        .type("object")
+                .type("object")
         .addProperty("errorCode", new StringSchema())
         .addProperty("message", new StringSchema());
   }

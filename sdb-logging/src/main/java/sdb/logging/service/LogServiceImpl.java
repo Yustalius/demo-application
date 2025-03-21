@@ -134,7 +134,7 @@ public class LogServiceImpl implements LogService {
     if (logs.isEmpty()) {
       return;
     }
-    
+
     Path path = Paths.get(filePath);
     try {
       Files.createDirectories(path.getParent());
@@ -145,7 +145,7 @@ public class LogServiceImpl implements LogService {
       try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
         for (Log log : logs) {
           writer.write(formatLog(log));
-          writer.newLine();
+      writer.newLine();
         }
         writer.flush(); // Гарантируем запись на диск
       }

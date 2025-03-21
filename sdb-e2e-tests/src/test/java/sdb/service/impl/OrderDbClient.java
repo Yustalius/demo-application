@@ -48,7 +48,7 @@ public class OrderDbClient {
   public OrderEntity getOrder(int orderId) {
     // Запрос на получение информации о заказе
     OrderEntity order = jdbcTemplate.queryForObject(
-        "SELECT * FROM orders3 WHERE order_id = ?",
+        "SELECT * FROM orders WHERE order_id = ?",
         (rs, rowNum) -> {
           OrderEntity entity = new OrderEntity();
           entity.setOrderId(rs.getInt("order_id"));
@@ -97,7 +97,7 @@ public class OrderDbClient {
     KeyHolder keyHolder = new GeneratedKeyHolder();
     jdbcTemplate.update(connection -> {
       PreparedStatement ps = connection.prepareStatement(
-          "INSERT INTO orders3 (user_id, status) VALUES (?, ?)",
+          "INSERT INTO orders (user_id, status) VALUES (?, ?)",
           Statement.RETURN_GENERATED_KEYS
       );
       ps.setObject(1, order.getUser().getId());
