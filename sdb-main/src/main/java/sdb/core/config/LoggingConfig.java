@@ -4,6 +4,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import utils.logging.Logger;
+import utils.logging.utils.LogWorkerFactory;
+
+import static utils.logging.utils.LogWorkerFactory.LogWorkerType.DIRECT;
 
 /**
  * Конфигурация для системы логирования.
@@ -20,6 +23,6 @@ public class LoggingConfig {
      */
     @Bean
     public Logger logger(@Value("${app.logging.url}") String loggingUrl) {
-        return new Logger(loggingUrl);
+        return new Logger(loggingUrl, DIRECT);
     }
 } 

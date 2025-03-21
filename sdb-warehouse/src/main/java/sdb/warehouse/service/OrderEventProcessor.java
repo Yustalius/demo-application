@@ -13,7 +13,8 @@ import utils.logging.Logger;
  */
 @Service
 public class OrderEventProcessor {
-    private Logger logger = new Logger("http://localhost:8082/");
+    @Autowired
+    private Logger logger;
 
     /**
      * Обрабатывает событие создания заказа.
@@ -21,7 +22,7 @@ public class OrderEventProcessor {
      * 
      * @param event событие создания заказа
      */
-    @RabbitListener(queues = RabbitMQConfig.ORDER_CREATED_QUEUE)
+    @RabbitListener(queues = RabbitMQConfig.ORDER_EVENTS_EXCHANGE)
     @Transactional
     public void processOrderCreatedEvent(OrderCreatedEvent event) {
         logger.info("Received order creation event: ", event);

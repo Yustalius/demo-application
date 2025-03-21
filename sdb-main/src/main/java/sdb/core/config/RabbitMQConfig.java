@@ -9,40 +9,24 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * Конфигурация RabbitMQ для обработки событий.
+ * Конфигурация RabbitMQ для обработки событий в событийной модели.
+ * Используется FanoutExchange для доставки сообщений всем слушателям.
  */
 @Configuration
 public class RabbitMQConfig {
 
-    public static final String ORDER_EXCHANGE = "order-exchange";
-    public static final String ORDER_CREATED_QUEUE = "order-created-queue";
+    // Имена для обмена и событий
+    public static final String ORDER_EVENTS_EXCHANGE = "order-events-exchange";
     public static final String ORDER_CREATED_ROUTING_KEY = "order.created";
 
     /**
-     * Создает обмен для событий заказа
+     * Создает Fanout Exchange для событий заказа.
+     * Этот тип обмена отправляет сообщения во все связанные очереди,
+     * что позволяет реализовать событийную модель с множеством потребителей.
      */
     @Bean
-    public DirectExchange orderExchange() {
-        return new DirectExchange(ORDER_EXCHANGE);
-    }
-
-    /**
-     * Создает очередь для событий создания заказа
-     */
-    @Bean
-    public Queue orderCreatedQueue() {
-        return QueueBuilder.durable(ORDER_CREATED_QUEUE).build();
-    }
-
-    /**
-     * Связывает очередь и обмен с ключом маршрутизации
-     */
-    @Bean
-    public Binding orderCreatedBinding(Queue orderCreatedQueue, DirectExchange orderExchange) {
-        return BindingBuilder
-                .bind(orderCreatedQueue)
-                .to(orderExchange)
-                .with(ORDER_CREATED_ROUTING_KEY);
+    public FanoutExchange orderEventsExchange() {
+        return new FanoutExchange(ORDER_EVENTS_EXCHANGE);
     }
 
     /**

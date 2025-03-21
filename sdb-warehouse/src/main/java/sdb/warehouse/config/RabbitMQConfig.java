@@ -9,41 +9,39 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * Конфигурация RabbitMQ для получения событий.
+ * Конфигурация RabbitMQ для получения событий в событийной модели.
  */
 @Configuration
 public class RabbitMQConfig {
 
-  // Имена для обмена и очереди
-  public static final String ORDER_EXCHANGE = "order-exchange";
-  public static final String ORDER_CREATED_QUEUE = "order-created-queue";
-  public static final String ORDER_CREATED_ROUTING_KEY = "order.created";
+  public static final String ORDER_EVENTS_EXCHANGE = "order-events-exchange";
+  public static final String WAREHOUSE_ORDER_CREATED_QUEUE = "warehouse-order-created-queue";
 
   /**
-   * Создает обмен для событий заказа
+   * Создает Fanout Exchange для событий заказа
    */
   @Bean
-  public DirectExchange orderExchange() {
-    return new DirectExchange(ORDER_EXCHANGE);
+  public FanoutExchange orderEventsExchange() {
+    return new FanoutExchange(ORDER_EVENTS_EXCHANGE);
   }
 
   /**
-   * Создает очередь для событий создания заказа
+   * Создает очередь для обработки событий создания заказа в сервисе склада
    */
   @Bean
-  public Queue orderCreatedQueue() {
-    return QueueBuilder.durable(ORDER_CREATED_QUEUE).build();
+  public Queue warehouseOrderCreatedQueue() {
+    return QueueBuilder.durable(WAREHOUSE_ORDER_CREATED_QUEUE).build();
   }
 
   /**
-   * Связывает очередь и обмен с ключом маршрутизации
+   * Связывает очередь и fanout exchange
+   * При использовании FanoutExchange ключ маршрутизации не используется
    */
   @Bean
-  public Binding orderCreatedBinding(Queue orderCreatedQueue, DirectExchange orderExchange) {
+  public Binding warehouseOrderCreatedBinding(Queue warehouseOrderCreatedQueue, FanoutExchange orderEventsExchange) {
     return BindingBuilder
-        .bind(orderCreatedQueue)
-        .to(orderExchange)
-        .with(ORDER_CREATED_ROUTING_KEY);
+        .bind(warehouseOrderCreatedQueue)
+        .to(orderEventsExchange);
   }
 
   /**

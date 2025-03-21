@@ -1,6 +1,7 @@
 package utils.logging.utils;
 
 import utils.logging.api.LogApiClient;
+import utils.logging.api.LogWorkerInterface;
 import utils.logging.model.LogTask;
 
 import java.util.ArrayList;
@@ -10,8 +11,10 @@ import java.util.concurrent.*;
 /**
  * Рабочий поток для обработки логов
  * Собирает логи в буфер и отправляет их пакетами
+ * @deprecated Используйте {@link BufferedLogWorker} или {@link DirectLogWorker} вместо этого класса
  */
-public class LogWorker {
+@Deprecated
+public class LogWorker implements LogWorkerInterface {
   private final LogApiClient logClient;
 
   private static final int BATCH_SIZE = 10;
@@ -53,6 +56,7 @@ public class LogWorker {
    * Добавление лога в буфер
    * @param logTask задание для логирования
    */
+  @Override
   public void enqueueLog(LogTask logTask) {
     synchronized (buffer) {
       buffer.add(logTask);
@@ -66,6 +70,7 @@ public class LogWorker {
   /**
    * Остановка рабочего потока
    */
+  @Override
   public void shutdown() {
     flush(); // Отправляем все оставшиеся логи
     scheduler.shutdown();

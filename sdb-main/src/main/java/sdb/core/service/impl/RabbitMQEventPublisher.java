@@ -23,7 +23,7 @@ public class RabbitMQEventPublisher implements EventPublisher {
         try {
             logger.info("Publishing order creation event: ", event);
             rabbitTemplate.convertAndSend(
-                    RabbitMQConfig.ORDER_EXCHANGE,
+                    RabbitMQConfig.ORDER_EVENTS_EXCHANGE,
                     RabbitMQConfig.ORDER_CREATED_ROUTING_KEY,
                     event
             );

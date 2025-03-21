@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -47,7 +48,7 @@ public class OrderController {
       @ApiResponse(responseCode = "500", ref = "InternalServerErrorResponse")
   })
   @PostMapping("/add")
-  public OrderDTO addO(@RequestBody CreateOrderDTO order) throws JsonProcessingException {
+  public OrderDTO addO(@Valid @RequestBody CreateOrderDTO order) throws JsonProcessingException {
     logger.info("Creating order: ", mapper.writeValueAsString(order));
     return orderService.createOrder(order);
   }
