@@ -1,5 +1,7 @@
 package sdb.core.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import sdb.core.model.event.OrderEvent;
 import sdb.core.model.order.CreateOrderDTO;
 import sdb.core.model.order.OrderDTO;
 import sdb.core.model.order.OrderStatus;
@@ -11,6 +13,8 @@ public interface OrderService {
   OrderDTO createOrder(CreateOrderDTO order);
 
   OrderDTO updateStatus(int orderId, OrderStatus status);
+
+  OrderDTO rejectOrder(int orderId, JsonNode... reasons);
 
   List<OrderDTO> getOrders();
 

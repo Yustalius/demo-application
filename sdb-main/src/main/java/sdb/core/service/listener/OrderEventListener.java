@@ -10,6 +10,11 @@ import sdb.core.model.event.OrderEvent;
 import sdb.core.model.order.OrderStatus;
 import sdb.core.service.OrderService;
 import utils.logging.Logger;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.util.List;
+import java.util.Objects;
 
 /**
  * Сервис для обработки событий заказов, полученных от других сервисов.
@@ -19,6 +24,7 @@ import utils.logging.Logger;
 public class OrderEventListener {
 
   private final Logger logger;
+  private final ObjectMapper mapper;
   private final OrderService orderService;
 
   /**
@@ -40,7 +46,24 @@ public class OrderEventListener {
 
       switch (event.getOrderCode()) {
         case ORDER_REJECTED -> {
-          orderService.updateStatus(event.getOrderId(), OrderStatus.REJECTED);
+          List<OrderEvent.ErrorMessage> errorMessages = event.getErrorMessages();
+          if (errorMessages != null && !errorMessages.isEmpty()) {
+            JsonNode[] reasonsArray = errorMessages.stream()
+                .map(errorMessage -> {
+                  try {
+                    return mapper.valueToTree(errorMessage);
+                  } catch (Exception e) {
+                    logger.error("Ошибка при преобразовании сообщения об ошибке в JsonNode: " + e.getMessage(), e);
+                    return null;
+                  }
+                })
+                .filter(Objects::nonNull)
+                .toArray(JsonNode[]::new);
+
+            orderService.rejectOrder(event.getOrderId(), reasonsArray);
+          } else {
+            orderService.rejectOrder(event.getOrderId());
+          }
           logger.info("Order with ID " + event.getOrderId() + " has been rejected");
         }
         default -> {

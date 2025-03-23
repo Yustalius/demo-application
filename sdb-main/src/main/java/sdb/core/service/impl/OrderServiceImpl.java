@@ -1,18 +1,19 @@
 package sdb.core.service.impl;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Nonnull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import sdb.core.data.entity.order.CancellationReasonEntity;
 import sdb.core.data.entity.order.OrderEntity;
 import sdb.core.data.entity.order.OrderItemEntity;
 import sdb.core.data.entity.product.ProductEntity;
 import sdb.core.data.entity.user.UsersEntity;
-import sdb.core.data.repository.OrderItemRepository;
-import sdb.core.data.repository.OrderRepository;
-import sdb.core.data.repository.ProductRepository;
-import sdb.core.data.repository.UsersRepository;
+import sdb.core.data.repository.*;
 import sdb.core.ex.OrderNotFoundException;
+import sdb.core.model.event.OrderEvent.ErrorMessage;
 import utils.ex.ProductNotFoundException;
 import sdb.core.ex.StatusTransitionException;
 import sdb.core.ex.UserNotFoundException;
@@ -38,6 +39,7 @@ public class OrderServiceImpl implements OrderService {
   private final ProductRepository productRepository;
   private final OrderRepository orderRepository;
   private final OrderItemRepository orderItemRepository;
+  private final CancellationReasonRepository cancellationReasonRepository;
   private final EventPublisher eventPublisher;
   private final Logger logger;
 
@@ -77,6 +79,28 @@ public class OrderServiceImpl implements OrderService {
     OrderEntity updatedOrder = orderRepository.save(order);
 
     return OrderDTO.fromEntity(updatedOrder);
+  }
+
+  @Override
+  @Transactional
+  public OrderDTO rejectOrder(int orderId, JsonNode... reasons) {
+    updateStatus(orderId, OrderStatus.REJECTED);
+    
+    if (reasons != null && reasons.length > 0) {
+      OrderEntity order = orderRepository.findById(orderId)
+          .orElseThrow(() -> new OrderNotFoundException("Заказ не найден", orderId));
+      
+      for (JsonNode reason : reasons) {
+        CancellationReasonEntity cancellationReason = new CancellationReasonEntity();
+        cancellationReason.setOrder(order);
+        cancellationReason.setReason(reason);
+        cancellationReasonRepository.save(cancellationReason);
+      }
+
+      logger.info("Сохранено %s причин отмены для заказа %s".formatted(reasons.length, orderId));
+    }
+
+    return getOrder(orderId);
   }
 
   @Override

@@ -18,7 +18,7 @@ import java.util.List;
 public class OrderEvent implements Serializable {
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
-    private record ErrorMessage(String errorCode, Integer productId, Integer availableStock, Integer requestedStock) {}
+    public record ErrorMessage(String errorCode, Integer productId, Integer availableStock, Integer requestedStock) {}
 
     public enum OrderCode {
         ORDER_CREATED,
