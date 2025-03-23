@@ -85,7 +85,7 @@ public class OrderServiceImpl implements OrderService {
     
     if (reasons != null && reasons.length > 0) {
       OrderEntity order = orderRepository.findById(orderId)
-          .orElseThrow(() -> new OrderNotFoundException("Заказ не найден", orderId));
+          .orElseThrow(() -> new OrderNotFoundException(orderId));
       
       for (JsonNode reason : reasons) {
         CancellationReasonEntity cancellationReason = new CancellationReasonEntity();
@@ -94,7 +94,7 @@ public class OrderServiceImpl implements OrderService {
         cancellationReasonRepository.save(cancellationReason);
       }
 
-      logger.info("Сохранено %s причин отмены для заказа %s".formatted(reasons.length, orderId));
+      logger.info("Saved %s reasons for rejecting order %s".formatted(reasons.length, orderId));
     }
 
     return getOrder(orderId);

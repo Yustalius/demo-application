@@ -15,14 +15,15 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMQConfig {
 
+    // Общий ключ маршрутизации для всех событий заказа
+    public static final String ORDER_EVENT_ROUTING_KEY = "order.event";
+
     // Константы для основных сообщений о заказах от главного сервиса
-    public static final String ORDER_EVENTS_EXCHANGE = "order-events-exchange";
-    public static final String ORDER_CREATED_ROUTING_KEY = "order.created";
+    public static final String CORE_EVENTS_EXCHANGE = "core-events-exchange";
+    public static final String CORE_ORDER_EVENTS_QUEUE = "core-order-events-queue";
 
     // Константы для обработки сообщений от сервиса склада
     public static final String WAREHOUSE_EVENTS_EXCHANGE = "warehouse-events-exchange";
-    public static final String ORDER_REJECTED_ROUTING_KEY = "order.rejected";
-    public static final String CORE_ORDER_REJECTED_QUEUE = "core-order-rejected-queue";
 
     /**
      * Создает Topic Exchange для событий заказа от главного сервиса.
@@ -30,8 +31,8 @@ public class RabbitMQConfig {
      * что позволяет реализовать гибкую маршрутизацию.
      */
     @Bean
-    public TopicExchange orderEventsExchange() {
-        return new TopicExchange(ORDER_EVENTS_EXCHANGE);
+    public TopicExchange coreEventsExchange() {
+        return new TopicExchange(CORE_EVENTS_EXCHANGE);
     }
 
     /**
@@ -44,23 +45,23 @@ public class RabbitMQConfig {
     }
 
     /**
-     * Создает очередь для обработки отмененных заказов в главном сервисе
+     * Создает единую очередь для обработки всех событий заказов в главном сервисе
      */
     @Bean
-    public Queue coreOrderRejectedQueue() {
-        return QueueBuilder.durable(CORE_ORDER_REJECTED_QUEUE).build();
+    public Queue coreOrderEventsQueue() {
+        return QueueBuilder.durable(CORE_ORDER_EVENTS_QUEUE).build();
     }
 
     /**
      * Связывает очередь главного сервиса с warehouse exchange
-     * для получения сообщений об отмененных заказах
+     * для получения всех сообщений о заказах
      */
     @Bean
-    public Binding coreOrderRejectedBinding() {
+    public Binding coreOrderEventsBinding() {
         return BindingBuilder
-            .bind(coreOrderRejectedQueue())
+            .bind(coreOrderEventsQueue())
             .to(warehouseEventsExchange())
-            .with(ORDER_REJECTED_ROUTING_KEY);
+            .with(ORDER_EVENT_ROUTING_KEY); // Используем один конкретный ключ маршрутизации
     }
 
     /**

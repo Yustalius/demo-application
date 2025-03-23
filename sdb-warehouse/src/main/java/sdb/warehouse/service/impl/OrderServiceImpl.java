@@ -53,15 +53,29 @@ public class OrderServiceImpl {
   @Transactional
   public void createOrders(Map<ProductEntity, Integer> productsWithQuantity, Integer externalOrderId) {
     for (ProductEntity product : productsWithQuantity.keySet()) {
-      OrderEntity orderEntity = OrderEntity.builder()
-          .externalOrderId(externalOrderId)
-          .product(product)
-          .quantity(productsWithQuantity.get(product))
-          .status(NEW.name())
-          .build();
+      Integer orderQuantity = productsWithQuantity.get(product);
+      Integer currentStock = product.getStockQuantity();
+      try {
+        // уменьшаем количество товара
+        product.setStockQuantity(currentStock - orderQuantity);
+        productRepository.save(product);
+        
+        OrderEntity orderEntity = OrderEntity.builder()
+            .externalOrderId(externalOrderId)
+            .product(product)
+            .quantity(orderQuantity)
+            .status(NEW.name())
+            .build();
 
-      orderRepository.save(orderEntity);
-      logger.info("Order saved for product: %s".formatted(product.getExternalProductId()));
+        orderRepository.save(orderEntity);
+        logger.info(String.format("Order saved for product: %s, stock reduced from %s to %s", 
+            product.getExternalProductId(), currentStock, product.getStockQuantity()));
+      } catch (Exception e) {
+        logger.error(String.format("Error saving order or updating stock for product: %s. Error: %s", 
+            product.getExternalProductId(), e.getMessage(), e));
+        // В случае ошибки откатываем транзакцию (произойдет автоматически из-за @Transactional)
+        throw new RuntimeException("Error processing order for product: " + product.getExternalProductId(), e);
+      }
     }
   }
 

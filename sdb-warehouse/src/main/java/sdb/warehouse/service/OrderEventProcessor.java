@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.AmqpRejectAndDontRequeueException;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import sdb.warehouse.data.entity.ProductEntity;
 import sdb.warehouse.model.event.OrderEvent;
 import sdb.warehouse.model.order.OrderItemDTO;
@@ -34,6 +35,7 @@ public class OrderEventProcessor {
     }
   }
 
+  @Transactional
   private void processOrderCreatedEvent(OrderEvent event) {
     try {
       Map<OrderItemDTO, ProductEntity> orderItemProductEntityMap = orderService.findProductsInDatabaseByDto(event);
@@ -52,7 +54,7 @@ public class OrderEventProcessor {
         orderItemProductEntityMap.entrySet().forEach(entry -> {
           orderService.createOrders(Map.of(entry.getValue(), entry.getKey().quantity()), event.getOrderId());
         });
-//        eventPublisher.publishOrderApprovedEvent(event);
+        eventPublisher.publishOrderApprovedEvent(event);
         logger.info("Order with ID %s successfully created".formatted(event.getOrderId()));
       } else {
         logger.error("Insufficient stock for products: " + orderStockErrors);

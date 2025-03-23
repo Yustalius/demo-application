@@ -19,14 +19,15 @@ import utils.logging.Logger;
 @Configuration
 public class RabbitMQConfig {
 
-  // Константы для основных сообщений о заказах
-  public static final String ORDER_EVENTS_EXCHANGE = "order-events-exchange";
-  public static final String WAREHOUSE_ORDER_CREATED_QUEUE = "warehouse-order-created-queue";
-  
-  // Константы для обратных сообщений от склада
+  // Общий ключ маршрутизации для всех событий заказа
+  public static final String ORDER_EVENT_ROUTING_KEY = "order.event";
+
+  // Константы для обменников и очередей
   public static final String WAREHOUSE_EVENTS_EXCHANGE = "warehouse-events-exchange";
-  public static final String ORDER_CREATED_ROUTING_KEY = "order.created";
-  public static final String ORDER_REJECTED_ROUTING_KEY = "order.rejected";
+  public static final String WAREHOUSE_ORDER_EVENT_QUEUE = "warehouse-order-event-queue";
+
+  // Константы для основных сообщений о заказах
+  public static final String CORE_EVENTS_EXCHANGE = "core-events-exchange";
 
   // Константы для Dead Letter
   public static final String DLX_EXCHANGE = "dlx-exchange";
@@ -65,8 +66,8 @@ public class RabbitMQConfig {
    * что позволяет реализовать гибкую маршрутизацию.
    */
   @Bean
-  public TopicExchange orderEventsExchange() {
-    return new TopicExchange(ORDER_EVENTS_EXCHANGE);
+  public TopicExchange coreEventsExchange() {
+    return new TopicExchange(CORE_EVENTS_EXCHANGE);
   }
 
   /**
@@ -80,12 +81,12 @@ public class RabbitMQConfig {
   }
 
   /**
-   * Создает очередь для обработки событий создания заказа в сервисе склада
+   * Создает очередь для обработки событий заказа в сервисе склада
    * с настройкой перенаправления в DLQ при ошибках
    */
   @Bean
-  public Queue warehouseOrderCreatedQueue() {
-    return QueueBuilder.durable(WAREHOUSE_ORDER_CREATED_QUEUE)
+  public Queue warehouseOrderEventQueue() {
+    return QueueBuilder.durable(WAREHOUSE_ORDER_EVENT_QUEUE)
         .withArgument("x-dead-letter-exchange", DLX_EXCHANGE)
         .withArgument("x-dead-letter-routing-key", "deadLetter")
         .withArgument("x-message-ttl", 30000) // 30 секунд TTL
@@ -93,15 +94,15 @@ public class RabbitMQConfig {
   }
 
   /**
-   * Связывает очередь склада с order exchange используя специфический routing key
-   * для событий создания заказа
+   * Связывает очередь склада с core exchange используя специфический routing key
+   * для событий заказа
    */
   @Bean
-  public Binding warehouseOrderCreatedBinding(Queue warehouseOrderCreatedQueue, TopicExchange orderEventsExchange) {
+  public Binding warehouseOrderEventBinding() {
     return BindingBuilder
-        .bind(warehouseOrderCreatedQueue)
-        .to(orderEventsExchange)
-        .with(ORDER_CREATED_ROUTING_KEY);
+        .bind(warehouseOrderEventQueue())
+        .to(coreEventsExchange())
+        .with(ORDER_EVENT_ROUTING_KEY);
   }
 
   /**

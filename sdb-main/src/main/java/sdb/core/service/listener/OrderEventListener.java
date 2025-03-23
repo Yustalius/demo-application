@@ -7,7 +7,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sdb.core.config.RabbitMQConfig;
 import sdb.core.model.event.OrderEvent;
+import sdb.core.model.order.OrderStatus;
 import sdb.core.service.OrderService;
+import sdb.core.service.impl.OrderEventProcessor;
 import utils.logging.Logger;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,56 +27,35 @@ public class OrderEventListener {
   private final Logger logger;
   private final ObjectMapper mapper;
   private final OrderService orderService;
+  private final OrderEventProcessor eventProcessor;
 
   /**
-   * Обрабатывает событие отклонения заказа.
-   * Получает сообщение из очереди core-order-rejected-queue и обрабатывает его.
+   * Обрабатывает все события, связанные с заказами.
+   * Получает сообщение из очереди core-order-events-queue и обрабатывает его.
    *
-   * @param event событие отклонения заказа от сервиса склада
+   * @param event событие заказа от сервиса склада
    */
-  @RabbitListener(queues = RabbitMQConfig.CORE_ORDER_REJECTED_QUEUE, containerFactory = "rabbitListenerContainerFactory")
+  @RabbitListener(queues = RabbitMQConfig.CORE_ORDER_EVENTS_QUEUE, containerFactory = "rabbitListenerContainerFactory")
   @Transactional
-  public void processOrderRejectedEvent(OrderEvent event) {
-    try {
-      if (event == null || event.getOrderId() == null) {
-        logger.error("Received invalid order rejection message: " + (event == null ? "null" : event.toString()));
-        throw new AmqpRejectAndDontRequeueException("Invalid message format");
+  public void processOrderEvent(OrderEvent event) {
+    if (event == null || event.getOrderId() == null) {
+      logger.error("Received invalid order event message: " + (event == null ? "null" : event.toString()));
+      throw new AmqpRejectAndDontRequeueException("Invalid message format");
+    }
+
+    switch (event.getOrderCode()) {
+      case ORDER_APPROVED -> {
+        logger.info("Order with ID " + event.getOrderId() + " has been approved");
+        eventProcessor.processOrderApproval(event);
       }
-
-      logger.info("Received order rejection event: " + event);
-
-      switch (event.getOrderCode()) {
-        case ORDER_REJECTED -> {
-          List<OrderEvent.ErrorMessage> errorMessages = event.getErrorMessages();
-          if (errorMessages != null && !errorMessages.isEmpty()) {
-            JsonNode[] reasonsArray = errorMessages.stream()
-                .map(errorMessage -> {
-                  try {
-                    return mapper.valueToTree(errorMessage);
-                  } catch (Exception e) {
-                    logger.error("Ошибка при преобразовании сообщения об ошибке в JsonNode: " + e.getMessage(), e);
-                    return null;
-                  }
-                })
-                .filter(Objects::nonNull)
-                .toArray(JsonNode[]::new);
-
-            orderService.rejectOrder(event.getOrderId(), reasonsArray);
-          } else {
-            orderService.rejectOrder(event.getOrderId());
-          }
-          logger.info("Order with ID " + event.getOrderId() + " has been rejected");
-        }
-        default -> {
-          logger.error("Received event with unknown code: " + event.getOrderCode());
-          throw new AmqpRejectAndDontRequeueException("Unknown event code: " + event.getOrderCode());
-        }
+      case ORDER_REJECTED -> {
+        logger.info("Order has been rejected: " + event);
+        eventProcessor.processOrderRejection(event);
       }
-    } catch (AmqpRejectAndDontRequeueException e) {
-      throw e;
-    } catch (Exception e) {
-      logger.error("Unexpected error while processing message: " + e.getMessage(), e);
-      throw new AmqpRejectAndDontRequeueException("Unexpected error: " + e.getMessage(), e);
+      default -> {
+        logger.error("Received event with unknown code: " + event.getOrderCode());
+        throw new AmqpRejectAndDontRequeueException("Unknown event code: " + event.getOrderCode());
+      }
     }
   }
 }

@@ -27,14 +27,14 @@ public class OrderEventListener {
   private OrderEventProcessor processor;
 
   /**
-   * Обрабатывает событие создания заказа.
-   * Получает сообщение из очереди warehouse-order-created-queue и обрабатывает его.
+   * Обрабатывает событие заказа.
+   * Получает сообщение из очереди warehouse-order-event-queue и обрабатывает его.
    *
-   * @param event событие создания заказа
+   * @param event событие заказа
    */
-  @RabbitListener(queues = RabbitMQConfig.WAREHOUSE_ORDER_CREATED_QUEUE, containerFactory = "rabbitListenerContainerFactory")
+  @RabbitListener(queues = RabbitMQConfig.WAREHOUSE_ORDER_EVENT_QUEUE, containerFactory = "rabbitListenerContainerFactory")
   @Transactional
-  public void processOrderCreatedEvent(OrderEvent event) {
+  public void processOrderEvent(OrderEvent event) {
     try {
       logger.info("Received order event: ", event);
       processor.processOrderEvent(event);

@@ -28,6 +28,17 @@ public class RabbitMQEventPublisher {
   private final RabbitTemplate rabbitTemplate;
   private final Logger logger;
 
+  public void publishOrderApprovedEvent(OrderEvent event) {
+    event.setOrderCode(ORDER_APPROVED);
+
+    logger.info("Publishing order approved event: ", event);
+    rabbitTemplate.convertAndSend(
+        RabbitMQConfig.WAREHOUSE_EVENTS_EXCHANGE,
+        RabbitMQConfig.ORDER_EVENT_ROUTING_KEY,
+        event
+    );
+  }
+
   // todo причины отказа, чтобы метод принимал причину и на ее основе составлял запрос
   public void publishOrderRejectedEvent(OrderEvent event, Map<OrderItemDTO, Pair<Integer, Integer>> productsWithQuantity) {
     try {
@@ -46,7 +57,7 @@ public class RabbitMQEventPublisher {
       logger.info("Publishing order rejected event: ", event);
       rabbitTemplate.convertAndSend(
           RabbitMQConfig.WAREHOUSE_EVENTS_EXCHANGE,
-          RabbitMQConfig.ORDER_REJECTED_ROUTING_KEY,
+          RabbitMQConfig.ORDER_EVENT_ROUTING_KEY,
           event
       );
       logger.info("Successfully published order rejected event: ", event);
