@@ -52,9 +52,9 @@ public class OrderEventProcessor {
         orderItemProductEntityMap.entrySet().forEach(entry -> {
           orderService.createOrders(Map.of(entry.getValue(), entry.getKey().quantity()), event.getOrderId());
         });
+//        eventPublisher.publishOrderApprovedEvent(event);
         logger.info("Order with ID %s successfully created".formatted(event.getOrderId()));
       } else {
-        // todo отправлять отмену заказа
         logger.error("Insufficient stock for products: " + orderStockErrors);
         eventPublisher.publishOrderRejectedEvent(event, orderStockErrors);
       }

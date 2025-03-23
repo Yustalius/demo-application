@@ -14,6 +14,7 @@ import utils.logging.Logger;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static sdb.warehouse.model.event.OrderEvent.OrderCode.ORDER_APPROVED;
 import static sdb.warehouse.model.event.OrderEvent.OrderCode.ORDER_REJECTED;
 
 /**

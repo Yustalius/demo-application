@@ -1,7 +1,6 @@
 package sdb.core.service.impl;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Nonnull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,11 +12,9 @@ import sdb.core.data.entity.product.ProductEntity;
 import sdb.core.data.entity.user.UsersEntity;
 import sdb.core.data.repository.*;
 import sdb.core.ex.OrderNotFoundException;
-import sdb.core.model.event.OrderEvent.ErrorMessage;
 import utils.ex.ProductNotFoundException;
 import sdb.core.ex.StatusTransitionException;
 import sdb.core.ex.UserNotFoundException;
-import sdb.core.model.event.OrderEvent;
 import sdb.core.model.order.CreateOrderDTO;
 import sdb.core.model.order.OrderDTO;
 import sdb.core.model.order.OrderStatus;
@@ -149,7 +146,7 @@ public class OrderServiceImpl implements OrderService {
    * Группирует продукты по ID и цене, суммируя количество
    */
   private Map<ProductPriceKey, Integer> groupProductsByIdAndPrice(CreateOrderDTO order) {
-    return order.products().stream()
+    return order.items().stream()
         .collect(Collectors.toMap(
             product -> new ProductPriceKey(product.productId(), product.price()),
             product -> product.quantity(),

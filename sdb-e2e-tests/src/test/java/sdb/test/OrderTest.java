@@ -31,7 +31,7 @@ public class OrderTest {
         ));
 
     assertThat(order.orderId()).isNotNull();
-    assertThat(order.products()).anyMatch(p -> p.productId() == PRODUCT_ID);
+    assertThat(order.items()).anyMatch(p -> p.productId() == PRODUCT_ID);
   }
 
   @Test

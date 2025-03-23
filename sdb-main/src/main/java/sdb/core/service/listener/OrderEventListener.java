@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sdb.core.config.RabbitMQConfig;
 import sdb.core.model.event.OrderEvent;
-import sdb.core.model.order.OrderStatus;
 import sdb.core.service.OrderService;
 import utils.logging.Logger;
 import com.fasterxml.jackson.databind.JsonNode;
