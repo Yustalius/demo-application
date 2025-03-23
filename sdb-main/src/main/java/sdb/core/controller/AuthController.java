@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -42,7 +43,7 @@ public class AuthController {
   })
   @PostMapping("/register")
   public UserDTO register(
-      @Validated(RegistrationValidationGroup.class) @RequestBody RegisterJson json) {
+      @Valid @RequestBody RegisterJson json) {
     UserDTO user = authService.register(json);
 
     logger.info("Successfully registered user id = ", user.id());
@@ -59,7 +60,7 @@ public class AuthController {
       @ApiResponse(responseCode = "500", ref = "InternalServerErrorResponse")
   })
   @PostMapping("/login")
-  public Token login(@RequestBody LoginDTO login) {
+  public Token login(@Valid @RequestBody LoginDTO login) {
     return new Token(authService.login(login));
   }
 }

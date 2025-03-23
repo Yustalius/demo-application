@@ -11,13 +11,13 @@ public record ProductDTO(
     @Schema(description = "ID продукта")
     Integer id,
     @Schema(description = "Название продукта")
-    @NotNull(message = "Название продукта не может быть null")
+    @NotNull(message = "Поле 'productName' не может быть null")
     String productName,
     @Schema(description = "Описание продукта")
-    @NotNull(message = "Описание продукта не может быть null")
+    @NotNull(message = "Поле 'description' не может быть null")
     String description,
     @Schema(description = "Цена продукта")
-    @NotNull(message = "Цена не может быть null")
+    @NotNull(message = "Поле 'price' не может быть null")
     Integer price
 ) {
   public static @Nonnull ProductDTO fromEntity(@Nonnull ProductEntity entity) {

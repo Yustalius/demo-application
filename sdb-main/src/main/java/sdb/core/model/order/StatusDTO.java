@@ -6,7 +6,7 @@ import sdb.core.model.validation.ValidationGroups;
 
 public record StatusDTO(
     @Schema(description = "Статус заказа")
-    @NotNull(message = "Статус заказа не может быть null")
+    @NotNull(message = "Поле 'status' не может быть null")
     OrderStatus status
 ) {
 }

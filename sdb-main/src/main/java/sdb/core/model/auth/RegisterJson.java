@@ -13,32 +13,30 @@ import sdb.core.model.validation.RegistrationValidationGroup;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record RegisterJson(
-    @NotBlank(message = "Field 'username' required", groups = {RegistrationValidationGroup.class, LoginValidationGroup.class})
+    @NotBlank(message = "Поле 'username' не может быть пустым")
     @Schema(description = "Username пользователя")
     String username,
-    @NotBlank(message = "Field 'password' required", groups = {RegistrationValidationGroup.class, LoginValidationGroup.class})
+    @NotBlank(message = "Поле 'password' не может быть пустым")
     @Schema(description = "Пароль пользователя")
     String password,
-    @NotBlank(message = "Field 'name' required", groups = RegistrationValidationGroup.class)
+    @NotBlank(message = "Поле 'firstName' не может быть пустым")
     @Schema(description = "Имя пользователя")
     String firstName, 
-    @NotBlank(message = "Field 'lastName' required", groups = RegistrationValidationGroup.class)
+    @NotBlank(message = "Поле 'lastName' не может быть пустым")
     @Schema(description = "Фамилия пользователя")
     String lastName,
-    @NotNull(message = "Field 'age' required", groups = RegistrationValidationGroup.class)
+    @NotNull(message = "Поле 'age' не может быть пустым")
     @Schema(description = "Возраст пользователя")
     Integer age
 ) {
   public static @NonNull RegisterJson fromEntity(RegisterEntity entity) {
-    RegisterJson json = new RegisterJson(
+    return new RegisterJson(
         entity.getUsername(),
         entity.getPassword(),
         entity.getFirstName(),
         entity.getLastName(),
         entity.getAge()
     );
-
-    return json;
   }
 
   @SneakyThrows

@@ -24,12 +24,12 @@ public record OrderDTO(
     Integer orderId,
     
     @Schema(description = "ID пользователя")
-    @NotNull(message = "ID пользователя не может быть null", groups = {Default.class, Create.class})
+    @NotNull(message = "Поле 'userId' не может быть null", groups = {Default.class, Create.class})
     Integer userId,
 
     @Schema(description = "Список продуктов")
-    @NotNull(message = "Список продуктов не может быть null", groups = {Default.class, Create.class})
-    @NotEmpty(message = "Список продуктов не может быть пустым", groups = {Default.class, Create.class})
+    @NotNull(message = "Поле 'items' не может быть null", groups = {Default.class, Create.class})
+    @NotEmpty(message = "Поле 'items' не может быть пустым", groups = {Default.class, Create.class})
     @Valid
     List<OrderItemDTO> items,
 
@@ -37,7 +37,7 @@ public record OrderDTO(
     String timestamp,
 
     @Schema(description = "Статус заказа")
-    @NotNull(message = "Статус заказа не может быть null", groups = UpdateStatus.class)
+    @NotNull(message = "Поле 'status' не может быть null", groups = UpdateStatus.class)
     OrderStatus status
 ) {
   public static OrderDTO fromEntity(@Nonnull OrderEntity entity) {

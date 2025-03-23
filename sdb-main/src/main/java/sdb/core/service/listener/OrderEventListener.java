@@ -40,8 +40,7 @@ public class OrderEventListener {
 
       switch (event.getOrderCode()) {
         case ORDER_REJECTED -> {
-          // Update order status to REJECTED
-//          orderService.updateStatus(event.getOrderId(), OrderStatus.REJECTED);
+          orderService.updateStatus(event.getOrderId(), OrderStatus.REJECTED);
           logger.info("Order with ID " + event.getOrderId() + " has been rejected");
         }
         default -> {

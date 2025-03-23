@@ -60,6 +60,10 @@ public class OrderServiceImpl implements OrderService {
     OrderEntity order = orderRepository.findById(orderId)
         .orElseThrow(() -> new OrderNotFoundException("Error while updating status for order " + orderId, orderId));
 
+    logger.info(String.format(
+        "Changing order id = %s status from %s to %s",
+        orderId, order.getStatus(), newStatus
+    ));
     OrderStatus currentStatus = order.getStatus();
     if (currentStatus == newStatus) {
       return OrderDTO.fromEntity(order);

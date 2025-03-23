@@ -9,10 +9,10 @@ import sdb.core.model.validation.LoginValidationGroup;
 import sdb.core.model.validation.RegistrationValidationGroup;
 
 public record LoginDTO(
-    @NotBlank(message = "Field 'username' required")
+    @NotBlank(message = "Поле 'username' не может быть пустым")
     @Schema(description = "Username пользователя")
     String username,
-    @NotBlank(message = "Field 'password' required")
+    @NotBlank(message = "Поле 'password' не может быть пустым")
     @Schema(description = "Пароль пользователя")
     String password
 ) {
