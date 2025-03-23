@@ -31,10 +31,10 @@ public record OrderDTO(
     @NotNull(message = "Список продуктов не может быть null", groups = {Default.class, Create.class})
     @NotEmpty(message = "Список продуктов не может быть пустым", groups = {Default.class, Create.class})
     @Valid
-    List<OrderItemDTO> products,
+    List<OrderItemDTO> items,
 
     @Schema(description = "Временная метка")
-    LocalDateTime timestamp,
+    String timestamp,
 
     @Schema(description = "Статус заказа")
     @NotNull(message = "Статус заказа не может быть null", groups = UpdateStatus.class)
@@ -56,7 +56,7 @@ public record OrderDTO(
           entity.getOrderId(),
           userId,
           orderItems,
-          entity.getCreatedAt(),
+          entity.getCreatedAt().toString(),
           entity.getStatus()
       );
   }
@@ -65,7 +65,7 @@ public record OrderDTO(
     return new OrderDTO(
         this.orderId(),
         this.userId,
-        this.products,
+        this.items,
         this.timestamp,
         status
     );

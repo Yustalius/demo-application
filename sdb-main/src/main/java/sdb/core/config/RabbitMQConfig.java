@@ -15,7 +15,6 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMQConfig {
 
-    // Имена для обмена и событий
     public static final String ORDER_EVENTS_EXCHANGE = "order-events-exchange";
     public static final String ORDER_CREATED_ROUTING_KEY = "order.created";
 

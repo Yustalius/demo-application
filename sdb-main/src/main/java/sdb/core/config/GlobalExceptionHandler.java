@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import sdb.core.ex.*;
 import sdb.core.model.error.ErrorResponse;
+import utils.ex.ProductNotFoundException;
 import utils.logging.Logger;
 
 @RestControllerAdvice

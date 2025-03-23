@@ -13,10 +13,10 @@ import sdb.core.data.repository.OrderRepository;
 import sdb.core.data.repository.ProductRepository;
 import sdb.core.data.repository.UsersRepository;
 import sdb.core.ex.OrderNotFoundException;
-import sdb.core.ex.ProductNotFoundException;
+import utils.ex.ProductNotFoundException;
 import sdb.core.ex.StatusTransitionException;
 import sdb.core.ex.UserNotFoundException;
-import sdb.core.model.event.OrderCreatedEvent;
+import sdb.core.model.event.OrderEvent;
 import sdb.core.model.order.CreateOrderDTO;
 import sdb.core.model.order.OrderDTO;
 import sdb.core.model.order.OrderStatus;
@@ -49,7 +49,7 @@ public class OrderServiceImpl implements OrderService {
 
     OrderDTO createdOrderDTO = OrderDTO.fromEntity(createdOrder);
     
-    eventPublisher.publishOrderCreatedEvent(OrderCreatedEvent.fromDTO(createdOrderDTO));
+    eventPublisher.publishOrderCreatedEvent(createdOrderDTO);
     
     return createdOrderDTO;
   }

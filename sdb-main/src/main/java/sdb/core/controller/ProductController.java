@@ -81,7 +81,7 @@ public class ProductController {
   })
   @GetMapping
   public List<ProductDTO> get() {
-    logger.info("Getting all products");
+    logger.info("Getting all items");
     return productService.getAll();
   }
 

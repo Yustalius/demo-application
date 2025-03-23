@@ -35,7 +35,7 @@ public class AuthController {
 
   @Operation(summary = "Регистрация")
   @ApiResponses(value = {
-      @ApiResponse(responseCode = "201", description = "Пользователь успешно зарегистрирован",
+      @ApiResponse(responseCode = "200", description = "Пользователь успешно зарегистрирован",
           content = @Content(schema = @Schema(implementation = UserDTO.class))),
       @ApiResponse(responseCode = "400", ref = "BadRequestResponse"),
       @ApiResponse(responseCode = "500", ref = "InternalServerErrorResponse")
