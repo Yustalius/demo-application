@@ -1,7 +1,8 @@
 package sdb.warehouse.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.AmqpRejectAndDontRequeueException;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import sdb.warehouse.data.entity.ProductEntity;
 import sdb.warehouse.model.event.OrderEvent;
@@ -12,15 +13,13 @@ import utils.logging.Logger;
 import java.util.HashMap;
 import java.util.Map;
 
-import static sdb.warehouse.model.event.OrderEvent.OrderCode.ORDER_CREATED;
-
 @Service
+@RequiredArgsConstructor
 public class OrderEventProcessor {
 
-  @Autowired
-  private Logger logger;
-  @Autowired
-  private OrderServiceImpl orderService;
+  private final Logger logger;
+  private final RabbitMQEventPublisher eventPublisher;
+  private final OrderServiceImpl orderService;
 
   public void processOrderEvent(OrderEvent event) {
     validateEvent(event);
@@ -37,39 +36,27 @@ public class OrderEventProcessor {
 
   private void processOrderCreatedEvent(OrderEvent event) {
     try {
-      Map<ProductEntity, Integer> productsWithQuantity = orderService.checkProductsInStock(event);
-      Map<OrderItemDTO, String> orderItemErrors = new HashMap<>();
+      Map<OrderItemDTO, ProductEntity> orderItemProductEntityMap = orderService.findProductsInDatabaseByDto(event);
+      // мапа для хранения ошибок по недостатку товаров, ключ - товар, значение - пара (текущий остаток, запрошенное количество)
+      Map<OrderItemDTO, Pair<Integer, Integer>> orderStockErrors = new HashMap<>();
 
       for (OrderItemDTO item : event.getItems()) {
-        if (item.productId() == null || item.quantity() == null || item.quantity() <= 0) {
-          logger.error("Invalid order item: " + item);
-          // todo отправлять отмену заказа
-          throw new AmqpRejectAndDontRequeueException("Invalid order item");
-        }
+        ProductEntity productEntity = orderItemProductEntityMap.get(item);
 
-        ProductEntity product = productsWithQuantity.keySet().stream()
-            .filter(p -> p.getExternalProductId().equals(item.productId()))
-            .findFirst()
-            .orElseThrow(() -> {
-              logger.error("Product with ID " + item.productId() + " not found");
-              // todo отправлять отмену заказа
-              return new AmqpRejectAndDontRequeueException("Product not found");
-            });
-
-        if (item.quantity() > product.getStockQuantity()) {
-          orderItemErrors.put(
-              item,
-              "Not enough stock available. In stock: %d, Required: %d"
-                  .formatted(product.getStockQuantity(), item.quantity()));
+        if (item.quantity() > productEntity.getStockQuantity()) {
+          orderStockErrors.put(item, Pair.of(productEntity.getStockQuantity(), item.quantity()));
         }
       }
 
-      if (orderItemErrors.isEmpty()) {
-        orderService.createOrders(productsWithQuantity, event.getOrderId());
+      if (orderStockErrors.isEmpty()) {
+        orderItemProductEntityMap.entrySet().forEach(entry -> {
+          orderService.createOrders(Map.of(entry.getValue(), entry.getKey().quantity()), event.getOrderId());
+        });
         logger.info("Order with ID %s successfully created".formatted(event.getOrderId()));
       } else {
         // todo отправлять отмену заказа
-        logger.error("Insufficient stock for products: " + orderItemErrors);
+        logger.error("Insufficient stock for products: " + orderStockErrors);
+        eventPublisher.publishOrderRejectedEvent(event, orderStockErrors);
       }
     } catch (Exception e) {
       logger.error("Error processing message: " + e.getMessage(), e);
@@ -78,14 +65,26 @@ public class OrderEventProcessor {
   }
 
   private void validateEvent(OrderEvent event) {
-    if (event == null
-        || event.getOrderId() == null
-        || event.getItems() == null
-        || event.getItems().isEmpty()
-        || event.getOrderCode() == null) {
+    if (isInvalidEvent(event)) {
       logger.error("Received invalid message: " + (event == null ? "null" : event.toString()));
       // todo отправлять отмену заказа
       throw new AmqpRejectAndDontRequeueException("Invalid message format");
     }
+
+    for (OrderItemDTO item : event.getItems()) {
+      if (isInvalidOrderItem(item)) {
+        logger.error("Invalid order item: " + item);
+        // todo отправлять отмену заказа
+        throw new AmqpRejectAndDontRequeueException("Invalid order item");
+      }
+    }
+  }
+
+  private boolean isInvalidEvent(OrderEvent event) {
+    return event == null || event.getOrderId() == null || event.getItems() == null || event.getItems().isEmpty() || event.getOrderCode() == null;
+  }
+
+  private boolean isInvalidOrderItem(OrderItemDTO item) {
+    return item.productId() == null || item.quantity() == null || item.quantity() <= 0;
   }
 }

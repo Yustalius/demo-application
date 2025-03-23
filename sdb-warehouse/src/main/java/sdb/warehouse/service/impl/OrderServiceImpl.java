@@ -30,19 +30,18 @@ public class OrderServiceImpl {
   private final ProductRepository productRepository;
 
   @Transactional
-  public Map<ProductEntity, Integer> checkProductsInStock(OrderEvent event) {
-    Map<ProductEntity, Integer> products = new HashMap<>();
-
+  public Map<OrderItemDTO, ProductEntity> findProductsInDatabaseByDto(OrderEvent event) {
+    Map<OrderItemDTO, ProductEntity> orderItemProductEntityMap = new HashMap<>();
     for (OrderItemDTO item : event.getItems()) {
       ProductEntity productEntity = productRepository.findByExternalProductId(item.productId())
           .orElseThrow(() -> new ProductNotFoundException(
               "Error during processing order in warehouse",
               item.productId()));
 
-      products.put(productEntity, item.quantity());
+      orderItemProductEntityMap.put(item, productEntity);
     }
 
-    return products;
+    return orderItemProductEntityMap;
   }
 
   /**

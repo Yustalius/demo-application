@@ -4,13 +4,14 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 
+import java.util.List;
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record OrderDTO(
     Integer orderId,
     Integer userId,
-    Integer productId,
-    Integer price,
-    Long timestamp,
+    List<OrderItemDTO> items,
+    String timestamp,
     OrderStatus status
 ) {
   @Override

@@ -14,9 +14,15 @@ public class LogController {
 
   @Autowired
   LogService logger;
+  
+  // Объект для синхронизации запросов логирования
+  private static final Object logMonitor = new Object();
 
   @PostMapping("/log")
   public void makeLog(@RequestBody List<Log> logEvent) {
-    logger.log(logEvent);
+    // Синхронизация обработки запросов логирования
+    synchronized (logMonitor) {
+      logger.log(logEvent);
+    }
   }
 }

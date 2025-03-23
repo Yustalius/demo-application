@@ -14,6 +14,7 @@ import java.util.List;
  * Содержит информацию о созданном заказе для обработки в сервисе warehouse.
  */
 @Data
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class OrderEvent implements Serializable {
   private static final ObjectMapper objectMapper = new ObjectMapper();
 

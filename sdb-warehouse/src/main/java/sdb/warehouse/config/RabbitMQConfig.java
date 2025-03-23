@@ -19,8 +19,16 @@ import utils.logging.Logger;
 @Configuration
 public class RabbitMQConfig {
 
+  // Константы для основных сообщений о заказах
   public static final String ORDER_EVENTS_EXCHANGE = "order-events-exchange";
   public static final String WAREHOUSE_ORDER_CREATED_QUEUE = "warehouse-order-created-queue";
+  
+  // Константы для обратных сообщений от склада
+  public static final String WAREHOUSE_EVENTS_EXCHANGE = "warehouse-events-exchange";
+  public static final String ORDER_CREATED_ROUTING_KEY = "order.created";
+  public static final String ORDER_REJECTED_ROUTING_KEY = "order.rejected";
+
+  // Константы для Dead Letter
   public static final String DLX_EXCHANGE = "dlx-exchange";
   public static final String DLQ_QUEUE = "dlq";
 
@@ -52,11 +60,23 @@ public class RabbitMQConfig {
   }
 
   /**
-   * Создает Fanout Exchange для событий заказа
+   * Создает Topic Exchange для входящих событий заказа от главного сервиса.
+   * Этот тип обмена отправляет сообщения в очереди на основе routing key,
+   * что позволяет реализовать гибкую маршрутизацию.
    */
   @Bean
-  public FanoutExchange orderEventsExchange() {
-    return new FanoutExchange(ORDER_EVENTS_EXCHANGE);
+  public TopicExchange orderEventsExchange() {
+    return new TopicExchange(ORDER_EVENTS_EXCHANGE);
+  }
+
+  /**
+   * Создает Topic Exchange для исходящих событий склада.
+   * Через этот обмен сервис склада отправляет сообщения другим сервисам,
+   * но не себе.
+   */
+  @Bean
+  public TopicExchange warehouseEventsExchange() {
+    return new TopicExchange(WAREHOUSE_EVENTS_EXCHANGE);
   }
 
   /**
@@ -73,14 +93,15 @@ public class RabbitMQConfig {
   }
 
   /**
-   * Связывает очередь и fanout exchange
-   * При использовании FanoutExchange ключ маршрутизации не используется
+   * Связывает очередь склада с order exchange используя специфический routing key
+   * для событий создания заказа
    */
   @Bean
-  public Binding warehouseOrderCreatedBinding(Queue warehouseOrderCreatedQueue, FanoutExchange orderEventsExchange) {
+  public Binding warehouseOrderCreatedBinding(Queue warehouseOrderCreatedQueue, TopicExchange orderEventsExchange) {
     return BindingBuilder
         .bind(warehouseOrderCreatedQueue)
-        .to(orderEventsExchange);
+        .to(orderEventsExchange)
+        .with(ORDER_CREATED_ROUTING_KEY);
   }
 
   /**
