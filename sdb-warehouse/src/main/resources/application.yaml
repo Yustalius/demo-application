@@ -4,67 +4,69 @@ server:
 
 spring:
   application:
-    name: sdb-operator
+    name: sdb-warehouse
   profiles:
     active: default
+  hikari:
+    connection-timeout: 20000
+    minimum-idle: 10
+    maximum-pool-size: 30
+    idle-timeout: 10000
+    max-lifetime: 1000
+    auto-commit: true
+  flyway:
+    enabled: false
+    baseline-on-migrate: true
+    baseline-version: 0
+    schemas: public
+    locations: classpath:db/migration/core
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    open-in-view: false
+
+app:
+  logging:
+    url: "http://localhost:8082/"
+---
+spring:
+  config:
+    activate:
+      on-profile: default
+  datasource:
+    url: "jdbc:postgresql://127.0.0.1:5432/warehouse"
+    username: postgres
+    password: 1234
+    driver-class-name: org.postgresql.Driver
   rabbitmq:
     host: localhost
     port: 5672
     username: "sdb_admin"
     password: "sdb_password"
-    listener:
-      simple:
-        concurrency: 1
-        max-concurrency: 1
-        prefetch: 1
-        default-requeue-rejected: false
-        retry:
-          enabled: true
-          initial-interval: 1000
-          max-attempts: 3
-          multiplier: 1.0
-          max-interval: 10000
 
-logging:
-  level:
-    org.springframework.amqp: INFO
-    sdb.app: DEBUG
-
-app:
-  logging:
-    url: "http://localhost:8082/"
-
+server:
+  port: 8083
+  address: localhost
 ---
 spring:
   config:
     activate:
       on-profile: docker
+  datasource:
+    url: "jdbc:postgresql://host.docker.internal:5432/warehouse"
+    username: postgres
+    password: 1234
+    driver-class-name: org.postgresql.Driver
   rabbitmq:
     host: host.docker.internal
     port: 5672
     username: "sdb_admin"
     password: "sdb_password"
-    listener:
-      simple:
-        concurrency: 1
-        max-concurrency: 1
-        prefetch: 1
-        default-requeue-rejected: false
-        retry:
-          enabled: true
-          initial-interval: 1000
-          max-attempts: 3
-          multiplier: 1.0
-          max-interval: 10000
 
 server:
   port: 8083
   address: 0.0.0.0
-
-logging:
-  level:
-    org.springframework.amqp: INFO
-    sdb.app: DEBUG
 
 app:
   logging:

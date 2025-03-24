@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sdb.core.data.entity.product.ProductEntity;
 import sdb.core.data.repository.ProductRepository;
-import sdb.core.ex.ProductNotFoundException;
+import utils.ex.ProductNotFoundException;
 import sdb.core.model.product.ProductDTO;
 
 import java.util.List;

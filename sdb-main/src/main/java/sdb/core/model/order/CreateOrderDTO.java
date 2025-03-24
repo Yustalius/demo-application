@@ -5,9 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.groups.Default;
 import lombok.SneakyThrows;
-import sdb.core.model.validation.ValidationGroups;
 
 import java.util.List;
 
@@ -19,7 +17,7 @@ public record CreateOrderDTO(
     @NotNull(message = "Список продуктов не может быть null")
     @NotEmpty(message = "Список продуктов не может быть пустым")
     @Valid
-    List<OrderItemDTO> products
+    List<OrderItemDTO> items
 ) {
   
   @Override

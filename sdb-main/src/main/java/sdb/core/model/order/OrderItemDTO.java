@@ -8,17 +8,17 @@ import sdb.core.model.validation.ValidationGroups.Create;
 
 public record OrderItemDTO(
     @Schema(description = "ID продукта")
-    @NotNull(message = "ID продукта не может быть null")
-    @Min(value = 1, message = "ID продукта должен быть положительным числом")
+    @NotNull(message = "Поле 'productId' не может быть null")
+    @Min(value = 1, message = "Поле 'productId' должно быть положительным числом")
     Integer productId,
 
     @Schema(description = "Количество продукта")
-    @NotNull(message = "Количество продукта не может быть null")
-    @Min(value = 1, message = "Количество продукта должно быть положительным числом")
+    @NotNull(message = "Поле 'quantity' не может быть null")
+    @Min(value = 1, message = "Поле 'quantity' должно быть положительным числом")
     Integer quantity,
 
     @Schema(description = "Цена продукта")
-    @NotNull(message = "Цена продукта не может быть null")
-    @Min(value = 1, message = "Цена продукта должна быть положительным числом")
+    @NotNull(message = "Поле 'price' не может быть null")
+    @Min(value = 1, message = "Поле 'price' должно быть положительным числом")
     Integer price
 ) {}

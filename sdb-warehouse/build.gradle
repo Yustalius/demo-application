@@ -27,9 +27,9 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter'
 
     implementation 'org.springframework.boot:spring-boot-starter'
-    
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
     // Utils
-    implementation 'org.yaml:snakeyaml:2.2'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.18.2'
     implementation 'org.apache.commons:commons-lang3:3.17.0'
 
@@ -39,6 +39,17 @@ dependencies {
     // Rest
     implementation "com.squareup.retrofit2:converter-jackson:${retrofitVersion}"
     implementation "com.squareup.retrofit2:retrofit:${retrofitVersion}"
+
+    // DB
+    implementation "org.springframework:spring-jdbc:${springJdbcVersion}"
+    implementation 'org.postgresql:postgresql:42.6.0'
+    implementation "com.atomikos:transactions-jta:${atomicosVersion}:jakarta"
+    implementation "com.atomikos:transactions-hibernate4:${atomicosVersion}:jakarta"
+    implementation "com.atomikos:transactions-jdbc:${atomicosVersion}"
+
+    // Flyway
+    implementation 'org.flywaydb:flyway-core:11.4.0'
+    runtimeOnly 'org.flywaydb:flyway-database-postgresql:11.4.0'
 
     implementation project(":common-utils")
 

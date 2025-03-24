@@ -70,7 +70,7 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public UserDTO update(int userId, @Nonnull UserDTO update) {
-    logger.info("Update user id = %s, %s".formatted(userId, update));
+    logger.info("Updating user id = %s, %s".formatted(userId, update));
     return usersRepository.findById(userId).map(user -> {
           if (update.firstName() != null) {
             user.setFirstName(update.firstName());

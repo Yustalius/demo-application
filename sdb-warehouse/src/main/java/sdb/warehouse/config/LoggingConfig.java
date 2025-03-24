@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import utils.logging.Logger;
 import utils.logging.utils.LogWorkerFactory;
 
+import static utils.logging.utils.LogWorkerFactory.LogWorkerType.BUFFERED;
 import static utils.logging.utils.LogWorkerFactory.LogWorkerType.DIRECT;
 
 /**
@@ -23,6 +24,6 @@ public class LoggingConfig {
      */
     @Bean
     public Logger logger(@Value("${app.logging.url}") String loggingUrl) {
-        return new Logger(loggingUrl, DIRECT);
+        return new Logger(loggingUrl, BUFFERED);
     }
 } 

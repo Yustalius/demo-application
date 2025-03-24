@@ -59,7 +59,7 @@ public class AuthServiceImpl implements AuthService {
   public String login(@Nonnull LoginDTO login) {
     UserCredsEntity creds = userCredsRepository.findByUsername(login.username())
         .orElseThrow(() ->
-            new InvalidCredentialsException());
+            new UserNotFoundException("Not found user with username = " + login.username()));
 
     if (!passwordEncoder.matches(login.password(), creds.getPassword())) {
       throw new InvalidCredentialsException();

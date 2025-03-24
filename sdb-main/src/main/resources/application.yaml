@@ -24,6 +24,7 @@ spring:
     hibernate:
       ddl-auto: none
     show-sql: true
+    open-in-view: false
 
 security:
   admin:
@@ -50,10 +51,6 @@ server:
   address: localhost
 
 app:
-  database:
-    url: "jdbc:postgresql://127.0.0.1:5432/sdb_core"
-    username: "postgres"
-    password: 1234
   logging:
     url: "http://localhost:8082/"
 
@@ -78,9 +75,5 @@ server:
   address: 0.0.0.0
 
 app:
-  database:
-    url: "jdbc:postgresql://host.docker.internal:5432/sdb_core"
-    username: "postgres"
-    password: 1234
   logging:
     url: "http://host.docker.internal:8082/"

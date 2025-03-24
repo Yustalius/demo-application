@@ -5,13 +5,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import sdb.data.entity.orders.OrderEntity;
 
-import java.time.LocalDateTime;
-
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record OrderDTO(
     Integer orderId,
     Integer userId,
-    OrderItemDTO[] products,
+    OrderItemDTO[] items,
     String timestamp,
     OrderStatus status
 ) {
@@ -35,7 +33,7 @@ public record OrderDTO(
     return new OrderDTO(
         this.orderId(),
         this.userId,
-        this.products,
+        this.items,
         this.timestamp,
         status
     );

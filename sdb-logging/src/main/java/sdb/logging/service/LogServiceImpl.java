@@ -34,12 +34,16 @@ public class LogServiceImpl implements LogService {
   private final Map<String, LinkedList<Log>> logBuffers = new ConcurrentHashMap<>();
   private final Map<String, ReentrantLock> fileLocks = new ConcurrentHashMap<>();
   private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+  // Статические блокировки для файлов, чтобы синхронизировать доступ между несколькими потоками
+  private static final Map<String, Object> fileMonitors = new ConcurrentHashMap<>();
 
   public LogServiceImpl() {
     Arrays.stream(LogTag.values())
         .forEach(tag -> {
-            logBuffers.put(tag.getLogFilePath(), new LinkedList<>());
-            fileLocks.put(tag.getLogFilePath(), new ReentrantLock());
+            String filePath = tag.getLogFilePath();
+            logBuffers.put(filePath, new LinkedList<>());
+            fileLocks.put(filePath, new ReentrantLock());
+            fileMonitors.put(filePath, new Object());
         });
 
     scheduler.scheduleAtFixedRate(this::flushAllBuffers, FLUSH_INTERVAL_MS, FLUSH_INTERVAL_MS, TimeUnit.MILLISECONDS);
@@ -130,27 +134,37 @@ public class LogServiceImpl implements LogService {
     }
   }
 
+  /**
+   * Записывает логи в файл с синхронизацией, чтобы предотвратить 
+   * одновременную запись несколькими потоками
+   */
   private void writeLogsToFile(String filePath, List<Log> logs) {
     if (logs.isEmpty()) {
       return;
     }
 
-    Path path = Paths.get(filePath);
-    try {
-      Files.createDirectories(path.getParent());
-      if (!Files.exists(path)) {
-        Files.createFile(path);
-      }
-
-      try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
-        for (Log log : logs) {
-          writer.write(formatLog(log));
-      writer.newLine();
+    // Получаем монитор для этого файла или создаем новый
+    Object fileMonitor = fileMonitors.computeIfAbsent(filePath, k -> new Object());
+    
+    // Синхронизируем доступ к файлу
+    synchronized (fileMonitor) {
+      Path path = Paths.get(filePath);
+      try {
+        Files.createDirectories(path.getParent());
+        if (!Files.exists(path)) {
+          Files.createFile(path);
         }
-        writer.flush(); // Гарантируем запись на диск
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
+          for (Log log : logs) {
+            writer.write(formatLog(log));
+            writer.newLine();
+          }
+          writer.flush(); // Гарантируем запись на диск
+        }
+      } catch (IOException e) {
+        log.error("Ошибка при записи логов в файл {}: {}", filePath, e.getMessage());
       }
-    } catch (IOException e) {
-      log.error("Ошибка при записи логов в файл {}: {}", filePath, e.getMessage());
     }
   }
 

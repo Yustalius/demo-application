@@ -1,10 +1,41 @@
 package sdb.warehouse.model.order;
 
+/**
+ * Статусы заказа на складе
+ */
 public enum OrderStatus {
-  PENDING,
-  APPROVED,
-  REJECTED,
-  IN_WORK,
-  FINISHED,
-  CANCELED
+    /**
+     * Заказ создан, но еще не обработан
+     */
+    NEW,
+    
+    /**
+     * Заказ принят и обрабатывается на складе
+     */
+    IN_WORK,
+
+    /**
+     * Заказа отменен со стороны склада
+     * */
+    REJECTED,
+    
+    /**
+     * Заказ укомплектован и готов к отправке
+     */
+    READY_FOR_SHIPPING,
+    
+    /**
+     * Заказ отправлен
+     */
+    SHIPPED,
+    
+    /**
+     * Заказ отменен со стороны клиента
+     */
+    CANCELLED,
+    
+    /**
+     * Ошибка при обработке заказа
+     */
+    ERROR
 } 

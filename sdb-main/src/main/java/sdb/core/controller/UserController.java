@@ -69,11 +69,11 @@ public class UserController {
       @ApiResponse(responseCode = "500", ref = "InternalServerErrorResponse")
   })
   @PatchMapping("/user/{id}")
-  public ResponseEntity<UserDTO> update(
+  public UserDTO update(
       @PathVariable int id,
       @Validated(UpdateValidationGroup.class) @RequestBody UserDTO user) {
     UserDTO updatedUser = userService.update(id, user);
     logger.info("Succesfully updated user id = " + id);
-    return ResponseEntity.ok(updatedUser);
+    return updatedUser;
   }
 }

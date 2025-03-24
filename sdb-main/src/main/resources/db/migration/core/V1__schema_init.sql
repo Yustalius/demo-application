@@ -17,14 +17,14 @@ CREATE TABLE IF NOT EXISTS public.products (
 
 -- Таблица пользовательских данных
 CREATE TABLE IF NOT EXISTS public.users (
-    id INTEGER PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     first_name VARCHAR(255),
     last_name VARCHAR(255),
     age INTEGER,
     CONSTRAINT fk_user_creds FOREIGN KEY (id) REFERENCES public.user_creds(id) ON DELETE CASCADE
 );
 
--- Таблица заказов (версия 3)
+-- Таблица заказов
 CREATE TABLE IF NOT EXISTS public.orders (
     order_id SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL,
@@ -40,6 +40,13 @@ CREATE TABLE IF NOT EXISTS public.order_items (
     product_id INTEGER,
     quantity INTEGER NOT NULL,
     price INTEGER NOT NULL,
-    CONSTRAINT fk_order FOREIGN KEY (order_id) REFERENCES public.orders3(order_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT fk_order FOREIGN KEY (order_id) REFERENCES public.orders(order_id) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT fk_product FOREIGN KEY (product_id) REFERENCES public.products(id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS public.cancellation_reasons (
+	id SERIAL PRIMARY KEY,
+	order_id INTEGER NOT NULL,
+	reason JSON NOT NULL,
+	CONSTRAINT fk_reasons_orders FOREIGN KEY (order_id) REFERENCES public.orders(order_id) ON DELETE CASCADE
 );

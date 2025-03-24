@@ -1,22 +1,20 @@
 package sdb.core.service.impl;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.annotation.Nonnull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import sdb.core.data.entity.order.CancellationReasonEntity;
 import sdb.core.data.entity.order.OrderEntity;
 import sdb.core.data.entity.order.OrderItemEntity;
 import sdb.core.data.entity.product.ProductEntity;
 import sdb.core.data.entity.user.UsersEntity;
-import sdb.core.data.repository.OrderItemRepository;
-import sdb.core.data.repository.OrderRepository;
-import sdb.core.data.repository.ProductRepository;
-import sdb.core.data.repository.UsersRepository;
+import sdb.core.data.repository.*;
 import sdb.core.ex.OrderNotFoundException;
-import sdb.core.ex.ProductNotFoundException;
+import utils.ex.ProductNotFoundException;
 import sdb.core.ex.StatusTransitionException;
 import sdb.core.ex.UserNotFoundException;
-import sdb.core.model.event.OrderCreatedEvent;
 import sdb.core.model.order.CreateOrderDTO;
 import sdb.core.model.order.OrderDTO;
 import sdb.core.model.order.OrderStatus;
@@ -38,6 +36,7 @@ public class OrderServiceImpl implements OrderService {
   private final ProductRepository productRepository;
   private final OrderRepository orderRepository;
   private final OrderItemRepository orderItemRepository;
+  private final CancellationReasonRepository cancellationReasonRepository;
   private final EventPublisher eventPublisher;
   private final Logger logger;
 
@@ -49,7 +48,7 @@ public class OrderServiceImpl implements OrderService {
 
     OrderDTO createdOrderDTO = OrderDTO.fromEntity(createdOrder);
     
-    eventPublisher.publishOrderCreatedEvent(OrderCreatedEvent.fromDTO(createdOrderDTO));
+    eventPublisher.publishOrderCreatedEvent(createdOrderDTO);
     
     return createdOrderDTO;
   }
@@ -60,6 +59,10 @@ public class OrderServiceImpl implements OrderService {
     OrderEntity order = orderRepository.findById(orderId)
         .orElseThrow(() -> new OrderNotFoundException("Error while updating status for order " + orderId, orderId));
 
+    logger.info(String.format(
+        "Changing order id = %s status from %s to %s",
+        orderId, order.getStatus(), newStatus
+    ));
     OrderStatus currentStatus = order.getStatus();
     if (currentStatus == newStatus) {
       return OrderDTO.fromEntity(order);
@@ -73,6 +76,28 @@ public class OrderServiceImpl implements OrderService {
     OrderEntity updatedOrder = orderRepository.save(order);
 
     return OrderDTO.fromEntity(updatedOrder);
+  }
+
+  @Override
+  @Transactional
+  public OrderDTO rejectOrder(int orderId, JsonNode... reasons) {
+    updateStatus(orderId, OrderStatus.REJECTED);
+    
+    if (reasons != null && reasons.length > 0) {
+      OrderEntity order = orderRepository.findById(orderId)
+          .orElseThrow(() -> new OrderNotFoundException(orderId));
+      
+      for (JsonNode reason : reasons) {
+        CancellationReasonEntity cancellationReason = new CancellationReasonEntity();
+        cancellationReason.setOrder(order);
+        cancellationReason.setReason(reason);
+        cancellationReasonRepository.save(cancellationReason);
+      }
+
+      logger.info("Saved %s reasons for rejecting order %s".formatted(reasons.length, orderId));
+    }
+
+    return getOrder(orderId);
   }
 
   @Override
@@ -121,7 +146,7 @@ public class OrderServiceImpl implements OrderService {
    * Группирует продукты по ID и цене, суммируя количество
    */
   private Map<ProductPriceKey, Integer> groupProductsByIdAndPrice(CreateOrderDTO order) {
-    return order.products().stream()
+    return order.items().stream()
         .collect(Collectors.toMap(
             product -> new ProductPriceKey(product.productId(), product.price()),
             product -> product.quantity(),

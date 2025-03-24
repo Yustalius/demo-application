@@ -24,20 +24,20 @@ public record OrderDTO(
     Integer orderId,
     
     @Schema(description = "ID пользователя")
-    @NotNull(message = "ID пользователя не может быть null", groups = {Default.class, Create.class})
+    @NotNull(message = "Поле 'userId' не может быть null", groups = {Default.class, Create.class})
     Integer userId,
 
     @Schema(description = "Список продуктов")
-    @NotNull(message = "Список продуктов не может быть null", groups = {Default.class, Create.class})
-    @NotEmpty(message = "Список продуктов не может быть пустым", groups = {Default.class, Create.class})
+    @NotNull(message = "Поле 'items' не может быть null", groups = {Default.class, Create.class})
+    @NotEmpty(message = "Поле 'items' не может быть пустым", groups = {Default.class, Create.class})
     @Valid
-    List<OrderItemDTO> products,
+    List<OrderItemDTO> items,
 
     @Schema(description = "Временная метка")
-    LocalDateTime timestamp,
+    String timestamp,
 
     @Schema(description = "Статус заказа")
-    @NotNull(message = "Статус заказа не может быть null", groups = UpdateStatus.class)
+    @NotNull(message = "Поле 'status' не может быть null", groups = UpdateStatus.class)
     OrderStatus status
 ) {
   public static OrderDTO fromEntity(@Nonnull OrderEntity entity) {
@@ -56,7 +56,7 @@ public record OrderDTO(
           entity.getOrderId(),
           userId,
           orderItems,
-          entity.getCreatedAt(),
+          entity.getCreatedAt().toString(),
           entity.getStatus()
       );
   }
@@ -65,7 +65,7 @@ public record OrderDTO(
     return new OrderDTO(
         this.orderId(),
         this.userId,
-        this.products,
+        this.items,
         this.timestamp,
         status
     );
