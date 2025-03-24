@@ -1,7 +1,7 @@
 package sdb.core.controller;
 
-import java.util.List;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -13,17 +13,13 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import sdb.core.model.order.CreateOrderDTO;
 import sdb.core.model.order.OrderDTO;
 import sdb.core.model.order.StatusDTO;
-import sdb.core.model.validation.ValidationGroups.Create;
-import sdb.core.model.validation.ValidationGroups.UpdateStatus;
 import sdb.core.service.OrderService;
 import utils.logging.Logger;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/order")
