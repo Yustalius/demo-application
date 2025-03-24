@@ -32,12 +32,13 @@ public class ProductDaoImpl implements ProductDao {
 
     jdbcTemplate.update(connection -> {
       PreparedStatement ps = connection.prepareStatement(
-          "INSERT INTO \"products\" (product_name, description, price) VALUES (?, ?, ?)",
+          "INSERT INTO \"products\" (product_name, description, price, is_available) VALUES (?, ?, ?, ?)",
           Statement.RETURN_GENERATED_KEYS
       );
       ps.setString(1, entity.getProductName());
       ps.setString(2, entity.getDescription());
       ps.setInt(3, entity.getPrice());
+      ps.setBoolean(4, entity.getIsAvailable());
       return ps;
     }, keyHolder);
 

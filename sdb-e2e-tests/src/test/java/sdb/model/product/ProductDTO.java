@@ -9,14 +9,16 @@ public record ProductDTO(
     Integer id,
     String productName,
     String description,
-    Integer price
+    Integer price,
+    Boolean isAvailable
 ) {
   public static @Nonnull ProductDTO fromEntity(@Nonnull ProductEntity entity) {
     return new ProductDTO(
         entity.getId(),
         entity.getProductName(),
         entity.getDescription(),
-        entity.getPrice()
+        entity.getPrice(),
+        entity.getIsAvailable()
     );
   }
 }

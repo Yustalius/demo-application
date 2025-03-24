@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class OrderTest {
 
   private final OrderClient orderClient = OrderClient.getInstance();
-  private static final int PRODUCT_ID = 491;
+  private static final int PRODUCT_ID = 715;
 
   @Test
   @User
@@ -37,7 +37,7 @@ public class OrderTest {
   @Test
   @User(orders = @Order(
       orderItems = @OrderItem(
-          productId = 491,
+          productId = PRODUCT_ID,
           price = 200,
           quantity = 12
       )))
@@ -48,7 +48,7 @@ public class OrderTest {
   @Test
   @User(orders = @Order(
       orderItems = @OrderItem(
-          productId = 491,
+          productId = PRODUCT_ID,
           price = 200,
           quantity = 1
       )))
@@ -64,12 +64,12 @@ public class OrderTest {
   @Test
   @User(orders = {
       @Order(orderItems = @OrderItem(
-          productId = 491,
+          productId = PRODUCT_ID,
           price = 200,
           quantity = 1
       )),
       @Order(orderItems = @OrderItem(
-          productId = 506,
+          productId = 720,
           price = 300,
           quantity = 2
       ))

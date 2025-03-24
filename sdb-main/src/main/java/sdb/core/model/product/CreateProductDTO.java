@@ -2,14 +2,10 @@ package sdb.core.model.product;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.annotation.Nonnull;
 import jakarta.validation.constraints.NotNull;
 import lombok.SneakyThrows;
-import sdb.core.data.entity.product.ProductEntity;
 
-public record ProductDTO(
-    @Schema(description = "ID продукта")
-    Integer id,
+public record CreateProductDTO(
     @Schema(description = "Название продукта")
     @NotNull(message = "Поле 'productName' не может быть null")
     String productName,
@@ -18,20 +14,8 @@ public record ProductDTO(
     String description,
     @Schema(description = "Цена продукта")
     @NotNull(message = "Поле 'price' не может быть null")
-    Integer price,
-    @Schema(description = "Наличие продукта")
-    Boolean isAvailable
+    Integer price
 ) {
-  public static @Nonnull ProductDTO fromEntity(@Nonnull ProductEntity entity) {
-    return new ProductDTO(
-        entity.getId(),
-        entity.getProductName(),
-        entity.getDescription(),
-        entity.getPrice(),
-        entity.getIsAvailable()
-    );
-  }
-
   @Override
   @SneakyThrows
   public String toString() {

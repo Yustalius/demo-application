@@ -33,7 +33,8 @@ public class ProductExtension implements BeforeEachCallback, AfterEachCallback, 
               null,
               productName,
               description,
-              productAnno.price() == 0 ? faker.number().numberBetween(100, 1000) : productAnno.price()
+              productAnno.price() == 0 ? faker.number().numberBetween(100, 1000) : productAnno.price(),
+              true
           ));
 
           context.getStore(NAMESPACE).put(

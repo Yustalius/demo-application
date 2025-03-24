@@ -10,6 +10,7 @@ public class ProductEntity {
   private String productName;
   private String description;
   private Integer price;
+  private Boolean isAvailable;
 
   public static @Nonnull ProductEntity fromDTO(@Nonnull ProductDTO product) {
     ProductEntity productEntity = new ProductEntity();
@@ -17,6 +18,7 @@ public class ProductEntity {
     productEntity.setProductName(product.productName());
     productEntity.setDescription(product.description());
     productEntity.setPrice(product.price());
+    productEntity.setIsAvailable(product.isAvailable() != null && product.isAvailable());
     return productEntity;
   }
 }
