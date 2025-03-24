@@ -22,7 +22,8 @@ public class ProductTest {
         null,
         String.join(" ", faker.beer().name(), faker.color().name(), faker.food().ingredient()),
         faker.color().name(),
-        faker.number().numberBetween(100, 1000)
+        faker.number().numberBetween(100, 1000),
+        null
     );
     ProductDTO createdProduct = productClient.addProduct(product);
 
@@ -38,7 +39,8 @@ public class ProductTest {
         product.id(),
         faker.beer().name(),
         faker.color().name(),
-        faker.number().numberBetween(100, 1000)
+        faker.number().numberBetween(100, 1000),
+        true
     );
 
     ProductDTO actual = productClient.updateProduct(product.id(), newProduct);

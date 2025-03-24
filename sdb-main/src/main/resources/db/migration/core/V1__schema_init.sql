@@ -12,7 +12,8 @@ CREATE TABLE IF NOT EXISTS public.products (
     id SERIAL PRIMARY KEY,
     product_name VARCHAR(255) UNIQUE NOT NULL,
     description TEXT,
-    price INTEGER NOT NULL
+    price INTEGER NOT NULL,
+    is_available BOOLEAN NOT NULL
 );
 
 -- Таблица пользовательских данных
@@ -44,6 +45,7 @@ CREATE TABLE IF NOT EXISTS public.order_items (
     CONSTRAINT fk_product FOREIGN KEY (product_id) REFERENCES public.products(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
+-- Таблица причин отмены заказа
 CREATE TABLE IF NOT EXISTS public.cancellation_reasons (
 	id SERIAL PRIMARY KEY,
 	order_id INTEGER NOT NULL,

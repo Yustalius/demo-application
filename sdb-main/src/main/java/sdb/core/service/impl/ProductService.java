@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sdb.core.data.entity.product.ProductEntity;
 import sdb.core.data.repository.ProductRepository;
+import sdb.core.model.product.CreateProductDTO;
 import utils.ex.ProductNotFoundException;
 import sdb.core.model.product.ProductDTO;
 
@@ -17,13 +18,13 @@ public class ProductService {
   private ProductRepository productRepository;
 
   @Transactional
-  public ProductDTO create(ProductDTO product) {
+  public ProductDTO create(CreateProductDTO product) {
     return ProductDTO.fromEntity(
-        productRepository.save(ProductEntity.fromDTO(product)));
+        productRepository.save(ProductEntity.fromCreateProductDTO(product)));
   }
 
   @Transactional
-  public ProductDTO update(int id, ProductDTO updatedProduct) {
+  public ProductDTO update(int id, CreateProductDTO updatedProduct) {
     return productRepository.findById(id).map(product -> {
           if (updatedProduct.productName() != null) {
             product.setProductName(updatedProduct.productName());

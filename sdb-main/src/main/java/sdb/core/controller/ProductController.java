@@ -3,6 +3,7 @@ package sdb.core.controller;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import sdb.core.model.product.CreateProductDTO;
 import sdb.core.model.product.ProductDTO;
 import sdb.core.service.impl.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -35,7 +36,7 @@ public class ProductController {
       @ApiResponse(responseCode = "500", ref = "InternalServerErrorResponse")
   })
   @PostMapping("/add")
-  public ProductDTO add(@Validated @RequestBody ProductDTO product) {
+  public ProductDTO add(@Validated @RequestBody CreateProductDTO product) {
     logger.info("Creating product " + product);
     return productService.create(product);
   }
@@ -52,7 +53,7 @@ public class ProductController {
   @PatchMapping("{id}")
   public ProductDTO update(
       @PathVariable int id,
-      @RequestBody ProductDTO product) {
+      @RequestBody CreateProductDTO product) {
     return productService.update(id, product);
   }
 
