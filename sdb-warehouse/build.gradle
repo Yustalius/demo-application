@@ -63,9 +63,9 @@ test {
 }
 
 springBoot {
-    mainClass = 'sdb.app.SDBOperatorApplication'
+    mainClass = 'sdb.warehouse.SDBWarehouseApplication'
 }
 
 bootJar {
-    archiveFileName.set('sdb-operator.jar')
+    archiveFileName.set('sdb-warehouse.jar')
 } 

@@ -32,6 +32,18 @@ services:
       - sdb-rabbit
       - common-utils
 
+  sdb-warehouse:
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    build:
+      context: .
+      dockerfile: ./sdb-warehouse/Dockerfile
+    ports:
+      - "8083:8083"
+    depends_on:
+      - sdb-rabbit
+      - common-utils
+
   sdb-logging:
     environment:
       - SPRING_PROFILES_ACTIVE=docker

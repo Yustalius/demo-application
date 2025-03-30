@@ -24,9 +24,10 @@ public class ProductExtension implements BeforeEachCallback, AfterEachCallback, 
   public void beforeEach(ExtensionContext context) throws Exception {
     AnnotationSupport.findAnnotation(context.getRequiredTestMethod(), Product.class)
         .ifPresent(productAnno -> {
+          faker.number().numberBetween(1, 2);
 
-          String productName = productAnno.productName().isEmpty() 
-              ? String.join(" ", faker.beer().name(), faker.color().name(), faker.food().ingredient()) 
+          String productName = productAnno.productName().isEmpty()
+              ? String.join(" ", faker.beer().name(), faker.color().name(), faker.food().ingredient())
               : productAnno.productName();
           String description = productAnno.description().isEmpty() ? faker.lorem().sentence() : productAnno.description();
           ProductDTO createdProduct = productClient.addProduct(new ProductDTO(
