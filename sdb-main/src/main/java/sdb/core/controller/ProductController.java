@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import sdb.core.model.product.CreateProductDTO;
 import sdb.core.model.product.ProductDTO;
-import sdb.core.service.impl.ProductService;
+import sdb.core.service.impl.ProductServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -25,7 +25,7 @@ public class ProductController {
   private Logger logger;
 
   @Autowired
-  private ProductService productService;
+  private ProductServiceImpl productService;
 
   @Operation(summary = "Добавление продукта", description = "Добавляет новый продукт в базу данных")
   @ApiResponses(value = {

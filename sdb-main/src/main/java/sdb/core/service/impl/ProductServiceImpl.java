@@ -6,13 +6,14 @@ import org.springframework.transaction.annotation.Transactional;
 import sdb.core.data.entity.product.ProductEntity;
 import sdb.core.data.repository.ProductRepository;
 import sdb.core.model.product.CreateProductDTO;
+import sdb.core.service.ProductService;
 import utils.ex.ProductNotFoundException;
 import sdb.core.model.product.ProductDTO;
 
 import java.util.List;
 
 @Service
-public class ProductService {
+public class ProductServiceImpl implements ProductService {
 
   @Autowired
   private ProductRepository productRepository;
