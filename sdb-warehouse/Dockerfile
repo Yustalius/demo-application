@@ -1,13 +1,29 @@
-FROM eclipse-temurin:17-jre
-
-LABEL maintainer="sdb"
-LABEL version="1.0"
-LABEL description="SDB Operator Service"
+FROM eclipse-temurin:21-jdk AS builder
 
 WORKDIR /app
 
-COPY build/libs/sdb-operator.jar /app/sdb-operator.jar
+# Копируем gradle-файлы
+COPY gradlew .
+COPY gradle gradle
+COPY settings.gradle .
+COPY build.gradle .
 
-EXPOSE 8083
+# Копируем модули
+COPY common-utils common-utils
+COPY sdb-warehouse sdb-warehouse
 
-ENTRYPOINT ["java", "-jar", "/app/sdb-operator.jar"] 
+# Устанавливаем права на исполнение для gradlew
+RUN chmod +x ./gradlew
+
+# Собираем проект
+RUN ./gradlew sdb-warehouse:bootJar
+
+# Итоговый образ
+FROM eclipse-temurin:21-jre
+
+WORKDIR /app
+
+# Копируем JAR-файл из предыдущего этапа
+COPY --from=builder /app/sdb-warehouse/build/libs/*.jar /app/app.jar
+
+ENTRYPOINT ["java", "-jar", "app.jar"]

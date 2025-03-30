@@ -30,6 +30,12 @@ public class ProductEntity {
      */
     @Column(name = "external_product_id", nullable = false, unique = true)
     private Integer externalProductId;
+
+    /**
+     * Название продукта (может отличаться от названия в основной системе)
+     */
+    @Column(nullable = false)
+    private String name;
     
     /**
      * Количество товара на складе
