@@ -16,4 +16,6 @@ public interface ProductService {
   List<ProductDTO> getAll();
 
   void delete(int productId);
+
+  void sync();
 }
