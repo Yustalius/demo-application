@@ -18,6 +18,8 @@ public class ProductController {
 
   @GetMapping
   public List<ProductDTO> getProducts() {
-    return productService.getAll();
+    return productService.getAll().stream()
+        .filter(product -> product.stockQuantity() > 0)
+        .toList();
   }
 }

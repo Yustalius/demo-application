@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import sdb.core.model.product.CreateProductDTO;
 import sdb.core.model.product.ProductDTO;
+import sdb.core.service.ProductService;
 import sdb.core.service.impl.ProductServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -25,7 +26,7 @@ public class ProductController {
   private Logger logger;
 
   @Autowired
-  private ProductServiceImpl productService;
+  private ProductService productService;
 
   @Operation(summary = "Добавление продукта", description = "Добавляет новый продукт в базу данных")
   @ApiResponses(value = {
@@ -99,5 +100,17 @@ public class ProductController {
   public void delete(@PathVariable int id) {
     logger.info("Deleting product with id " + id);
     productService.delete(id);
+  }
+
+  @Operation(summary = "Синхронизация продуктов", description = "Синхронизирует продукты с базой данных")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "Продукты успешно синхронизированы"),
+      @ApiResponse(responseCode = "400", ref = "BadRequestResponse"),
+      @ApiResponse(responseCode = "401", ref = "NotAuthorizedResponse"),
+      @ApiResponse(responseCode = "500", ref = "InternalServerErrorResponse")
+  })
+  @PostMapping("/sync")
+  public void syncProducts() {
+    productService.sync();
   }
 }
