@@ -15,8 +15,8 @@ public class SyncProductsTest {
   private static final Faker faker = new Faker();
 
   private final CoreProductApiClient coreApiClient = new CoreProductApiClient();
-  private final ProductClient<ProductCoreDTO> productCoreClient = ProductClient.getInstance(CORE);
-  private final ProductClient<ProductWhDTO> productWhClient = ProductClient.getInstance(WAREHOUSE);
+  private final ProductClient<ProductCoreDTO> productCoreClient = ProductClient.getInstance(CORE, (ProductCoreDTO) null);
+  private final ProductClient<ProductWhDTO> productWhClient = ProductClient.getInstance(WAREHOUSE, (ProductWhDTO) null);
 
   @Test
   @Product(isAvailable = false)

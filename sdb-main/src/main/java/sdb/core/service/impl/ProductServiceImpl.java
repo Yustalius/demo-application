@@ -8,11 +8,13 @@ import org.springframework.transaction.annotation.Transactional;
 import sdb.core.data.entity.product.ProductEntity;
 import sdb.core.data.repository.ProductRepository;
 import sdb.core.model.product.CreateProductDTO;
+import sdb.core.model.product.ProductSync;
 import sdb.core.model.product.ProductWh;
 import sdb.core.service.ProductService;
 import sdb.core.utils.warehouse.WhApiClient;
 import utils.ex.ProductNotFoundException;
 import sdb.core.model.product.ProductDTO;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import java.util.List;
 
@@ -79,15 +81,18 @@ public class ProductServiceImpl implements ProductService {
 
   @Override
   @Transactional
-  public void sync() {
+  public ProductSync sync() {
     // Получаем все продукты из бд
     List<ProductEntity> allProducts = productRepository.findAll();
     // Получаем все доступные продукты из склада
     List<ProductWh> availableProducts = whApiClient.getProductsFromWh();
-    // Собираем все ID продуктов в бд
+    // Собираем все ID продуктов в бд главного сервиса
     List<Integer> allProductIds = allProducts.stream()
         .map(ProductEntity::getId)
         .toList();
+
+    AtomicInteger updatedCount = new AtomicInteger(0); // Счетчик измененных продуктов
+    AtomicInteger addedCount = new AtomicInteger(0);   // Счетчик добавленных продуктов
 
     // Синхронизация статуса доступности продуктов
     allProducts.forEach(product -> {
@@ -100,20 +105,22 @@ public class ProductServiceImpl implements ProductService {
             if (product.getIsAvailable() != isAvailable && product.getPrice() > 0) {
               product.setIsAvailable(isAvailable);
               productRepository.save(product);
+              updatedCount.incrementAndGet(); // Увеличиваем счетчик измененных продуктов
             }
           }, () -> {
             // Если продукт отсутствует на складе, обновляем его статус на недоступный
             if (product.getIsAvailable()) {
               product.setIsAvailable(false);
               productRepository.save(product);
+              updatedCount.incrementAndGet(); // Увеличиваем счетчик измененных продуктов
             }
           });
     });
 
     // Добавление новых продуктов из склада, которых нет в локальном репозитории
-    availableProducts.stream()
+    addedCount.set((int) availableProducts.stream()
         .filter(productWh -> !allProductIds.contains(productWh.id()))
-        .forEach(productWh -> {
+        .peek(productWh -> {
           entityManager.createNativeQuery(
                   "INSERT INTO products (id, product_name, price, is_available) VALUES (?, ?, ?, ?)")
               .setParameter(1, productWh.id())
@@ -121,6 +128,9 @@ public class ProductServiceImpl implements ProductService {
               .setParameter(3, 0)
               .setParameter(4, false)
               .executeUpdate();
-        });
+        })
+        .count()); // Подсчитываем количество добавленных продуктов
+
+    return new ProductSync(updatedCount.getOpaque(), addedCount.getOpaque());
   }
 }

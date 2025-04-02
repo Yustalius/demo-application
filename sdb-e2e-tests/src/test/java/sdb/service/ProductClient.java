@@ -2,7 +2,9 @@ package sdb.service;
 
 import retrofit2.http.Path;
 import sdb.model.Services;
+import sdb.model.product.ProductCoreDTO;
 import sdb.model.product.ProductDTO;
+import sdb.model.product.ProductWhDTO;
 import sdb.service.impl.CoreProductDbClient;
 import sdb.service.impl.WhProductDbClient;
 
@@ -17,6 +19,14 @@ public interface ProductClient<T extends ProductDTO> {
       case WAREHOUSE -> (ProductClient<T>) new WhProductDbClient();
       default -> throw new IllegalArgumentException("Unknown service type");
     };
+  }
+
+  static ProductClient<ProductCoreDTO> getInstance(Services services, ProductCoreDTO type) {
+    return getInstance(services);
+  }
+
+  static ProductClient<ProductWhDTO> getInstance(Services services, ProductWhDTO type) {
+    return getInstance(services);
   }
 
   T add(T product);
