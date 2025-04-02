@@ -20,7 +20,7 @@ public class LogApiClient {
         .connectTimeout(5, TimeUnit.SECONDS)
         .readTimeout(5, TimeUnit.SECONDS)
         .writeTimeout(5, TimeUnit.SECONDS)
-        .retryOnConnectionFailure(false)
+        .retryOnConnectionFailure(true)
         .build();
         
     Retrofit retrofit = new Retrofit.Builder()
