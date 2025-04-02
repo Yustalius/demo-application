@@ -129,15 +129,6 @@ public class GlobalExceptionHandler {
   
   @ExceptionHandler(RuntimeException.class)
   public ResponseEntity<ErrorResponse> handleRuntimeException(RuntimeException ex) {
-    if (ex.getMessage().contains(") is not present in table \"user_creds\"") || ex.getMessage().contains("Key (user_id)=(")) {
-      logger.warn("User not found ", ex.getMessage());
-      return ResponseEntity.status(NOT_FOUND)
-          .body(new ErrorResponse(
-              USER_NOT_FOUND,
-              ex.getMessage()
-          ));
-    }
-
     return ResponseEntity.status(INTERNAL_SERVER_ERROR)
         .body(new ErrorResponse(
             UNKNOWN,
