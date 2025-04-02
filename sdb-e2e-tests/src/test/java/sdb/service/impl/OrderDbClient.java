@@ -8,7 +8,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.transaction.support.TransactionTemplate;
 import sdb.data.entity.orders.OrderEntity;
 import sdb.data.entity.orders.OrderItemEntity;
-import sdb.data.entity.products.ProductEntity;
+import sdb.data.entity.products.ProductCoreEntity;
 import org.springframework.lang.Nullable;
 
 import javax.sql.DataSource;
@@ -71,7 +71,7 @@ public class OrderDbClient {
           OrderItemEntity item = new OrderItemEntity();
           item.setOrderItemId(rs.getInt("order_item_id"));
           
-          ProductEntity product = new ProductEntity();
+          ProductCoreEntity product = new ProductCoreEntity();
           product.setId(rs.getInt("product_id"));
           item.setProduct(product);
           

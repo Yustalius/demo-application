@@ -1,25 +1,33 @@
 package sdb.service;
 
 import retrofit2.http.Path;
+import sdb.model.Services;
 import sdb.model.product.ProductDTO;
-import sdb.service.impl.ProductApiClient;
+import sdb.service.impl.CoreProductDbClient;
+import sdb.service.impl.WhProductDbClient;
 
 import java.util.List;
 
-public interface ProductClient {
+public interface ProductClient<T extends ProductDTO> {
 
-  // TODO Dependency Injection
-  static ProductClient getInstance() {
-    return new ProductApiClient();
+  @SuppressWarnings("unchecked")
+  static <T extends ProductDTO> ProductClient<T> getInstance(Services services) {
+    return switch (services) {
+      case CORE -> (ProductClient<T>) new CoreProductDbClient();
+      case WAREHOUSE -> (ProductClient<T>) new WhProductDbClient();
+      default -> throw new IllegalArgumentException("Unknown service type");
+    };
   }
 
-  ProductDTO addProduct(ProductDTO product);
+  T add(T product);
 
-  ProductDTO updateProduct(int id, ProductDTO product);
+  T update(int id, T product);
 
-  ProductDTO getProductById(@Path("id") int productId);
+  T getById(@Path("id") int productId);
 
-  List<ProductDTO> getAllProducts();
+  List<T> get();
 
-  void deleteProduct(int productId);
+  void delete(int productId);
+
+  void sync();
 }

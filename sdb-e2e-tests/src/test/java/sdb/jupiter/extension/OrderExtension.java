@@ -7,7 +7,7 @@ import org.junit.platform.commons.support.AnnotationSupport;
 import sdb.config.Config;
 import sdb.data.entity.orders.OrderEntity;
 import sdb.data.entity.orders.OrderItemEntity;
-import sdb.data.entity.products.ProductEntity;
+import sdb.data.entity.products.ProductCoreEntity;
 import sdb.data.entity.user.UsersEntity;
 import sdb.jupiter.annotation.Order;
 import sdb.jupiter.annotation.OrderItem;
@@ -16,7 +16,7 @@ import sdb.model.order.OrderDTO;
 import sdb.model.order.OrderStatus;
 import sdb.model.user.UserDTO;
 import sdb.service.impl.OrderDbClient;
-import sdb.service.impl.ProductApiClient;
+import sdb.service.impl.CoreProductApiClient;
 import sdb.service.impl.UserApiClient;
 
 import java.util.ArrayList;
@@ -44,8 +44,8 @@ public class OrderExtension implements BeforeEachCallback, ParameterResolver {
 
             UsersEntity usersEntity = getUserEntity(user.id());
 
-            OrderDbClient orderClient = new OrderDbClient(dataSource(CFG.postgresUrl()));
-            ProductApiClient productApiClient = new ProductApiClient();
+            OrderDbClient orderClient = new OrderDbClient(dataSource(CFG.coreDbUrl()));
+            CoreProductApiClient productApiClient = new CoreProductApiClient();
 
             List<OrderDTO> createdOrders = createOrdersForUser(
                 userAnno.orders(),
@@ -95,7 +95,7 @@ public class OrderExtension implements BeforeEachCallback, ParameterResolver {
       OrderDbClient orderClient
   ) {
     List<OrderDTO> createdOrders = new ArrayList<>();
-    ProductApiClient productApiClient = new ProductApiClient();
+    CoreProductApiClient productApiClient = new CoreProductApiClient();
 
     for (Order orderAnno : orderAnnotations) {
       List<OrderItemEntity> orderItems = createOrderItems(orderAnno.orderItems(), productApiClient);
@@ -122,13 +122,13 @@ public class OrderExtension implements BeforeEachCallback, ParameterResolver {
    */
   private List<OrderItemEntity> createOrderItems(
       OrderItem[] orderItemAnnotations,
-      ProductApiClient productApiClient
+      CoreProductApiClient productApiClient
   ) {
     List<OrderItemEntity> orderItems = new ArrayList<>();
 
     for (OrderItem orderItemAnno : orderItemAnnotations) {
-      ProductEntity product = ProductEntity.fromDTO(
-          requireNonNull(productApiClient.getProductById(orderItemAnno.productId()))
+      ProductCoreEntity product = ProductCoreEntity.fromDTO(
+          requireNonNull(productApiClient.getById(orderItemAnno.productId()))
       );
 
       OrderItemEntity orderItemEntity = new OrderItemEntity();

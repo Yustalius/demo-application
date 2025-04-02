@@ -3,7 +3,7 @@ package sdb.data.entity.orders;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import sdb.data.entity.products.ProductEntity;
+import sdb.data.entity.products.ProductCoreEntity;
 
 @Entity
 @Table(name = "order_items")
@@ -26,7 +26,7 @@ public class OrderItemEntity {
   @JoinColumn(name = "product_id",
       referencedColumnName = "id",
       nullable = true)
-  private ProductEntity product;
+  private ProductCoreEntity product;
 
   @Column(nullable = false)
   private Integer quantity;

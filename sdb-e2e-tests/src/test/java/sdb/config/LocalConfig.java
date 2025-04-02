@@ -24,8 +24,13 @@ enum LocalConfig implements Config {
   }
 
   @Override
-  public String postgresUrl() {
-    return sqlConfig.get("postgres-url");
+  public String coreDbUrl() {
+    return sqlConfig.get("core-db-url");
+  }
+
+  @Override
+  public String whDbUrl() {
+    return sqlConfig.get("wh-db-url");
   }
 
   @Override
@@ -39,12 +44,17 @@ enum LocalConfig implements Config {
   }
 
   @Override
-  public String postgresUsername() {
-    return sqlConfig.get("postgres-username");
+  public String dbUsername() {
+    return sqlConfig.get("db-username");
   }
 
   @Override
-  public String postgresPassword() {
-    return sqlConfig.get("postgres-password");
+  public String dbPassword() {
+    return sqlConfig.get("db-password");
+  }
+
+  @Override
+  public String whUrl() {
+    return apiConfig.get("wh-url");
   }
 }

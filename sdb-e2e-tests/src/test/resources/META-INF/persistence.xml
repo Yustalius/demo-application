@@ -4,7 +4,7 @@
              version="2.1">
     <persistence-unit name="jdbc:postgresql://127.0.0.1:5432/postgres" transaction-type="RESOURCE_LOCAL">
         <jta-data-source>java:comp/env/jdbc/postgres</jta-data-source>
-        <class>sdb.data.entity.products.ProductEntity</class>
+        <class>sdb.data.entity.products.ProductCoreEntity</class>
         
         <properties>
             <property name="hibernate.transaction.jta.platform"

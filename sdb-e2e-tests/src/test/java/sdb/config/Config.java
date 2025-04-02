@@ -6,13 +6,17 @@ public interface Config {
     return LocalConfig.INSTANCE;
   }
 
-  String postgresUrl();
+  String coreDbUrl();
+
+  String whDbUrl();
 
   String coreUrl();
 
   String loggingUrl();
 
-  String postgresUsername();
+  String whUrl();
 
-  String postgresPassword();
+  String dbUsername();
+
+  String dbPassword();
 }

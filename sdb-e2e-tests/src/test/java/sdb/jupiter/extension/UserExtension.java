@@ -23,7 +23,7 @@ public class UserExtension implements BeforeEachCallback, ParameterResolver {
   public void beforeEach(ExtensionContext context) throws Exception {
     AnnotationSupport.findAnnotation(context.getRequiredTestMethod(), User.class)
         .ifPresent(userAnno -> {
-          AuthDbClient authClient = new AuthDbClient(dataSource(CFG.postgresUrl()));
+          AuthDbClient authClient = new AuthDbClient(dataSource(CFG.coreDbUrl()));
           PasswordEncoder encoder = new BCryptPasswordEncoder();
 
           String password = "".equals(userAnno.password()) ? randomPassword() : userAnno.password();

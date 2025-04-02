@@ -1,8 +1,10 @@
 sql:
-  postgres-url: "jdbc:postgresql://127.0.0.1:5432/sdb_core"
-  postgres-username: "postgres"
-  postgres-password: 1234
+  core-db-url: "jdbc:postgresql://127.0.0.1:5432/sdb_core"
+  wh-db-url: "jdbc:postgresql://127.0.0.1:5432/warehouse"
+  db-username: "postgres"
+  db-password: 1234
 
 api:
   core-url: "http://127.0.0.1:8080/"
   logging-url: "http://127.0.0.1:8082/"
+  wh-url: "http://127.0.0.1:8083/"

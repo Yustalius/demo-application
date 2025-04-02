@@ -17,4 +17,8 @@ public @interface Product {
   String description() default "";
 
   int price() default 0;
+
+  boolean isAvailable() default true;
+
+  // todo add product to warehouse flag
 }
