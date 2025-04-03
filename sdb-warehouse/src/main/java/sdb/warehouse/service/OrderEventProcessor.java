@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import sdb.warehouse.data.entity.ProductEntity;
 import sdb.warehouse.model.event.OrderEvent;
 import sdb.warehouse.model.order.OrderItemDTO;
-import sdb.warehouse.service.impl.OrderServiceImpl;
+import sdb.warehouse.service.impl.OrderService;
 import utils.logging.Logger;
 
 import java.util.HashMap;
@@ -20,7 +20,9 @@ public class OrderEventProcessor {
 
   private final Logger logger;
   private final RabbitMQEventPublisher eventPublisher;
-  private final OrderServiceImpl orderService;
+  private final OrderService orderService;
+  private final ProductService productService;
+
 
   public void processOrderEvent(OrderEvent event) {
     validateEvent(event);
@@ -40,13 +42,17 @@ public class OrderEventProcessor {
 
   @Transactional
   private void processOrderCancelledEvent(OrderEvent event) {
+    event.getItems().forEach(item -> {
+      productService.addProductQuantity(item.productId(), item.quantity());
+    });
+
 
   }
 
   @Transactional
   private void processOrderCreatedEvent(OrderEvent event) {
     try {
-      Map<OrderItemDTO, ProductEntity> orderItemProductEntityMap = orderService.findProductsInDatabaseByDto(event);
+      Map<OrderItemDTO, ProductEntity> orderItemProductEntityMap = orderService.findProductsByDto(event.getItems());
       // мапа для хранения ошибок по недостатку товаров, ключ - товар, значение - пара (текущий остаток, запрошенное количество)
       Map<OrderItemDTO, Pair<Integer, Integer>> orderStockErrors = new HashMap<>();
 

@@ -1,19 +1,21 @@
 package sdb.warehouse.service.impl;
 
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sdb.warehouse.data.entity.OrderEntity;
 import sdb.warehouse.data.entity.ProductEntity;
 import sdb.warehouse.data.repository.OrderRepository;
 import sdb.warehouse.data.repository.ProductRepository;
-import sdb.warehouse.model.event.OrderEvent;
 import sdb.warehouse.model.order.OrderItemDTO;
 import sdb.warehouse.model.order.OrderStatus;
+import sdb.warehouse.service.ProductService;
 import utils.ex.ProductNotFoundException;
 import utils.logging.Logger;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static sdb.warehouse.model.order.OrderStatus.NEW;
@@ -23,20 +25,17 @@ import static sdb.warehouse.model.order.OrderStatus.NEW;
  */
 @Service
 @RequiredArgsConstructor
-public class OrderServiceImpl {
+public class OrderService {
 
   private final Logger logger;
   private final OrderRepository orderRepository;
-  private final ProductRepository productRepository;
+  private final ProductService productService;
 
   @Transactional
-  public Map<OrderItemDTO, ProductEntity> findProductsInDatabaseByDto(OrderEvent event) {
+  public Map<OrderItemDTO, ProductEntity> findProductsByDto(List<OrderItemDTO> items) {
     Map<OrderItemDTO, ProductEntity> orderItemProductEntityMap = new HashMap<>();
-    for (OrderItemDTO item : event.getItems()) {
-      ProductEntity productEntity = productRepository.findByExternalProductId(item.productId())
-          .orElseThrow(() -> new ProductNotFoundException(
-              "Error during processing order in warehouse",
-              item.productId()));
+    for (OrderItemDTO item : items) {
+      ProductEntity productEntity = ProductEntity.fromDTO(productService.getByExternalId(item.productId()));
 
       orderItemProductEntityMap.put(item, productEntity);
     }
@@ -55,10 +54,10 @@ public class OrderServiceImpl {
     for (ProductEntity product : productsWithQuantity.keySet()) {
       Integer orderQuantity = productsWithQuantity.get(product);
       Integer currentStock = product.getStockQuantity();
+
       try {
         // уменьшаем количество товара
-        product.setStockQuantity(currentStock - orderQuantity);
-        productRepository.save(product);
+        productService.addProductQuantity(product.getId(), -orderQuantity);
         
         OrderEntity orderEntity = OrderEntity.builder()
             .externalOrderId(externalOrderId)
@@ -66,14 +65,13 @@ public class OrderServiceImpl {
             .quantity(orderQuantity)
             .status(NEW.name())
             .build();
-
         orderRepository.save(orderEntity);
-        logger.info(String.format("Order saved for product: %s, stock reduced from %s to %s", 
-            product.getExternalProductId(), currentStock, product.getStockQuantity()));
+
+        logger.info(String.format("Order saved for product: %s, stock reduced from %s to %s",
+            product.getExternalProductId(), currentStock, currentStock - orderQuantity));
       } catch (Exception e) {
-        logger.error(String.format("Error saving order or updating stock for product: %s. Error: %s", 
+        logger.error(String.format("Error saving order or updating stock for product: %s. Error: %s",
             product.getExternalProductId(), e.getMessage(), e));
-        // В случае ошибки откатываем транзакцию (произойдет автоматически из-за @Transactional)
         throw new RuntimeException("Error processing order for product: " + product.getExternalProductId(), e);
       }
     }

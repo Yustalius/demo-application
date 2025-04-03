@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import sdb.warehouse.model.product.ProductDTO;
 
 /**
  * Сущность товара в системе склада.
@@ -17,29 +18,37 @@ import lombok.Builder;
 @AllArgsConstructor
 @Builder
 public class ProductEntity {
-    
-    /**
-     * Уникальный идентификатор товара в системе склада
-     */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-    
-    /**
-     * Внешний идентификатор товара (из основной системы)
-     */
-    @Column(name = "external_product_id", nullable = false, unique = true)
-    private Integer externalProductId;
 
-    /**
-     * Название продукта (может отличаться от названия в основной системе)
-     */
-    @Column(nullable = false)
-    private String name;
-    
-    /**
-     * Количество товара на складе
-     */
-    @Column(name = "stock_quantity", nullable = false)
-    private Integer stockQuantity;
+  /**
+   * Уникальный идентификатор товара в системе склада
+   */
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Integer id;
+
+  /**
+   * Внешний идентификатор товара (из основной системы)
+   */
+  @Column(name = "external_product_id", nullable = false, unique = true)
+  private Integer externalProductId;
+
+  /**
+   * Название продукта (может отличаться от названия в основной системе)
+   */
+  @Column(nullable = false)
+  private String name;
+
+  /**
+   * Количество товара на складе
+   */
+  @Column(name = "stock_quantity", nullable = false)
+  private Integer stockQuantity;
+
+  public static ProductEntity fromDTO(ProductDTO productDTO) {
+    return ProductEntity.builder()
+        .externalProductId(productDTO.id())
+        .name(productDTO.name())
+        .stockQuantity(productDTO.stockQuantity())
+        .build();
+  }
 } 

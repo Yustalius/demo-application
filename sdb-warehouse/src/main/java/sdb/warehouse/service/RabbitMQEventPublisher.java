@@ -54,7 +54,6 @@ public class RabbitMQEventPublisher {
     publishOrderRejectedEvent(event, productsWithQuantity, null);
   }
 
-  // todo причины отказа, чтобы метод принимал причину и на ее основе составлял запрос
   public void publishOrderRejectedEvent(OrderEvent event,
                                         Map<OrderItemDTO, Pair<Integer, Integer>> productsWithQuantity,
                                         String description) {

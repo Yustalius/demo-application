@@ -6,14 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sdb.warehouse.config.RabbitMQConfig;
-import sdb.warehouse.data.entity.ProductEntity;
 import sdb.warehouse.model.event.OrderEvent;
-import sdb.warehouse.model.order.OrderItemDTO;
-import sdb.warehouse.service.impl.OrderServiceImpl;
 import utils.logging.Logger;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Сервис для обработки событий заказов.
