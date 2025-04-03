@@ -1,7 +1,4 @@
-package sdb.core.ex;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+package sdb.warehouse.ex;
 
 public class OrderNotFoundException extends RuntimeException {
   public OrderNotFoundException(int id) {

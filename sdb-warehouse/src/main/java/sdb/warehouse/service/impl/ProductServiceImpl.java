@@ -3,6 +3,7 @@ package sdb.warehouse.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import sdb.warehouse.data.entity.ProductEntity;
 import sdb.warehouse.data.repository.ProductRepository;
 import sdb.warehouse.model.product.ProductDTO;
 import sdb.warehouse.service.ProductService;
@@ -37,7 +38,7 @@ public class ProductServiceImpl implements ProductService {
   @Override
   public ProductDTO addProductQuantity(int productId, int quantity) {
     return ProductDTO.fromEntity(
-        productRepository.findById(productId).map(product -> {
+        productRepository.findByExternalProductId(productId).map(product -> {
           product.setStockQuantity(product.getStockQuantity() + quantity);
           productRepository.save(product);
           return product;

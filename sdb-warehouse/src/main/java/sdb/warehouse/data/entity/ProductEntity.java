@@ -46,7 +46,8 @@ public class ProductEntity {
 
   public static ProductEntity fromDTO(ProductDTO productDTO) {
     return ProductEntity.builder()
-        .externalProductId(productDTO.id())
+        .id(productDTO.id())
+        .externalProductId(productDTO.externalProductId())
         .name(productDTO.name())
         .stockQuantity(productDTO.stockQuantity())
         .build();
