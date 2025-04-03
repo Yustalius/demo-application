@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 import lombok.SneakyThrows;
+import sdb.warehouse.model.order.ErrorCode;
 import sdb.warehouse.model.order.OrderItemDTO;
 
 import java.io.Serializable;
@@ -18,7 +19,11 @@ import java.util.List;
 public class OrderEvent implements Serializable {
   private static final ObjectMapper objectMapper = new ObjectMapper();
 
-  public record ErrorMessage(String errorCode, Integer productId, Integer availableStock, Integer requestedStock) {}
+  public record ErrorMessage(ErrorCode errorCode, String description, Integer productId, Integer availableStock, Integer requestedStock) {
+    public ErrorMessage(ErrorCode errorCode, String description) {
+      this(errorCode, description, null, null, null);
+    }
+  }
 
   public enum OrderCode {
     ORDER_CREATED,

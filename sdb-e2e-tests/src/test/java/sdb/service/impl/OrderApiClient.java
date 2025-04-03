@@ -46,10 +46,10 @@ public class OrderApiClient extends RestClient implements OrderClient {
   }
 
   @Override
-  public OrderDTO getOrder(int purchaseId) {
+  public OrderDTO getOrder(int id) {
     Response<OrderDTO> response;
     try {
-      response = orderApi.getOrder(purchaseId).execute();
+      response = orderApi.getOrder(id).execute();
     } catch (IOException e) {
       throw new AssertionError(e);
     }

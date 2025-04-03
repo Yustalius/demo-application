@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS public.products (
 CREATE TABLE IF NOT EXISTS public.orders (
     id SERIAL PRIMARY KEY,
     external_order_id INTEGER NOT NULL,
-    product_id INTEGER NOT NULL,
+    product_id INTEGER,
     quantity INTEGER NOT NULL,
     status VARCHAR(50) NOT NULL,
     CONSTRAINT orders_products_fk FOREIGN KEY (product_id) REFERENCES public.products(id) ON DELETE SET NULL

@@ -31,8 +31,6 @@ public class ProductExtension implements BeforeEachCallback, AfterEachCallback, 
   public void beforeEach(ExtensionContext context) {
     AnnotationSupport.findAnnotation(context.getRequiredTestMethod(), Product.class)
         .ifPresent(productAnno -> {
-          faker.get().number().numberBetween(1, 2);
-
           String productName = productAnno.productName().isEmpty()
               ? UUID.randomUUID().toString()
               : productAnno.productName();

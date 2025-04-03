@@ -4,6 +4,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import sdb.warehouse.data.entity.OrderEntity;
 
+import java.util.List;
+
 /**
  * Репозиторий для работы с заказами на складе
  */
@@ -16,5 +18,5 @@ public interface OrderRepository extends JpaRepository<OrderEntity, Integer> {
      * @param externalOrderId внешний идентификатор заказа
      * @return заказ или null, если не найден
      */
-    OrderEntity findByExternalOrderId(Integer externalOrderId);
+    List<OrderEntity> findByExternalOrderId(Integer externalOrderId);
 } 

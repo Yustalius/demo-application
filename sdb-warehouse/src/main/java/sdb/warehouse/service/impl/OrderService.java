@@ -1,19 +1,21 @@
 package sdb.warehouse.service.impl;
 
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sdb.warehouse.data.entity.OrderEntity;
 import sdb.warehouse.data.entity.ProductEntity;
 import sdb.warehouse.data.repository.OrderRepository;
-import sdb.warehouse.data.repository.ProductRepository;
-import sdb.warehouse.model.event.OrderEvent;
+import sdb.warehouse.ex.OrderNotFoundException;
 import sdb.warehouse.model.order.OrderItemDTO;
 import sdb.warehouse.model.order.OrderStatus;
-import utils.ex.ProductNotFoundException;
+import sdb.warehouse.model.product.ProductDTO;
+import sdb.warehouse.service.ProductService;
 import utils.logging.Logger;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static sdb.warehouse.model.order.OrderStatus.NEW;
@@ -23,20 +25,17 @@ import static sdb.warehouse.model.order.OrderStatus.NEW;
  */
 @Service
 @RequiredArgsConstructor
-public class OrderServiceImpl {
+public class OrderService {
 
   private final Logger logger;
   private final OrderRepository orderRepository;
-  private final ProductRepository productRepository;
+  private final ProductService productService;
 
   @Transactional
-  public Map<OrderItemDTO, ProductEntity> findProductsInDatabaseByDto(OrderEvent event) {
-    Map<OrderItemDTO, ProductEntity> orderItemProductEntityMap = new HashMap<>();
-    for (OrderItemDTO item : event.getItems()) {
-      ProductEntity productEntity = productRepository.findByExternalProductId(item.productId())
-          .orElseThrow(() -> new ProductNotFoundException(
-              "Error during processing order in warehouse",
-              item.productId()));
+  public Map<OrderItemDTO, ProductDTO> findProductsByDto(List<OrderItemDTO> items) {
+    Map<OrderItemDTO, ProductDTO> orderItemProductEntityMap = new HashMap<>();
+    for (OrderItemDTO item : items) {
+      ProductDTO productEntity = productService.getByExternalId(item.productId());
 
       orderItemProductEntityMap.put(item, productEntity);
     }
@@ -51,30 +50,29 @@ public class OrderServiceImpl {
    * @param externalOrderId внешний идентификатор заказа
    */
   @Transactional
-  public void createOrders(Map<ProductEntity, Integer> productsWithQuantity, Integer externalOrderId) {
-    for (ProductEntity product : productsWithQuantity.keySet()) {
+  public void createOrders(Map<ProductDTO, Integer> productsWithQuantity, Integer externalOrderId) {
+    for (ProductDTO product : productsWithQuantity.keySet()) {
       Integer orderQuantity = productsWithQuantity.get(product);
-      Integer currentStock = product.getStockQuantity();
+      Integer currentStock = product.stockQuantity();
+
       try {
         // уменьшаем количество товара
-        product.setStockQuantity(currentStock - orderQuantity);
-        productRepository.save(product);
+        productService.addProductQuantity(product.externalProductId(), -orderQuantity);
         
         OrderEntity orderEntity = OrderEntity.builder()
             .externalOrderId(externalOrderId)
-            .product(product)
+            .product(ProductEntity.fromDTO(product))
             .quantity(orderQuantity)
             .status(NEW.name())
             .build();
-
         orderRepository.save(orderEntity);
-        logger.info(String.format("Order saved for product: %s, stock reduced from %s to %s", 
-            product.getExternalProductId(), currentStock, product.getStockQuantity()));
+
+        logger.info(String.format("Order saved for product: %s, stock reduced from %s to %s",
+            product.externalProductId(), currentStock, currentStock - orderQuantity));
       } catch (Exception e) {
-        logger.error(String.format("Error saving order or updating stock for product: %s. Error: %s", 
-            product.getExternalProductId(), e.getMessage(), e));
-        // В случае ошибки откатываем транзакцию (произойдет автоматически из-за @Transactional)
-        throw new RuntimeException("Error processing order for product: " + product.getExternalProductId(), e);
+        logger.error(String.format("Error saving order or updating stock for product: %s. Error: %s",
+            product.externalProductId(), e.getMessage(), e));
+        throw new RuntimeException("Error processing order for product: " + product.externalProductId(), e);
       }
     }
   }
@@ -108,16 +106,18 @@ public class OrderServiceImpl {
    * @return true если заказ найден и обновлен, false в противном случае
    */
   @Transactional
-  public boolean updateOrderStatusByExternalId(Integer externalOrderId, OrderStatus status) {
-    OrderEntity order = orderRepository.findByExternalOrderId(externalOrderId);
-    if (order == null) {
+  public void updateOrderStatusByExternalId(Integer externalOrderId, OrderStatus status) {
+    List<OrderEntity> orders = orderRepository.findByExternalOrderId(externalOrderId);
+    if (orders.isEmpty()) {
       logger.warn("Order with external ID %s not found".formatted(externalOrderId));
-      return false;
+      throw new OrderNotFoundException("Error while updating order status", externalOrderId);
     }
 
-    order.setStatus(status.name());
-    orderRepository.save(order);
-    logger.info("Order with external ID %s status updated to %s".formatted(externalOrderId, status));
-    return true;
+    for (OrderEntity orderEntity : orders) {
+      orderEntity.setStatus(status.name());
+    }
+    orderRepository.saveAll(orders);
+
+    logger.info("Orders with external ID %s status updated to %s".formatted(externalOrderId, status));
   }
 }

@@ -16,7 +16,7 @@ public interface OrderClient {
 
   List<OrderDTO> getOrders();
 
-  OrderDTO getOrder(int purchaseId);
+  OrderDTO getOrder(int id);
 
   List<OrderDTO> getUserOrders(int userId);
 }

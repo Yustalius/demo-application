@@ -4,9 +4,22 @@ import jakarta.annotation.Nonnull;
 import net.datafaker.Faker;
 import sdb.model.auth.RegisterDTO;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 public class RandomUtils {
 
   private static final Faker faker = new Faker();
+
+  public static int randomNumber(int length) {
+    if (length < 1 || length > 9) {
+      throw new IllegalArgumentException("Длина должна быть от 1 до 9");
+    }
+
+    int min = (int) Math.pow(10, length - 1);
+    int max = (int) Math.pow(10, length) - 1;
+
+    return ThreadLocalRandom.current().nextInt(min, max + 1);
+  }
 
   @Nonnull
   public static String randomUsername() {

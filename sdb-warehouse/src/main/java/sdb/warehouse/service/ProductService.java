@@ -11,9 +11,13 @@ public interface ProductService {
 
   ProductDTO update(int id, ProductDTO updatedProduct);
 
-  ProductDTO getById(int productId);
+  ProductDTO addProductQuantity(int id, int quantity);
+
+  ProductDTO getById(int id);
+
+  ProductDTO getByExternalId(int id);
 
   List<ProductDTO> getAll();
 
-  void delete(int productId);
+  void delete(int id);
 }
