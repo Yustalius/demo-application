@@ -24,11 +24,8 @@ public class OrderTest {
   void addOrderTest(UserDTO user) {
     OrderDTO order = orderClient.createOrder(
         new OrderDTO(
-            null,
             user.id(),
-            new OrderItemDTO[]{new OrderItemDTO(PRODUCT_ID, 200, 1)},
-            null,
-            null
+            List.of(new OrderItemDTO(PRODUCT_ID, 200, 1))
         ));
 
     assertThat(order.orderId()).isNotNull();

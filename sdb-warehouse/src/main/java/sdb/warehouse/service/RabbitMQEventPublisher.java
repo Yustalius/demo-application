@@ -8,6 +8,7 @@ import sdb.warehouse.config.RabbitMQConfig;
 import sdb.warehouse.data.entity.ProductEntity;
 import sdb.warehouse.model.event.OrderEvent;
 import sdb.warehouse.model.event.OrderEvent.ErrorMessage;
+import sdb.warehouse.model.order.ErrorCode;
 import sdb.warehouse.model.order.OrderItemDTO;
 import utils.logging.Logger;
 
@@ -43,27 +44,32 @@ public class RabbitMQEventPublisher {
   }
 
   public void publishOrderRejectedEvent(OrderEvent event) {
-    publishOrderRejectedEvent(event, null, null);
+    publishOrderRejectedEvent(event, null, null, null);
   }
 
   public void publishOrderRejectedEvent(OrderEvent event, String description) {
-    publishOrderRejectedEvent(event, null, description);
+    publishOrderRejectedEvent(event, null, description, null);
+  }
+
+  public void publishOrderRejectedEvent(OrderEvent event, ErrorCode errorCode) {
+    publishOrderRejectedEvent(event, null, null, errorCode);
   }
 
   public void publishOrderRejectedEvent(OrderEvent event, Map<OrderItemDTO, Pair<Integer, Integer>> productsWithQuantity) {
-    publishOrderRejectedEvent(event, productsWithQuantity, null);
+    publishOrderRejectedEvent(event, productsWithQuantity, null, NOT_ENOUGH_STOCK);
   }
 
   public void publishOrderRejectedEvent(OrderEvent event,
                                         Map<OrderItemDTO, Pair<Integer, Integer>> productsWithQuantity,
-                                        String description) {
+                                        String description,
+                                        ErrorCode errorCode) {
     try {
       event.setOrderCode(ORDER_REJECTED);
       if (productsWithQuantity != null) {
         event.setErrorMessages(
             productsWithQuantity.entrySet().stream()
                 .map(entry -> new ErrorMessage(
-                    NOT_ENOUGH_STOCK,
+                    errorCode != null ? errorCode : ERROR,
                     description,
                     entry.getKey().productId(),
                     entry.getValue().getFirst(),

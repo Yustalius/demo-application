@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sdb.warehouse.data.entity.ProductEntity;
 import sdb.warehouse.model.event.OrderEvent;
+import sdb.warehouse.model.order.ErrorCode;
 import sdb.warehouse.model.order.OrderItemDTO;
 import sdb.warehouse.model.order.OrderStatus;
 import sdb.warehouse.model.product.ProductDTO;
@@ -76,8 +77,9 @@ public class OrderEventProcessor {
         eventPublisher.publishOrderRejectedEvent(event, orderStockErrors);
       }
     } catch (Exception e) {
-      logger.error("Error processing message: " + e.getMessage(), e);
-      throw new AmqpRejectAndDontRequeueException("Error processing message: " + e.getMessage(), e);
+      logger.error("Error processing message: " + e.getMessage());
+      eventPublisher.publishOrderRejectedEvent(event);
+      throw new AmqpRejectAndDontRequeueException("Error processing message: " + e.getMessage());
     }
   }
 

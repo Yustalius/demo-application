@@ -1,9 +1,14 @@
 package sdb.warehouse.model.product;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonValue;
 import sdb.warehouse.data.entity.ProductEntity;
 
 public record ProductDTO(
+    @JsonIgnore
     Integer id,
+    @JsonProperty("id")
     Integer externalProductId,
     String name,
     Integer stockQuantity

@@ -5,14 +5,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import sdb.data.entity.orders.OrderEntity;
 
+import java.util.List;
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record OrderDTO(
     Integer orderId,
     Integer userId,
-    OrderItemDTO[] items,
+    List<OrderItemDTO> items,
     String timestamp,
     OrderStatus status
 ) {
+  public OrderDTO(Integer userId, List<OrderItemDTO> items) {
+    this(null, userId, items, null, null);
+  }
+
   public static OrderDTO fromEntity(OrderEntity entity) {
    return new OrderDTO(
        entity.getOrderId(),
@@ -23,7 +29,7 @@ public record OrderDTO(
                item.getQuantity(),
                item.getPrice()
            ))
-           .toArray(OrderItemDTO[]::new),
+           .toList(),
        entity.getCreatedAt().toString(),
        entity.getStatus()
    );
