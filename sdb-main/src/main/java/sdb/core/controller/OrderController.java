@@ -77,7 +77,7 @@ public class OrderController {
       @ApiResponse(responseCode = "500", ref = "InternalServerErrorResponse")
   })
   @GetMapping("/user/{userId}")
-  public List<OrderDTO> getUserOrders(@PathVariable("userId") int userId) {
+  public List<OrderDTO> getByUser(@PathVariable("userId") int userId) {
     logger.info("Get user orders userId = ", userId);
     return orderService.getUserOrders(userId);
   }
@@ -94,18 +94,5 @@ public class OrderController {
   public OrderDTO getById(@PathVariable int id) {
     logger.info("Get order productId = ", id);
     return orderService.getOrder(id);
-  }
-
-  @Operation(summary = "Получение всех заказов", description = "Возвращает список всех заказов.")
-  @ApiResponses(value = {
-      @ApiResponse(responseCode = "200", description = "Заказы успешно получены",
-          content = @Content(array = @ArraySchema(schema = @Schema(implementation = OrderDTO.class)))),
-      @ApiResponse(responseCode = "401", ref = "NotAuthorizedResponse"),
-      @ApiResponse(responseCode = "500", ref = "InternalServerErrorResponse")
-  })
-  @GetMapping
-  public List<OrderDTO> get() {
-    logger.info("Get all orders");
-    return orderService.getOrders();
   }
 }

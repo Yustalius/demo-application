@@ -1,6 +1,5 @@
 package sdb.test;
 
-import net.datafaker.Faker;
 import org.junit.jupiter.api.Test;
 import sdb.jupiter.annotation.Order;
 import sdb.jupiter.annotation.OrderItem;
@@ -17,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class OrderTest {
 
   private final OrderClient orderClient = OrderClient.getInstance();
-  private static final int PRODUCT_ID = 800;
+  private static final int PRODUCT_ID = 720;
 
   @Test
   @User
@@ -30,17 +29,6 @@ public class OrderTest {
 
     assertThat(order.orderId()).isNotNull();
     assertThat(order.items()).anyMatch(p -> p.productId() == PRODUCT_ID);
-  }
-
-  @Test
-  @User(orders = @Order(
-      orderItems = @OrderItem(
-          productId = PRODUCT_ID,
-          price = 200,
-          quantity = 12
-      )))
-  void getAllOrders() {
-    assertThat(orderClient.getOrders().size()).isGreaterThan(0);
   }
 
   @Test

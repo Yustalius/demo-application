@@ -1,12 +1,8 @@
 package sdb.core.model.order;
 
-import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.annotation.Nonnull;
 import jakarta.validation.Valid;
@@ -17,6 +13,9 @@ import lombok.SneakyThrows;
 import sdb.core.data.entity.order.OrderEntity;
 import sdb.core.model.validation.ValidationGroups.Create;
 import sdb.core.model.validation.ValidationGroups.UpdateStatus;
+
+import java.util.Collections;
+import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record OrderDTO(
@@ -38,27 +37,46 @@ public record OrderDTO(
 
     @Schema(description = "Статус заказа")
     @NotNull(message = "Поле 'status' не может быть null", groups = UpdateStatus.class)
-    OrderStatus status
+    OrderStatus status,
+
+    @Schema(description = "Причины отмены заказа")
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    List<CancellationReasonDTO> rejectReasons
 ) {
   public static OrderDTO fromEntity(@Nonnull OrderEntity entity) {
-      Integer userId = entity.getUser() != null ? entity.getUser().getId() : null;
-      List<OrderItemDTO> orderItems = (entity.getOrderItems() != null) 
-          ? entity.getOrderItems().stream()
-              .map(item -> new OrderItemDTO(
-                  (item.getProduct() != null) ? item.getProduct().getId() : null,
-                  item.getQuantity(),
-                  item.getPrice()
-              ))
-              .toList() 
-          : Collections.emptyList();
+    Integer userId = entity.getUser() != null ? entity.getUser().getId() : null;
 
-      return new OrderDTO(
-          entity.getOrderId(),
-          userId,
-          orderItems,
-          entity.getCreatedAt().toString(),
-          entity.getStatus()
-      );
+    List<OrderItemDTO> orderItems = (entity.getOrderItems() != null) 
+        ? entity.getOrderItems().stream()
+            .map(item -> new OrderItemDTO(
+                (item.getProduct() != null) ? item.getProduct().getId() : null,
+                item.getQuantity(),
+                item.getPrice()
+            ))
+            .toList() 
+        : Collections.emptyList();
+
+    List<CancellationReasonDTO> cancellationReasons = entity.getCancellationReasons() != null ? 
+        entity.getCancellationReasons().stream()
+            .map(reason -> {
+                JsonNode reasonNode = reason.getReason();
+                return new CancellationReasonDTO(
+                    reasonNode.get("errorCode") != null ? reasonNode.get("errorCode").asText() : null,
+                    reasonNode.has("productId") && !reasonNode.get("productId").isNull() ? reasonNode.get("productId").asInt() : null,
+                    reasonNode.has("availableStock") && !reasonNode.get("availableStock").isNull() ? reasonNode.get("availableStock").asInt() : null,
+                    reasonNode.has("requestedStock") && !reasonNode.get("requestedStock").isNull() ? reasonNode.get("requestedStock").asInt() : null
+                );
+            })
+            .toList() : null;
+
+    return new OrderDTO(
+        entity.getOrderId(),
+        userId,
+        orderItems,
+        entity.getCreatedAt().toString(),
+        entity.getStatus(),
+        cancellationReasons
+    );
   }
 
   public OrderDTO setStatus(OrderStatus status) {
@@ -67,7 +85,8 @@ public record OrderDTO(
         this.userId,
         this.items,
         this.timestamp,
-        status
+        status,
+        null
     );
   }
 
