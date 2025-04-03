@@ -11,11 +11,14 @@ import sdb.warehouse.model.event.OrderEvent.ErrorMessage;
 import sdb.warehouse.model.order.OrderItemDTO;
 import utils.logging.Logger;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import static sdb.warehouse.model.event.OrderEvent.OrderCode.ORDER_APPROVED;
 import static sdb.warehouse.model.event.OrderEvent.OrderCode.ORDER_REJECTED;
+import static sdb.warehouse.model.order.ErrorCode.ERROR;
+import static sdb.warehouse.model.order.ErrorCode.NOT_ENOUGH_STOCK;
 
 /**
  * Реализация сервиса публикации событий с использованием RabbitMQ.
@@ -39,20 +42,39 @@ public class RabbitMQEventPublisher {
     );
   }
 
-  // todo причины отказа, чтобы метод принимал причину и на ее основе составлял запрос
+  public void publishOrderRejectedEvent(OrderEvent event) {
+    publishOrderRejectedEvent(event, null, null);
+  }
+
+  public void publishOrderRejectedEvent(OrderEvent event, String description) {
+    publishOrderRejectedEvent(event, null, description);
+  }
+
   public void publishOrderRejectedEvent(OrderEvent event, Map<OrderItemDTO, Pair<Integer, Integer>> productsWithQuantity) {
+    publishOrderRejectedEvent(event, productsWithQuantity, null);
+  }
+
+  // todo причины отказа, чтобы метод принимал причину и на ее основе составлял запрос
+  public void publishOrderRejectedEvent(OrderEvent event,
+                                        Map<OrderItemDTO, Pair<Integer, Integer>> productsWithQuantity,
+                                        String description) {
     try {
       event.setOrderCode(ORDER_REJECTED);
-      event.setErrorMessages(
-          productsWithQuantity.entrySet().stream()
-              .map(entry -> new ErrorMessage(
-                      "NOT_ENOUGH_STOCK",
-                      entry.getKey().productId(),
-                      entry.getValue().getFirst(),
-                      entry.getValue().getSecond()
-              ))
-              .toList()
-      );
+      if (productsWithQuantity != null) {
+        event.setErrorMessages(
+            productsWithQuantity.entrySet().stream()
+                .map(entry -> new ErrorMessage(
+                    NOT_ENOUGH_STOCK,
+                    description,
+                    entry.getKey().productId(),
+                    entry.getValue().getFirst(),
+                    entry.getValue().getSecond()
+                ))
+                .toList()
+        );
+      } else {
+        event.setErrorMessages(Collections.singletonList(new ErrorMessage(ERROR, description)));
+      }
 
       logger.info("Publishing order rejected event: ", event);
       rabbitTemplate.convertAndSend(

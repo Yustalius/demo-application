@@ -28,6 +28,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static sdb.core.model.order.OrderStatus.CANCELLED;
+
 @Service
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
@@ -74,6 +76,10 @@ public class OrderServiceImpl implements OrderService {
 
     order.setStatus(newStatus);
     OrderEntity updatedOrder = orderRepository.save(order);
+
+    if (newStatus == CANCELLED) {
+      eventPublisher.publishOrderCancelledEvent(OrderDTO.fromEntity(updatedOrder));
+    }
 
     return OrderDTO.fromEntity(updatedOrder);
   }

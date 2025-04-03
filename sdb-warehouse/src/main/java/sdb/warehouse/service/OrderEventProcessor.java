@@ -29,10 +29,18 @@ public class OrderEventProcessor {
       case ORDER_CREATED:
         processOrderCreatedEvent(event);
         break;
+      case ORDER_CANCELLED:
+        processOrderCancelledEvent(event);
+        break;
       default:
-        // todo отправлять отмену заказа
+        eventPublisher.publishOrderRejectedEvent(event);
         throw new IllegalArgumentException("Unknown order code: " + event.getOrderCode());
     }
+  }
+
+  @Transactional
+  private void processOrderCancelledEvent(OrderEvent event) {
+
   }
 
   @Transactional
@@ -69,14 +77,14 @@ public class OrderEventProcessor {
   private void validateEvent(OrderEvent event) {
     if (isInvalidEvent(event)) {
       logger.error("Received invalid message: " + (event == null ? "null" : event.toString()));
-      // todo отправлять отмену заказа
+      eventPublisher.publishOrderRejectedEvent(event);
       throw new AmqpRejectAndDontRequeueException("Invalid message format");
     }
 
     for (OrderItemDTO item : event.getItems()) {
       if (isInvalidOrderItem(item)) {
         logger.error("Invalid order item: " + item);
-        // todo отправлять отмену заказа
+        eventPublisher.publishOrderRejectedEvent(event);
         throw new AmqpRejectAndDontRequeueException("Invalid order item");
       }
     }

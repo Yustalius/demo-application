@@ -38,8 +38,6 @@ public class OrderEventListener {
     try {
       logger.info("Received order event: ", event);
       processor.processOrderEvent(event);
-    } catch (AmqpRejectAndDontRequeueException e) {
-      throw e;
     } catch (Exception e) {
       logger.error("Unexpected error processing message: " + e.getMessage(), e);
       throw new AmqpRejectAndDontRequeueException("Unexpected error: " + e.getMessage(), e);

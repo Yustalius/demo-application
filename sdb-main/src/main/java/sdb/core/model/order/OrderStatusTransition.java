@@ -21,30 +21,30 @@ public class OrderStatusTransition {
     transitions.put(OrderStatus.PENDING, Set.of(
         OrderStatus.APPROVED,
         OrderStatus.REJECTED,
-        OrderStatus.CANCELED
+        OrderStatus.CANCELLED
     ));
     
     // С APPROVED можно перейти на IN_WORK, CANCELED
     transitions.put(OrderStatus.APPROVED, Set.of(
         OrderStatus.IN_WORK,
-        OrderStatus.CANCELED
+        OrderStatus.CANCELLED
     ));
     
     // С REJECTED можно перейти на IN_WORK, CANCELED
     transitions.put(OrderStatus.REJECTED, Set.of(
         OrderStatus.IN_WORK,
-        OrderStatus.CANCELED
+        OrderStatus.CANCELLED
     ));
     
     // С IN_WORK можно перейти на FINISHED, CANCELED
     transitions.put(OrderStatus.IN_WORK, Set.of(
         OrderStatus.FINISHED,
-        OrderStatus.CANCELED
+        OrderStatus.CANCELLED
     ));
     
     // С FINISHED и CANCELED никуда нельзя перейти
     transitions.put(OrderStatus.FINISHED, Collections.emptySet());
-    transitions.put(OrderStatus.CANCELED, Collections.emptySet());
+    transitions.put(OrderStatus.CANCELLED, Collections.emptySet());
     
     ALLOWED_TRANSITIONS = Collections.unmodifiableMap(transitions);
   }

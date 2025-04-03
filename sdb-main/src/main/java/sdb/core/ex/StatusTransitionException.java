@@ -16,7 +16,7 @@ public class StatusTransitionException extends RuntimeException {
 
   public StatusTransitionException(OrderStatus currentStatus, OrderStatus newStatus) {
     super(
-        currentStatus == OrderStatus.FINISHED || currentStatus == OrderStatus.CANCELED ?
+        currentStatus == OrderStatus.FINISHED || currentStatus == OrderStatus.CANCELLED ?
             "Со статуса " + currentStatus + " нельзя изменить статус заказа" :
             "Нельзя перейти со статуса " + currentStatus + " на статус " + newStatus + ". " +
                 "Допустимые переходы: " + getAllowedTransitions(currentStatus)
