@@ -92,6 +92,16 @@ public class GlobalExceptionHandler {
         ));
   }
 
+  @ExceptionHandler(ProductNotAvailableException.class)
+  public ResponseEntity<ErrorResponse> handleProductNotAvailableException(ProductNotAvailableException ex) {
+    logger.info(ex.getMessage());
+    return ResponseEntity.status(CONFLICT)
+        .body(new ErrorResponse(
+            PRODUCT_NOT_AVAILABLE,
+            ex.getMessage()
+        ));
+  }
+
   @ExceptionHandler(PermissionDeniedException.class)
   public ResponseEntity<ErrorResponse> handlePermissionDeniedException(PermissionDeniedException ex) {
     logger.warn("Permission denied ", ex.getMessage());

@@ -34,13 +34,14 @@ public class OrderController {
   @Autowired
   private OrderService orderService;
 
-  @Operation(summary = "Добавление заказа", description = "Создает новый заказ на основе предоставленных данных.")
+  @Operation(summary = "Создание заказа", description = "Создает новый заказ на основе предоставленных данных.")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "201", description = "Заказ успешно добавлен",
           content = @Content(schema = @Schema(implementation = OrderDTO.class))),
       @ApiResponse(responseCode = "400", ref = "BadRequestResponse"),
       @ApiResponse(responseCode = "401", ref = "NotAuthorizedResponse"),
       @ApiResponse(responseCode = "404", ref = "UserNotFoundResponse"),
+      @ApiResponse(responseCode = "409", ref = "ProductNotAvailableResponse"),
       @ApiResponse(responseCode = "500", ref = "InternalServerErrorResponse")
   })
   @PostMapping("/add")
