@@ -15,9 +15,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import sdb.core.model.error.ErrorResponse;
 
-import java.util.Map;
-
-import static io.swagger.v3.oas.models.media.Content.*;
 import static sdb.core.model.order.ErrorCode.*;
 
 @Configuration
@@ -35,6 +32,7 @@ public class SwaggerConfig {
             .addResponses("InvalidCredsResponse", createInvalidCredsResponse())
             .addResponses("PermissionDeniedResponse", createPermissionDeniedResponse())
             .addResponses("UserNotFoundResponse", createUserNotFoundResponse())
+            .addResponses("ProductNotAvailableResponse", createProductNotAvailableResponse())
             .addResponses("OrderNotFoundResponse", createOrderNotFoundResponse())
             .addResponses("StatusTransitionErrorResponse", createStatusTransitionErrorResponse()));  
   }
@@ -114,6 +112,20 @@ public class SwaggerConfig {
                     .addExamples("example",
                         new Example()
                             .value(new ErrorResponse(USER_NOT_FOUND, "error message")))));
+  }
+
+  private ApiResponse createProductNotAvailableResponse() {
+    Schema resultEntitySchema = ModelConverters.getInstance()
+        .resolveAsResolvedSchema(new AnnotatedType(ErrorResponse.class)).schema;
+    return new ApiResponse()
+        .description("Продукт недоступен для покупки")
+        .content(
+            new Content().addMediaType(org.springframework.http.MediaType.APPLICATION_JSON_VALUE,
+                new MediaType()
+                    .schema(resultEntitySchema.description("Schema 1"))
+                    .addExamples("example",
+                        new Example()
+                            .value(new ErrorResponse(PRODUCT_NOT_AVAILABLE, "error message")))));
   }
 
   private ApiResponse createOrderNotFoundResponse() {

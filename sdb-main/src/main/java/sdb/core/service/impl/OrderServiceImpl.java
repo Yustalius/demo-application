@@ -12,6 +12,7 @@ import sdb.core.data.entity.product.ProductEntity;
 import sdb.core.data.entity.user.UsersEntity;
 import sdb.core.data.repository.*;
 import sdb.core.ex.OrderNotFoundException;
+import sdb.core.ex.ProductNotAvailableException;
 import utils.ex.ProductNotFoundException;
 import sdb.core.ex.StatusTransitionException;
 import sdb.core.ex.UserNotFoundException;
@@ -65,6 +66,7 @@ public class OrderServiceImpl implements OrderService {
         "Changing order id = %s status from %s to %s",
         orderId, order.getStatus(), newStatus
     ));
+
     OrderStatus currentStatus = order.getStatus();
     if (currentStatus == newStatus) {
       return OrderDTO.fromEntity(order);
@@ -169,6 +171,10 @@ public class OrderServiceImpl implements OrderService {
           .orElseThrow(() -> new ProductNotFoundException(
             "Error while creating order items for order " + order,
             key.getProductId()));
+
+      if (!productEntity.getIsAvailable()) {
+        throw new ProductNotAvailableException(productEntity.getId());
+      }
 
       OrderItemEntity orderItemEntity = new OrderItemEntity();
       orderItemEntity.setOrder(order);
