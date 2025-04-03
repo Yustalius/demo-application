@@ -5,7 +5,7 @@ import sdb.data.entity.products.ProductCoreEntity;
 import java.util.List;
 import java.util.Optional;
 
-public interface ProductСoreDao {
+public interface ProductCoreDao {
 
   ProductCoreEntity create(ProductCoreEntity entity);
 

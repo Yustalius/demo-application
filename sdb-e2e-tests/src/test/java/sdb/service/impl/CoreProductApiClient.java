@@ -5,14 +5,15 @@ import sdb.api.ProductApi;
 import sdb.api.core.AuthInterceptor;
 import sdb.api.core.RestClient;
 import sdb.model.product.ProductCoreDTO;
-import sdb.service.ProductClient;
+import sdb.model.product.ProductSync;
+import sdb.service.CoreProductClient;
 
 import java.io.IOException;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class CoreProductApiClient extends RestClient implements ProductClient<ProductCoreDTO> {
+public class CoreProductApiClient extends RestClient implements CoreProductClient {
 
   private final ProductApi productApi;
 
@@ -81,13 +82,14 @@ public class CoreProductApiClient extends RestClient implements ProductClient<Pr
   }
 
   @Override
-  public void sync() {
-    Response<Void> response;
+  public ProductSync sync() {
+    Response<ProductSync> response;
     try {
       response = productApi.sync().execute();
     } catch (IOException e) {
       throw new AssertionError(e);
     }
     assertThat(response.code()).isEqualTo(200);
+    return response.body();
   }
 }

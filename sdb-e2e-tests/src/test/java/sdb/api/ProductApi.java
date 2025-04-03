@@ -3,6 +3,7 @@ package sdb.api;
 import retrofit2.Call;
 import retrofit2.http.*;
 import sdb.model.product.ProductCoreDTO;
+import sdb.model.product.ProductSync;
 
 import java.util.List;
 
@@ -24,6 +25,6 @@ public interface ProductApi {
   Call<Void> delete(@Path("id") int productId);
 
   @POST("product/sync")
-  Call<Void> sync();
+  Call<ProductSync> sync();
 
 }

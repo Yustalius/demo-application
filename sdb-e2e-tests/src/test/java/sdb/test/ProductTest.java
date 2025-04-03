@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.opentest4j.AssertionFailedError;
 import sdb.jupiter.annotation.Product;
 import sdb.model.product.ProductCoreDTO;
-import sdb.service.ProductClient;
+import sdb.service.CoreProductClient;
 import sdb.service.impl.CoreProductApiClient;
 
 import java.util.List;
@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class ProductTest {
   private final Faker faker = new Faker();
-  private final ProductClient<ProductCoreDTO> productClient = new CoreProductApiClient();
+  private final CoreProductClient productClient = new CoreProductApiClient();
 
   @Test
   void createProductTest() {

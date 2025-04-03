@@ -1,16 +1,15 @@
 package sdb.service.impl;
 
-import sdb.data.dao.ProductWhDao;
-import sdb.data.dao.impl.ProductWhDaoImpl;
+import sdb.data.dao.WhProductDao;
+import sdb.data.dao.impl.WhProductDaoImpl;
 import sdb.data.entity.products.ProductWhEntity;
 import sdb.model.product.ProductWhDTO;
-import sdb.model.product.ProductWhDTO;
-import sdb.service.ProductClient;
+import sdb.service.WhProductClient;
 
 import java.util.List;
 
-public class WhProductDbClient implements ProductClient<ProductWhDTO> {
-  private final ProductWhDao productDao = new ProductWhDaoImpl();
+public class WhProductDbClient implements WhProductClient {
+  private final WhProductDao productDao = new WhProductDaoImpl();
 
   @Override
   public ProductWhDTO add(ProductWhDTO product) {
@@ -26,9 +25,25 @@ public class WhProductDbClient implements ProductClient<ProductWhDTO> {
   }
 
   @Override
+  public ProductWhDTO updateStockQuantity(int id, int stockQuantity) {
+    return productDao.get(id).map(product -> {
+          product.setStockQuantity(stockQuantity);
+          productDao.update(id, product);
+          return ProductWhDTO.fromEntity(productDao.get(id).orElseThrow());
+        })
+        .orElseThrow(() -> new RuntimeException("Product with id = " + id + " not found"));
+  }
+
+  @Override
   public ProductWhDTO getById(int id) {
     return productDao.get(id).map(ProductWhDTO::fromEntity)
-            .orElseThrow(() -> new RuntimeException());
+        .orElseThrow(() -> new RuntimeException());
+  }
+
+  @Override
+  public ProductWhDTO getByExternalId(int id) {
+    return productDao.getByExternalId(id).map(ProductWhDTO::fromEntity)
+        .orElseThrow(() -> new RuntimeException());
   }
 
   @Override
@@ -41,11 +56,5 @@ public class WhProductDbClient implements ProductClient<ProductWhDTO> {
   @Override
   public void delete(int productId) {
     productDao.delete(productId);
-  }
-
-  @Deprecated
-  @Override
-  public void sync() {
-    System.out.println("Method not realized");
   }
 }

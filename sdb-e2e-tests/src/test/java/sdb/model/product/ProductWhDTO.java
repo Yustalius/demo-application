@@ -10,6 +10,10 @@ public record ProductWhDTO(
     Integer stockQuantity
 ) implements ProductDTO {
 
+  public ProductWhDTO(Integer externalProductId, String name, Integer stockQuantity) {
+    this(null, externalProductId, name, stockQuantity);
+  }
+
   public static @NonNull ProductWhDTO fromEntity(@NonNull ProductWhEntity entity) {
     return new ProductWhDTO(
         entity.getId(),

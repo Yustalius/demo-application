@@ -4,9 +4,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import sdb.config.Config;
-import sdb.data.dao.ProductWhDao;
+import sdb.data.dao.WhProductDao;
 import sdb.data.entity.products.ProductWhEntity;
-import sdb.data.mapper.ProductCoreEntityRowMapper;
 import sdb.data.mapper.ProductWhEntityRowMapper;
 
 import java.sql.PreparedStatement;
@@ -18,10 +17,10 @@ import java.util.Optional;
 import static java.util.Objects.requireNonNull;
 import static sdb.data.Databases.dataSource;
 
-public class ProductWhDaoImpl implements ProductWhDao {
+public class WhProductDaoImpl implements WhProductDao {
   private final JdbcTemplate jdbcTemplate;
 
-  public ProductWhDaoImpl() {
+  public WhProductDaoImpl() {
     this.jdbcTemplate = new JdbcTemplate(dataSource(Config.getInstance().whDbUrl()));
   }
 
@@ -76,13 +75,21 @@ public class ProductWhDaoImpl implements ProductWhDao {
 
   @Override
   public Optional<ProductWhEntity> get(int productId) {
-    List<ProductWhEntity> results = jdbcTemplate.query(
+    return Optional.ofNullable(jdbcTemplate.queryForObject(
         "SELECT * FROM products WHERE id = ?",
         ProductWhEntityRowMapper.instance,
         productId
-    );
+    ));
+  }
 
-    return results.isEmpty() ? Optional.empty() : Optional.of(results.get(0));
+  @Override
+  public Optional<ProductWhEntity> getByExternalId(int externalProductId) {
+    List<ProductWhEntity> result = jdbcTemplate.query(
+        "SELECT * FROM products WHERE external_product_id = ?",
+        ProductWhEntityRowMapper.instance,
+        externalProductId
+    );
+    return result.stream().findFirst();
   }
 
   @Override

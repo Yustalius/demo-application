@@ -4,7 +4,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import sdb.config.Config;
-import sdb.data.dao.ProductСoreDao;
+import sdb.data.dao.ProductCoreDao;
 import sdb.data.entity.products.ProductCoreEntity;
 import sdb.data.mapper.ProductCoreEntityRowMapper;
 
@@ -17,7 +17,7 @@ import java.util.Optional;
 import static java.util.Objects.requireNonNull;
 import static sdb.data.Databases.dataSource;
 
-public class ProductCoreDaoImpl implements ProductСoreDao {
+public class ProductCoreDaoImpl implements ProductCoreDao {
   private final JdbcTemplate jdbcTemplate;
 
   public ProductCoreDaoImpl() {

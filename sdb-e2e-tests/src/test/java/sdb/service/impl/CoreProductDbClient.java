@@ -1,15 +1,16 @@
 package sdb.service.impl;
 
-import sdb.data.dao.ProductСoreDao;
+import sdb.data.dao.ProductCoreDao;
 import sdb.data.dao.impl.ProductCoreDaoImpl;
 import sdb.data.entity.products.ProductCoreEntity;
 import sdb.model.product.ProductCoreDTO;
-import sdb.service.ProductClient;
+import sdb.model.product.ProductSync;
+import sdb.service.CoreProductClient;
 
 import java.util.List;
 
-public class CoreProductDbClient implements ProductClient<ProductCoreDTO> {
-  private final ProductСoreDao productDao = new ProductCoreDaoImpl();
+public class CoreProductDbClient implements CoreProductClient {
+  private final ProductCoreDao productDao = new ProductCoreDaoImpl();
 
   @Override
   public ProductCoreDTO add(ProductCoreDTO product) {
@@ -27,7 +28,7 @@ public class CoreProductDbClient implements ProductClient<ProductCoreDTO> {
   @Override
   public ProductCoreDTO getById(int id) {
     return productDao.get(id).map(ProductCoreDTO::fromEntity)
-            .orElseThrow(() -> new RuntimeException());
+            .orElse(null);
   }
 
   @Override
@@ -44,7 +45,8 @@ public class CoreProductDbClient implements ProductClient<ProductCoreDTO> {
 
   @Deprecated
   @Override
-  public void sync() {
+  public ProductSync sync() {
     System.out.println("Method not realized");
+    return null;
   }
 }
