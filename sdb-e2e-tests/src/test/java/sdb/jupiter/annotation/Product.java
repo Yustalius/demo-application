@@ -16,5 +16,9 @@ public @interface Product {
 
   String description() default "";
 
-  int price() default 0;
+  int price() default -1;
+
+  boolean isAvailable() default true;
+
+  int addToWarehouse() default -1;
 }

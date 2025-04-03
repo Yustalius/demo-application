@@ -4,12 +4,10 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import sdb.config.Config;
-import sdb.data.dao.ProductDao;
-import sdb.data.entity.products.ProductEntity;
-import sdb.data.mapper.ProductEntityRowMapper;
-import sdb.data.mapper.PurchaseEntityRowMapper;
+import sdb.data.dao.ProductCoreDao;
+import sdb.data.entity.products.ProductCoreEntity;
+import sdb.data.mapper.ProductCoreEntityRowMapper;
 
-import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -19,15 +17,15 @@ import java.util.Optional;
 import static java.util.Objects.requireNonNull;
 import static sdb.data.Databases.dataSource;
 
-public class ProductDaoImpl implements ProductDao {
+public class ProductCoreDaoImpl implements ProductCoreDao {
   private final JdbcTemplate jdbcTemplate;
 
-  public ProductDaoImpl() {
-    this.jdbcTemplate = new JdbcTemplate(dataSource(Config.getInstance().postgresUrl()));
+  public ProductCoreDaoImpl() {
+    this.jdbcTemplate = new JdbcTemplate(dataSource(Config.getInstance().coreDbUrl()));
   }
 
   @Override
-  public ProductEntity create(ProductEntity entity) {
+  public ProductCoreEntity create(ProductCoreEntity entity) {
     KeyHolder keyHolder = new GeneratedKeyHolder();
 
     jdbcTemplate.update(connection -> {
@@ -47,7 +45,7 @@ public class ProductDaoImpl implements ProductDao {
   }
 
   @Override
-  public void update(int productId, ProductEntity entity) {
+  public void update(int productId, ProductCoreEntity entity) {
     StringBuilder sql = new StringBuilder("UPDATE products SET ");
     List<Object> params = new ArrayList<>();
 
@@ -77,22 +75,22 @@ public class ProductDaoImpl implements ProductDao {
   }
 
   @Override
-  public Optional<ProductEntity> get(int productId) {
-    List<ProductEntity> results = jdbcTemplate.query(
+  public Optional<ProductCoreEntity> get(int productId) {
+    List<ProductCoreEntity> results = jdbcTemplate.query(
         "SELECT * FROM products WHERE id = ?",
-        ProductEntityRowMapper.instance,
+        ProductCoreEntityRowMapper.instance,
         productId
     );
 
-    return results.isEmpty() ? Optional.empty() : Optional.of(results.get(0));
+    return results.isEmpty() ? Optional.empty() : Optional.of(results.getFirst());
   }
 
   @Override
-  public Optional<List<ProductEntity>> getAll() {
+  public Optional<List<ProductCoreEntity>> getAll() {
     return Optional.of(
         jdbcTemplate.query(
             "SELECT * FROM \"products\"",
-            ProductEntityRowMapper.instance
+            ProductCoreEntityRowMapper.instance
         ));
   }
 

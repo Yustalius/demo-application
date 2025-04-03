@@ -2,18 +2,18 @@ package sdb.data.entity.products;
 
 import jakarta.annotation.Nonnull;
 import lombok.Data;
-import sdb.model.product.ProductDTO;
+import sdb.model.product.ProductCoreDTO;
 
 @Data
-public class ProductEntity {
+public class ProductCoreEntity {
   private Integer id;
   private String productName;
   private String description;
   private Integer price;
   private Boolean isAvailable;
 
-  public static @Nonnull ProductEntity fromDTO(@Nonnull ProductDTO product) {
-    ProductEntity productEntity = new ProductEntity();
+  public static @Nonnull ProductCoreEntity fromDTO(@Nonnull ProductCoreDTO product) {
+    ProductCoreEntity productEntity = new ProductCoreEntity();
     productEntity.setId(product.id());
     productEntity.setProductName(product.productName());
     productEntity.setDescription(product.description());

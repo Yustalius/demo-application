@@ -2,6 +2,7 @@ package sdb.core.service;
 
 import sdb.core.model.product.CreateProductDTO;
 import sdb.core.model.product.ProductDTO;
+import sdb.core.model.product.ProductSync;
 
 import java.util.List;
 
@@ -17,5 +18,5 @@ public interface ProductService {
 
   void delete(int productId);
 
-  void sync();
+  ProductSync sync();
 }
