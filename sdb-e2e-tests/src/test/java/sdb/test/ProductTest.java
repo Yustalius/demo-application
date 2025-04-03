@@ -58,7 +58,7 @@ public class ProductTest {
 
   @Test
   @Product
-  void getAllProductsTest(ProductCoreDTO product) {
+  void getAllProductsTest() {
     List<ProductCoreDTO> productById = productClient.get();
 
     assertThat(productById).isNotEmpty();

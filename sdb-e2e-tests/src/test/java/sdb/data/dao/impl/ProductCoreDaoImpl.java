@@ -82,7 +82,7 @@ public class ProductCoreDaoImpl implements ProductCoreDao {
         productId
     );
 
-    return results.isEmpty() ? Optional.empty() : Optional.of(results.get(0));
+    return results.isEmpty() ? Optional.empty() : Optional.of(results.getFirst());
   }
 
   @Override

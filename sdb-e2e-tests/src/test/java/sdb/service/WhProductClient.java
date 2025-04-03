@@ -1,8 +1,6 @@
 package sdb.service;
 
-import sdb.model.Services;
 import sdb.model.product.ProductWhDTO;
-import sdb.service.impl.CoreProductDbClient;
 import sdb.service.impl.WhProductDbClient;
 
 import java.util.List;

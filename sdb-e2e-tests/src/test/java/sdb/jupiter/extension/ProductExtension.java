@@ -28,7 +28,7 @@ public class ProductExtension implements BeforeEachCallback, AfterEachCallback, 
   private final CoreProductClient coreProductClient = new CoreProductDbClient();
 
   @Override
-  public void beforeEach(ExtensionContext context) throws Exception {
+  public void beforeEach(ExtensionContext context) {
     AnnotationSupport.findAnnotation(context.getRequiredTestMethod(), Product.class)
         .ifPresent(productAnno -> {
           faker.get().number().numberBetween(1, 2);
@@ -71,7 +71,7 @@ public class ProductExtension implements BeforeEachCallback, AfterEachCallback, 
   }
 
   @Override
-  public void afterEach(ExtensionContext extensionContext) throws Exception {
+  public void afterEach(ExtensionContext extensionContext) {
     ProductCoreDao productDao = new ProductCoreDaoImpl();
     WhProductDao whProductDao = new WhProductDaoImpl();
 

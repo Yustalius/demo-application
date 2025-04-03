@@ -18,7 +18,6 @@ public class OrderTest {
 
   private final OrderClient orderClient = OrderClient.getInstance();
   private static final int PRODUCT_ID = 800;
-  private static final Faker faker = new Faker();
 
   @Test
   @User
