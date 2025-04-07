@@ -3,7 +3,10 @@ package sdb.utils;
 import jakarta.annotation.Nonnull;
 import net.datafaker.Faker;
 import sdb.model.auth.RegisterDTO;
+import sdb.model.product.ProductCoreDTO;
+import sdb.model.product.ProductWhDTO;
 
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class RandomUtils {
@@ -56,6 +59,24 @@ public class RandomUtils {
         randomName(),
         randomLastName(),
         randomAge()
+    );
+  }
+
+  @Nonnull
+  public static ProductWhDTO randomWhProduct() {
+    return new ProductWhDTO(
+        randomNumber(9),
+        UUID.randomUUID().toString(),
+        randomNumber(3)
+    );
+  }
+
+  @Nonnull
+  public static ProductCoreDTO randomCoreProduct() {
+    return new ProductCoreDTO(
+        UUID.randomUUID().toString(),
+        null,
+        randomNumber(3)
     );
   }
 }

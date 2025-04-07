@@ -26,7 +26,6 @@ public class OrderEventProcessor {
   private final OrderService orderService;
   private final ProductService productService;
 
-
   public void processOrderEvent(OrderEvent event) {
     validateEvent(event);
 
@@ -77,6 +76,7 @@ public class OrderEventProcessor {
         eventPublisher.publishOrderRejectedEvent(event, orderStockErrors);
       }
     } catch (Exception e) {
+      // todo если ловим ProductNotFoundException - то и причину ошибки отправляем NOT_ENOUGH_STOCK
       logger.error("Error processing message: " + e.getMessage());
       eventPublisher.publishOrderRejectedEvent(event);
       throw new AmqpRejectAndDontRequeueException("Error processing message: " + e.getMessage());
