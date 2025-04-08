@@ -11,6 +11,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import sdb.core.data.entity.user.UsersEntity;
 import sdb.core.model.order.OrderStatus;
 
@@ -27,6 +29,7 @@ public class OrderEntity {
   @JoinColumn(name = "user_id",
       referencedColumnName = "id", // <- имя колонки в user_creds
       nullable = false)
+  @JsonBackReference
   private UsersEntity user;
 
   @Column(name = "status", columnDefinition = "varchar(20) check (status in ('PENDING', 'APPROVED', 'REJECTED', 'IN_WORK', 'FINISHED', 'CANCELED'))")
@@ -38,7 +41,12 @@ public class OrderEntity {
   private LocalDateTime createdAt;
 
   @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+  @JsonManagedReference
   private List<OrderItemEntity> orderItems = new ArrayList<>();
+
+  @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+  @JsonManagedReference
+  private List<CancellationReasonEntity> cancellationReasons = new ArrayList<>();
 
   public void addOrderItem(OrderItemEntity item) {
     orderItems.add(item);

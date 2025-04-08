@@ -1,6 +1,7 @@
 package sdb.core.data.entity.user;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -36,6 +37,7 @@ public class UsersEntity {
   @OneToMany(mappedBy = "user",
       cascade = CascadeType.ALL,
       orphanRemoval = true)
+  @JsonBackReference
   private List<OrderEntity> purchases = new ArrayList<>();
 
   public static UsersEntity fromDto(UserDTO userDTO) {

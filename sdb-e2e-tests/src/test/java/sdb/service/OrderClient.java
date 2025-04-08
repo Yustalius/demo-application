@@ -2,6 +2,8 @@ package sdb.service;
 
 
 import sdb.model.order.OrderDTO;
+import sdb.model.order.OrderItemDTO;
+import sdb.model.order.OrderStatus;
 import sdb.service.impl.OrderApiClient;
 
 import java.util.List;
@@ -12,11 +14,13 @@ public interface OrderClient {
     return new OrderApiClient();
   }
 
-  OrderDTO createOrder(OrderDTO order);
+  OrderDTO create(int userId, List<OrderItemDTO> items);
 
-  List<OrderDTO> getOrders();
+  OrderDTO updateStatus(int orderId, OrderStatus status);
 
-  OrderDTO getOrder(int id);
+  List<OrderDTO> get();
 
-  List<OrderDTO> getUserOrders(int userId);
+  OrderDTO getById(int id);
+
+  List<OrderDTO> getByUserId(int userId);
 }

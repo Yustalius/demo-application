@@ -13,10 +13,11 @@ public record OrderDTO(
     Integer userId,
     List<OrderItemDTO> items,
     String timestamp,
-    OrderStatus status
+    OrderStatus status,
+    List<CancellationReasonDTO> rejectReasons
 ) {
   public OrderDTO(Integer userId, List<OrderItemDTO> items) {
-    this(null, userId, items, null, null);
+    this(null, userId, items, null, null, null);
   }
 
   public static OrderDTO fromEntity(OrderEntity entity) {
@@ -31,7 +32,8 @@ public record OrderDTO(
            ))
            .toList(),
        entity.getCreatedAt().toString(),
-       entity.getStatus()
+       entity.getStatus(),
+       null
    );
   }
 
@@ -41,7 +43,8 @@ public record OrderDTO(
         this.userId,
         this.items,
         this.timestamp,
-        status
+        status,
+        this.rejectReasons
     );
   }
 
