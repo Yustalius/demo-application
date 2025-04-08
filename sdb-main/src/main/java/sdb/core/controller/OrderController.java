@@ -45,7 +45,7 @@ public class OrderController {
       @ApiResponse(responseCode = "500", ref = "InternalServerErrorResponse")
   })
   @PostMapping("/add")
-  public OrderDTO addO(@Valid @RequestBody CreateOrderDTO order) throws JsonProcessingException {
+  public OrderDTO add(@Valid @RequestBody CreateOrderDTO order) throws JsonProcessingException {
     logger.info("Creating order: ", mapper.writeValueAsString(order));
     return orderService.createOrder(order);
   }
@@ -77,7 +77,7 @@ public class OrderController {
       @ApiResponse(responseCode = "500", ref = "InternalServerErrorResponse")
   })
   @GetMapping("/user/{userId}")
-  public List<OrderDTO> getByUser(@PathVariable("userId") int userId) {
+  public List<OrderDTO> getByUserId(@PathVariable("userId") int userId) {
     logger.info("Get user orders userId = ", userId);
     return orderService.getUserOrders(userId);
   }

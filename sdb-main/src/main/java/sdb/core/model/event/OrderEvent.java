@@ -19,7 +19,11 @@ public class OrderEvent implements Serializable {
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    public record ErrorMessage(String errorCode, Integer productId, Integer availableStock, Integer requestedStock) {}
+    public record ErrorMessage(String errorCode, String description, Integer productId, Integer availableStock, Integer requestedStock) {
+        public ErrorMessage(String errorCode, String description) {
+            this(errorCode, description, null, null, null);
+        }
+    }
 
     public enum OrderCode {
         ORDER_CREATED,

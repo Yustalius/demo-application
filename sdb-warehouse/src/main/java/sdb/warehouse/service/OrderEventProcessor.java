@@ -12,6 +12,7 @@ import sdb.warehouse.model.order.OrderItemDTO;
 import sdb.warehouse.model.order.OrderStatus;
 import sdb.warehouse.model.product.ProductDTO;
 import sdb.warehouse.service.impl.OrderService;
+import utils.ex.ProductNotFoundException;
 import utils.logging.Logger;
 
 import java.util.HashMap;
@@ -33,7 +34,7 @@ public class OrderEventProcessor {
       case ORDER_CREATED -> processOrderCreatedEvent(event);
       case ORDER_CANCELLED -> processOrderCancelledEvent(event);
       default -> {
-        eventPublisher.publishOrderRejectedEvent(event);
+        eventPublisher.publishOrderRejectedEvent(event, "Incorrect order status");
         throw new IllegalArgumentException("Unknown order code: " + event.getOrderCode());
       }
     }
@@ -75,18 +76,21 @@ public class OrderEventProcessor {
         logger.error("Insufficient stock for products: " + orderStockErrors);
         eventPublisher.publishOrderRejectedEvent(event, orderStockErrors);
       }
+    } catch (ProductNotFoundException e) {
+      logger.error("Error processing order creation event: " + e.getMessage());
+      eventPublisher.publishOrderRejectedEvent(event, "Not found product while proccessing order creation event: " + e.getMessage());
+      throw new AmqpRejectAndDontRequeueException("Error processing order creation event: " + e.getMessage());
     } catch (Exception e) {
-      // todo если ловим ProductNotFoundException - то и причину ошибки отправляем NOT_ENOUGH_STOCK
-      logger.error("Error processing message: " + e.getMessage());
-      eventPublisher.publishOrderRejectedEvent(event);
-      throw new AmqpRejectAndDontRequeueException("Error processing message: " + e.getMessage());
+      logger.error("Error processing order creation event: " + e.getMessage());
+      eventPublisher.publishOrderRejectedEvent(event, "Unknown error");
+      throw new AmqpRejectAndDontRequeueException("Error processing order creation event: " + e.getMessage());
     }
   }
 
   private void validateEvent(OrderEvent event) {
     if (isInvalidEvent(event)) {
       logger.error("Received invalid message: " + (event == null ? "null" : event.toString()));
-      eventPublisher.publishOrderRejectedEvent(event);
+      eventPublisher.publishOrderRejectedEvent(event, "Invalid event");
       throw new AmqpRejectAndDontRequeueException("Invalid message format");
     }
 
