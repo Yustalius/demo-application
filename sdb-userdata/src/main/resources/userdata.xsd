@@ -1,0 +1,54 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="sdb-userdata"
+           targetNamespace="sdb-userdata" elementFormDefault="qualified">
+
+    <!-- REQUEST TYPES -->
+
+    <xs:element name="LoginRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="login" type="xs:string"/>
+                <xs:element name="password" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="RegisterRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="login" type="xs:string"/>
+                <xs:element name="password" type="xs:string"/>
+                <xs:element name="firstName" type="xs:string"/>
+                <xs:element name="lastName" type="xs:string"/>
+                <xs:element name="middleName" type="xs:string"/>
+                <xs:element name="birthDate" type="xs:string"/>
+                <xs:element name="phone" type="xs:string"/>
+                <xs:element name="email" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- RESPONSE TYPES -->
+
+    <xs:element name="UserResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="id" type="xs:int"/>
+                <xs:element name="firstName" type="xs:string"/>
+                <xs:element name="lastName" type="xs:string"/>
+                <xs:element name="middleName" type="xs:string"/>
+                <xs:element name="birthDate" type="xs:string"/>
+                <xs:element name="phone" type="xs:string"/>
+                <xs:element name="email" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="AuthResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="token" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>
