@@ -38,6 +38,8 @@ public class OrderEventListener {
   @RabbitListener(queues = RabbitMQConfig.CORE_ORDER_EVENTS_QUEUE, containerFactory = "rabbitListenerContainerFactory")
   @Transactional
   public void processOrderEvent(OrderEvent event) {
+    logger.info("Received order event: " + event);
+
     if (event == null || event.getOrderId() == null) {
       logger.error("Received invalid order event message: " + (event == null ? "null" : event.toString()));
       throw new AmqpRejectAndDontRequeueException("Invalid message format");
@@ -49,7 +51,7 @@ public class OrderEventListener {
         eventProcessor.processOrderApproval(event);
       }
       case ORDER_REJECTED -> {
-        logger.info("Order has been rejected: " + event);
+        logger.info("Order " + event.getOrderId() + " has been rejected: " + event.getErrorMessages());
         eventProcessor.processOrderRejection(event);
       }
       default -> {

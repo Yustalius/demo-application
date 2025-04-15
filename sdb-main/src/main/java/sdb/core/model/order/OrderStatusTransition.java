@@ -5,6 +5,9 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.Set;
 
+import static sdb.core.model.order.OrderStatus.*;
+import static sdb.core.model.order.OrderStatus.REJECTED;
+
 /**
  * Класс для описания статусной модели заказа.
  * Определяет допустимые переходы между статусами.
@@ -18,33 +21,33 @@ public class OrderStatusTransition {
     Map<OrderStatus, Set<OrderStatus>> transitions = new EnumMap<>(OrderStatus.class);
     
     // С PENDING можно перейти на APPROVED, REJECTED, CANCELED
-    transitions.put(OrderStatus.PENDING, Set.of(
-        OrderStatus.APPROVED,
-        OrderStatus.REJECTED,
-        OrderStatus.CANCELLED
+    transitions.put(PENDING, Set.of(
+        APPROVED,
+        REJECTED,
+        CANCELLED
     ));
     
     // С APPROVED можно перейти на IN_WORK, CANCELED
-    transitions.put(OrderStatus.APPROVED, Set.of(
-        OrderStatus.IN_WORK,
-        OrderStatus.CANCELLED
+    transitions.put(APPROVED, Set.of(
+        IN_WORK,
+        CANCELLED
     ));
     
     // С REJECTED можно перейти на IN_WORK, CANCELED
-    transitions.put(OrderStatus.REJECTED, Set.of(
-        OrderStatus.IN_WORK,
-        OrderStatus.CANCELLED
+    transitions.put(REJECTED, Set.of(
+        IN_WORK,
+        CANCELLED
     ));
     
     // С IN_WORK можно перейти на FINISHED, CANCELED
-    transitions.put(OrderStatus.IN_WORK, Set.of(
-        OrderStatus.FINISHED,
-        OrderStatus.CANCELLED
+    transitions.put(IN_WORK, Set.of(
+        FINISHED,
+        CANCELLED
     ));
     
     // С FINISHED и CANCELED никуда нельзя перейти
-    transitions.put(OrderStatus.FINISHED, Collections.emptySet());
-    transitions.put(OrderStatus.CANCELLED, Collections.emptySet());
+    transitions.put(FINISHED, Collections.emptySet());
+    transitions.put(CANCELLED, Collections.emptySet());
     
     ALLOWED_TRANSITIONS = Collections.unmodifiableMap(transitions);
   }

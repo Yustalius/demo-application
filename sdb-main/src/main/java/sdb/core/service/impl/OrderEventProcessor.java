@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sdb.core.model.event.OrderEvent;
+import sdb.core.model.event.OrderEvent.ErrorMessage;
 import sdb.core.model.order.OrderStatus;
 import sdb.core.service.OrderService;
 import utils.logging.Logger;
@@ -28,7 +29,7 @@ public class OrderEventProcessor {
 
   @Transactional
   public void processOrderRejection(OrderEvent event) {
-    List<OrderEvent.ErrorMessage> errorMessages = event.getErrorMessages();
+    List<ErrorMessage> errorMessages = event.getErrorMessages();
     if (errorMessages != null && !errorMessages.isEmpty()) {
       JsonNode[] reasonsArray = errorMessages.stream()
           .map(errorMessage -> {

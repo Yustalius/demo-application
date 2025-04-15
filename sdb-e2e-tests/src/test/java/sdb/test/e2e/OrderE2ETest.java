@@ -1,5 +1,6 @@
 package sdb.test.e2e;
 
+import org.hibernate.query.sqm.mutation.internal.cte.CteInsertStrategy;
 import org.junit.jupiter.api.Test;
 import org.awaitility.Durations;
 
